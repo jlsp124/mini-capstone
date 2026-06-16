@@ -46,6 +46,22 @@ const originInterests = [
 
 const bigQuestionParts = ["Healthcare", "Business", "Creativity", "Freedom"];
 
+const futureServiceTiles = [
+  ["Clinical Precision", "Healthcare / Science", "Study, diagnose, operate, communicate."],
+  ["Ownership Thinking", "Business / Money", "Understand systems, value, teams, and risk."],
+  ["Creative Iteration", "Music Production", "Make, listen, revise, repeat."],
+  ["Tool Leverage", "Technology / Systems", "Use AI and software to organize and build faster."],
+  ["Visual Taste", "Photography / Design", "Notice moments and shape how ideas feel."],
+  ["Long-Term Freedom", "Direction / Lifestyle", "Build options without deleting parts of myself."],
+];
+
+const originProofStats = [
+  ["05", "personal evidence cards"],
+  ["06", "connected interests"],
+  ["01", "future question"],
+  ["22", "measurable scenes"],
+];
+
 const chapters = [
   { id: "origin", number: "Chapter 1", title: "Origin" },
   { id: "oral-surgery", number: "Chapter 2", title: "Oral Surgery" },
@@ -389,8 +405,69 @@ function renderMediaConstellation(assets, scope = "") {
   `;
 }
 
+function renderEvidenceOrb(asset, index) {
+  const isLiveAsset = liveImageAssets.has(asset.path);
+  const assetState = isLiveAsset ? "loaded" : "missing";
+  const assetStyle = isLiveAsset ? ` style="--asset-image: url('${asset.path.replaceAll("'", "%27")}')"` : "";
+  return `
+    <figure class="evidence-orb evidence-orb-${index + 1}" data-path="${escapeHtml(asset.path)}" data-asset-state="${assetState}"${assetStyle}>
+      <div class="orb-line" aria-hidden="true"></div>
+      <div class="orb-planet">
+        <span class="orb-shine" aria-hidden="true"></span>
+        <strong>${String(index + 1).padStart(2, "0")}</strong>
+      </div>
+      <figcaption>
+        <span>${escapeHtml(asset.title)}</span>
+        <small>${escapeHtml(asset.detail)}</small>
+        <em>Replace with ${escapeHtml(asset.path)}</em>
+      </figcaption>
+    </figure>
+  `;
+}
+
+function renderEvidenceOrbit(assets, scope = "") {
+  return `
+    <div class="evidence-orbit ${scope}">
+      <div class="orbit-crosshair" aria-hidden="true"></div>
+      <div class="orbit-core">
+        <span>Project proof</span>
+        <strong>Personal evidence, not random interests.</strong>
+      </div>
+      ${assets.map(renderEvidenceOrb).join("")}
+    </div>
+  `;
+}
+
+function renderServiceSystem() {
+  return `
+    <div class="service-system">
+      ${futureServiceTiles.map(([title, label, detail], index) => `
+        <div class="service-tile service-tile-${index + 1}">
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <strong>${title}</strong>
+          <small>${label}</small>
+          <p>${detail}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderProofStats() {
+  return `
+    <div class="proof-stats">
+      ${originProofStats.map(([value, label]) => `
+        <div><strong>${value}</strong><span>${label}</span></div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderLandingAssets() {
-  $("#landing-assets").innerHTML = renderMediaConstellation(landingAssets, "landing-constellation");
+  $("#landing-assets").innerHTML = `
+    ${renderEvidenceOrbit(landingAssets, "landing-evidence-orbit")}
+    ${renderProofStats()}
+  `;
 }
 
 function chapterFor(slide) {
@@ -546,22 +623,27 @@ function renderChapterOneSlide(slide, chapter, index) {
   if (slide.number === "01") {
     return `
       <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
-        <div class="chapter-scene origin-hero-scene origin-scene-dark">
-          <div class="contour-layer" aria-hidden="true"></div>
-          <div class="chrome-stroke stroke-one" aria-hidden="true"></div>
-          <div class="origin-scene-meta">
-            <span>${chapter.number}</span>
-            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+        <div class="chapter-scene up-scene up-hero-section">
+          <div class="up-stars" aria-hidden="true"></div>
+          <div class="up-section-nav">
+            <span>futurebuild.</span>
+            <span>${chapter.number} / ${String(index + 1).padStart(2, "0")}</span>
+            <span>Reader Mode</span>
           </div>
-          <div class="origin-hero-title">
-            <p class="eyebrow">Oral Surgery • Business • Creativity</p>
+          <div class="up-hero-copy">
+            <p class="up-kicker"><span></span>Origin system — personal proof</p>
             <h2>
-              <span>The Future</span>
-              <span>I’m <em>Building</em></span>
+              <span class="outline">The Future</span>
+              <span class="chrome">I’m Building</span>
             </h2>
             <p class="lead fragment">${slide.support}</p>
+            <div class="up-cta-row fragment">
+              <span>Oral Surgery</span>
+              <span>Business</span>
+              <span>Creativity</span>
+            </div>
           </div>
-          ${renderMediaConstellation(landingAssets, "scene-one-constellation")}
+          ${renderEvidenceOrbit(landingAssets, "scene-evidence-orbit")}
           <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
         </div>
       </section>
@@ -571,18 +653,24 @@ function renderChapterOneSlide(slide, chapter, index) {
   if (slide.number === "02") {
     return `
       <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
-        <div class="chapter-scene origin-identity-scene origin-scene-cream">
-          <div class="contour-layer" aria-hidden="true"></div>
-          <div class="origin-scene-meta dark">
-            <span>${chapter.number}</span>
-            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+        <div class="chapter-scene up-scene up-services-section">
+          <div class="up-section-nav dark">
+            <span>futurebuild.</span>
+            <span>${chapter.number} / ${String(index + 1).padStart(2, "0")}</span>
+            <span>Skill system</span>
           </div>
-          <div class="identity-title">
-            <p class="eyebrow">Who I Am</p>
-            <h2><span>Six interests.</span> <em>One direction.</em></h2>
-            <p class="support fragment">${slide.support}</p>
+          <div class="services-copy">
+            <p class="up-kicker dark"><span></span>Who I Am</p>
+            <h2><span>Six systems.</span> <span class="outline-dark">One plan.</span></h2>
+            <p class="support fragment">${slide.lead}</p>
           </div>
-          ${renderIdentityOrbit("present")}
+          ${renderServiceSystem()}
+          <div class="services-bottom fragment">
+            <span>Healthcare</span>
+            <span>Ownership</span>
+            <span>Tools</span>
+            <span>Freedom</span>
+          </div>
           <span class="slide-number-tag dark">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
         </div>
       </section>
@@ -592,20 +680,18 @@ function renderChapterOneSlide(slide, chapter, index) {
   if (slide.number === "03") {
     return `
       <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
-        <div class="chapter-scene origin-archive-scene origin-scene-dark">
-          <div class="contour-layer" aria-hidden="true"></div>
-          <div class="archive-grain" aria-hidden="true"></div>
-          <div class="origin-scene-meta">
-            <span>${chapter.number}</span>
-            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+        <div class="chapter-scene up-scene up-archive-section">
+          <div class="up-section-nav dark">
+            <span>futurebuild.</span>
+            <span>${chapter.number} / ${String(index + 1).padStart(2, "0")}</span>
+            <span>Origin proof</span>
           </div>
-          <div class="archive-copy">
-            <p class="eyebrow">Memory File / Kindergarten</p>
-            <h2>This started <em>earlier</em> than this project.</h2>
-            <p class="lead fragment">Kindergarten: I wanted to be a dentist.</p>
-            <p class="support fragment">The idea stayed the same. The vision got bigger.</p>
+          <div class="archive-head">
+            <p class="up-kicker dark"><span></span>Archive / Kindergarten</p>
+            <h2><span>This started</span> <span class="outline-dark">earlier.</span></h2>
+            <p class="support fragment">Kindergarten: I wanted to be a dentist.</p>
           </div>
-          <div class="memory-file">
+          <div class="archive-proof">
             <div class="memory-file-top">
               <span>REC 00:00:14</span>
               <span>ARCHIVE / DENTIST</span>
@@ -620,6 +706,7 @@ function renderChapterOneSlide(slide, chapter, index) {
               <span>STATUS: IDEA KEPT GROWING</span>
             </div>
           </div>
+          <p class="archive-close fragment">The idea stayed the same. The vision got bigger.</p>
           <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
         </div>
       </section>
@@ -628,20 +715,21 @@ function renderChapterOneSlide(slide, chapter, index) {
 
   return `
     <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
-      <div class="chapter-scene origin-question-scene origin-scene-dark">
-        <div class="contour-layer" aria-hidden="true"></div>
-        <div class="chrome-stroke stroke-two" aria-hidden="true"></div>
-        <div class="origin-scene-meta">
-          <span>${chapter.number}</span>
-          <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+      <div class="chapter-scene up-scene up-reveal-section">
+        <div class="up-stars" aria-hidden="true"></div>
+        <div class="up-section-nav">
+          <span>futurebuild.</span>
+          <span>${chapter.number} / ${String(index + 1).padStart(2, "0")}</span>
+          <span>Future reveal</span>
         </div>
-        <div class="question-parts">
-          ${bigQuestionParts.map((part) => `<span class="fragment">${part}</span>`).join(" ")}
+        <div class="future-nodes">
+          ${bigQuestionParts.map((part, partIndex) => `<span class="future-node future-node-${partIndex + 1} fragment">${part}</span>`).join(" ")}
         </div>
-        <div class="question-core">
-          <p class="eyebrow">Big Question</p>
-          <h2 class="fragment">${slide.lead}</h2>
+        <div class="future-question">
+          <p class="up-kicker"><span></span>Big Question</p>
+          <h2>${slide.lead}</h2>
           <p class="support fragment">${slide.support}</p>
+          <div class="future-launch fragment">Start with skill. Build toward freedom.</div>
         </div>
         <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
       </div>
@@ -762,10 +850,10 @@ function initReveal() {
 function animateLanding() {
   if (!window.gsap) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  window.gsap.killTweensOf(".media-fragment");
-  window.gsap.fromTo(".landing-copy > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power3.out" });
-  window.gsap.fromTo(".landing-screen .media-fragment", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.95, stagger: 0.08, ease: "power3.out" });
-  window.gsap.to(".landing-screen .media-fragment", { y: -8, duration: 4.6, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: 0.3 });
+  window.gsap.killTweensOf(".evidence-orb");
+  window.gsap.fromTo(".landing-nav, .landing-copy > *", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.72, stagger: 0.06, ease: "power3.out" });
+  window.gsap.fromTo(".landing-screen .evidence-orb, .landing-screen .orbit-core", { y: 34, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.9, stagger: 0.07, ease: "power3.out" });
+  window.gsap.to(".landing-screen .evidence-orb", { y: -10, duration: 4.8, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: 0.24 });
 }
 
 function animateActiveSlide() {
@@ -774,7 +862,7 @@ function animateActiveSlide() {
   const current = window.Reveal.getCurrentSlide();
   if (!current) return;
   if ($(".chapter-scene", current)) {
-    window.gsap.fromTo($$(".chapter-scene .eyebrow, .chapter-scene h2:not(.fragment), .chapter-scene .media-fragment, .chapter-scene .orbit-item, .chapter-scene .memory-file", current), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.58, stagger: 0.05, ease: "power2.out" });
+    window.gsap.fromTo($$(".chapter-scene .up-section-nav, .chapter-scene .up-kicker, .chapter-scene h2:not(.fragment), .chapter-scene .evidence-orb, .chapter-scene .orbit-core, .chapter-scene .service-tile, .chapter-scene .archive-proof", current), { y: 24, opacity: 0, scale: 0.98 }, { y: 0, opacity: 1, scale: 1, duration: 0.62, stagger: 0.045, ease: "power2.out" });
     return;
   }
   window.gsap.fromTo($$(".slide-copy > *:not(.fragment), .feature-panel", current), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.05, ease: "power2.out" });
@@ -790,6 +878,27 @@ function animateReaderCards() {
   if (!window.gsap) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   window.gsap.fromTo(".reader-card", { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.03, ease: "power2.out" });
+}
+
+function runIntroLoader(initialMode) {
+  const loader = $("#intro-loader");
+  if (!loader) return;
+  const shouldSkip = initialMode === "reader" || initialMode === "present" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (shouldSkip || !window.gsap) {
+    loader.hidden = true;
+    return;
+  }
+
+  window.gsap.timeline({
+    defaults: { ease: "power3.out" },
+    onComplete: () => {
+      loader.hidden = true;
+    },
+  })
+    .fromTo(".loader-word span", { yPercent: 115 }, { yPercent: 0, duration: 0.55 })
+    .fromTo(".loader-kicker", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35 }, 0)
+    .to(".loader-meter span", { scaleX: 1, duration: 0.72 }, 0.08)
+    .to(loader, { yPercent: -101, duration: 0.58 }, 0.92);
 }
 
 async function loadThreeBundle() {
@@ -1048,6 +1157,7 @@ function init() {
 
   const params = new URLSearchParams(location.search);
   showMode(params.get("mode"));
+  runIntroLoader(params.get("mode"));
 }
 
 init();
