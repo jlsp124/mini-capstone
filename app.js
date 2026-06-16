@@ -35,6 +35,17 @@ const liveImageAssets = new Set([
 
 const loadDentalStlFiles = false;
 
+const originInterests = [
+  ["Healthcare / Science", "clinical precision"],
+  ["Business / Money", "ownership thinking"],
+  ["Music Production", "taste and iteration"],
+  ["Technology / Systems", "tools that scale ideas"],
+  ["Photography / Visual Creativity", "seeing the moment"],
+  ["Long-Term Goals / Freedom", "room to keep growing"],
+];
+
+const bigQuestionParts = ["Healthcare", "Business", "Creativity", "Freedom"];
+
 const chapters = [
   { id: "origin", number: "Chapter 1", title: "Origin" },
   { id: "oral-surgery", number: "Chapter 2", title: "Oral Surgery" },
@@ -86,17 +97,18 @@ const slides = [
     number: "02",
     chapter: "origin",
     title: "Who I Am",
-    lead: "I am drawn to work that mixes skill, pressure, people, and independence.",
-    support: "Dentistry, business, music, and building projects all point toward the same pattern.",
+    lead: "I want a future where I don’t have to give up one side of myself to build another.",
+    support: "Healthcare, business, music, technology, visual creativity, and long-term freedom all orbit the same plan.",
     reader: "The careers and interests I keep coming back to have a common thread: they reward discipline, taste, problem solving, and the ability to make decisions. I want my future to include science and service, but also ownership and creative output.",
-    bullets: ["Precision", "People", "Ownership", "Creative systems"],
+    layout: "identity-orbit",
+    feature: { type: "identity-orbit" },
   },
   {
     number: "03",
     chapter: "origin",
     title: "This Started Early",
-    lead: "The dental direction was already showing up when I was little.",
-    support: "The kindergarten dentist video is a small archive piece that makes the plan feel less random.",
+    lead: "This started earlier than this project.",
+    support: "Kindergarten: I wanted to be a dentist. The idea stayed the same. The vision got bigger.",
     reader: "Looking back matters because it shows that this interest did not appear out of nowhere. The kindergarten dentist video becomes evidence of an early curiosity around dentistry and helping people.",
     layout: "archive",
     feature: {
@@ -111,7 +123,7 @@ const slides = [
     chapter: "origin",
     title: "Big Question",
     lead: "How can I build a future that combines healthcare, business, creativity, and freedom?",
-    support: "The goal is not to choose one side of myself and delete the rest.",
+    support: "Four parts, one direction: skill, ownership, expression, and room to choose.",
     reader: "This question is the center of the whole capstone. I am not only asking what job I might want. I am asking what kind of life, work rhythm, responsibility, and freedom I want to build toward.",
     layout: "question",
   },
@@ -352,8 +364,33 @@ function renderAsset(asset, className = "asset-placeholder") {
   `;
 }
 
+function renderMediaFragment(asset, className = "") {
+  const isLiveAsset = liveImageAssets.has(asset.path);
+  const assetState = isLiveAsset ? "loaded" : "missing";
+  const assetStyle = isLiveAsset ? ` style="--asset-image: url('${asset.path.replaceAll("'", "%27")}')"` : "";
+  return `
+    <figure class="media-fragment ${className}" data-path="${escapeHtml(asset.path)}" data-asset-state="${assetState}"${assetStyle}>
+      <div class="media-surface">
+        <span class="asset-route">Replace with ${escapeHtml(asset.path)}</span>
+        <strong>${escapeHtml(asset.title)}</strong>
+      </div>
+      <figcaption>
+        <span>${escapeHtml(asset.detail)}</span>
+      </figcaption>
+    </figure>
+  `;
+}
+
+function renderMediaConstellation(assets, scope = "") {
+  return `
+    <div class="media-constellation ${scope}">
+      ${assets.map((asset, index) => renderMediaFragment(asset, `media-fragment-${index + 1}`)).join("")}
+    </div>
+  `;
+}
+
 function renderLandingAssets() {
-  $("#landing-assets").innerHTML = landingAssets.map((asset) => renderAsset(asset, "asset-card")).join("");
+  $("#landing-assets").innerHTML = renderMediaConstellation(landingAssets, "landing-constellation");
 }
 
 function chapterFor(slide) {
@@ -368,6 +405,10 @@ function renderFeature(feature, mode) {
   if (feature.type === "asset-grid") {
     const five = feature.assets.length === 5 ? " five" : "";
     return `<div class="asset-grid${five}">${feature.assets.map((asset) => renderAsset(asset)).join("")}</div>`;
+  }
+
+  if (feature.type === "identity-orbit") {
+    return renderIdentityOrbit(mode);
   }
 
   if (feature.type === "archive") {
@@ -471,21 +512,148 @@ function renderFeature(feature, mode) {
   return "";
 }
 
+function renderIdentityOrbit(mode = "present") {
+  return `
+    <div class="identity-orbit ${mode === "reader" ? "identity-orbit-reader" : ""}">
+      <div class="orbit-statement">
+        <span>Core reflection</span>
+        <strong>I want a future where I don’t have to give up one side of myself to build another.</strong>
+      </div>
+      <div class="orbit-lines" aria-hidden="true"></div>
+      ${originInterests.map(([title, detail], index) => `
+        <div class="orbit-item orbit-item-${index + 1}">
+          <span>${title}</span>
+          <small>${detail}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderBullets(slide) {
   if (!slide.bullets) return "";
   return `<div class="mini-list">${slide.bullets.map((item) => `<span class="fragment">${escapeHtml(item)}</span>`).join("")}</div>`;
 }
 
 function layoutClass(slide) {
+  if (Number(slide.number) <= 4) return `chapter-one-layout chapter-one-${slide.number}`;
   if (slide.layout === "title-assets") return "title-layout";
   if (slide.layout === "question") return "compact-layout";
   return "";
+}
+
+function renderChapterOneSlide(slide, chapter, index) {
+  if (slide.number === "01") {
+    return `
+      <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
+        <div class="chapter-scene origin-hero-scene origin-scene-dark">
+          <div class="contour-layer" aria-hidden="true"></div>
+          <div class="chrome-stroke stroke-one" aria-hidden="true"></div>
+          <div class="origin-scene-meta">
+            <span>${chapter.number}</span>
+            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+          </div>
+          <div class="origin-hero-title">
+            <p class="eyebrow">Oral Surgery • Business • Creativity</p>
+            <h2>
+              <span>The Future</span>
+              <span>I’m <em>Building</em></span>
+            </h2>
+            <p class="lead fragment">${slide.support}</p>
+          </div>
+          ${renderMediaConstellation(landingAssets, "scene-one-constellation")}
+          <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  if (slide.number === "02") {
+    return `
+      <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
+        <div class="chapter-scene origin-identity-scene origin-scene-cream">
+          <div class="contour-layer" aria-hidden="true"></div>
+          <div class="origin-scene-meta dark">
+            <span>${chapter.number}</span>
+            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+          </div>
+          <div class="identity-title">
+            <p class="eyebrow">Who I Am</p>
+            <h2><span>Six interests.</span> <em>One direction.</em></h2>
+            <p class="support fragment">${slide.support}</p>
+          </div>
+          ${renderIdentityOrbit("present")}
+          <span class="slide-number-tag dark">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  if (slide.number === "03") {
+    return `
+      <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
+        <div class="chapter-scene origin-archive-scene origin-scene-dark">
+          <div class="contour-layer" aria-hidden="true"></div>
+          <div class="archive-grain" aria-hidden="true"></div>
+          <div class="origin-scene-meta">
+            <span>${chapter.number}</span>
+            <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+          </div>
+          <div class="archive-copy">
+            <p class="eyebrow">Memory File / Kindergarten</p>
+            <h2>This started <em>earlier</em> than this project.</h2>
+            <p class="lead fragment">Kindergarten: I wanted to be a dentist.</p>
+            <p class="support fragment">The idea stayed the same. The vision got bigger.</p>
+          </div>
+          <div class="memory-file">
+            <div class="memory-file-top">
+              <span>REC 00:00:14</span>
+              <span>ARCHIVE / DENTIST</span>
+            </div>
+            ${renderMediaFragment({
+              title: "Kindergarten Dentist Video",
+              detail: "Replace with the video still or memory frame",
+              path: "assets/photos/kindergarten-dentist-video-still.jpg",
+            }, "archive-media-fragment")}
+            <div class="memory-file-bottom">
+              <span>SUBJECT: EARLY DIRECTION</span>
+              <span>STATUS: IDEA KEPT GROWING</span>
+            </div>
+          </div>
+          <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  return `
+    <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
+      <div class="chapter-scene origin-question-scene origin-scene-dark">
+        <div class="contour-layer" aria-hidden="true"></div>
+        <div class="chrome-stroke stroke-two" aria-hidden="true"></div>
+        <div class="origin-scene-meta">
+          <span>${chapter.number}</span>
+          <strong>${String(index + 1).padStart(2, "0")} / ${totalSlides}</strong>
+        </div>
+        <div class="question-parts">
+          ${bigQuestionParts.map((part) => `<span class="fragment">${part}</span>`).join(" ")}
+        </div>
+        <div class="question-core">
+          <p class="eyebrow">Big Question</p>
+          <h2 class="fragment">${slide.lead}</h2>
+          <p class="support fragment">${slide.support}</p>
+        </div>
+        <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
+      </div>
+    </section>
+  `;
 }
 
 function renderPresentationSlides() {
   $("#presentation-slides").innerHTML = slides.map((slide, index) => {
     const chapter = chapterFor(slide);
     const feature = slide.feature || (slide.layout === "question" ? null : undefined);
+    if (Number(slide.number) <= 4) return renderChapterOneSlide(slide, chapter, index);
     return `
       <section data-slide-number="${slide.number}" data-chapter="${slide.chapter}">
         <div class="slide-shell ${layoutClass(slide)}">
@@ -515,7 +683,7 @@ function renderReader() {
     const isFirstInChapter = slides.findIndex((item) => item.chapter === slide.chapter) === index;
     const feature = slide.feature || (slide.layout === "question" ? null : undefined);
     return `
-      <article class="reader-card" id="${isFirstInChapter ? `chapter-${chapter.id}` : `reader-slide-${slide.number}`}">
+      <article class="reader-card ${Number(slide.number) <= 4 ? `reader-origin-card reader-origin-${slide.number}` : ""}" id="${isFirstInChapter ? `chapter-${chapter.id}` : `reader-slide-${slide.number}`}">
         <div class="reader-copy">
           <p class="eyebrow">${chapter.number} — ${chapter.title}</p>
           <h2>${slide.number} ${slide.title}</h2>
@@ -593,26 +761,34 @@ function initReveal() {
 
 function animateLanding() {
   if (!window.gsap) return;
-  window.gsap.killTweensOf(".asset-card");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  window.gsap.killTweensOf(".media-fragment");
   window.gsap.fromTo(".landing-copy > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power3.out" });
-  window.gsap.fromTo(".asset-card", { y: 26, opacity: 0, rotate: -1 }, { y: 0, opacity: 1, rotate: 0, duration: 0.9, stagger: 0.08, ease: "power3.out" });
-  window.gsap.to(".asset-card", { y: -10, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: 0.25 });
+  window.gsap.fromTo(".landing-screen .media-fragment", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.95, stagger: 0.08, ease: "power3.out" });
+  window.gsap.to(".landing-screen .media-fragment", { y: -8, duration: 4.6, ease: "sine.inOut", yoyo: true, repeat: -1, stagger: 0.3 });
 }
 
 function animateActiveSlide() {
   if (!window.gsap || !window.Reveal) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const current = window.Reveal.getCurrentSlide();
   if (!current) return;
+  if ($(".chapter-scene", current)) {
+    window.gsap.fromTo($$(".chapter-scene .eyebrow, .chapter-scene h2:not(.fragment), .chapter-scene .media-fragment, .chapter-scene .orbit-item, .chapter-scene .memory-file", current), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.58, stagger: 0.05, ease: "power2.out" });
+    return;
+  }
   window.gsap.fromTo($$(".slide-copy > *:not(.fragment), .feature-panel", current), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.05, ease: "power2.out" });
 }
 
 function animateFragment(event) {
   if (!window.gsap || !event?.fragment) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   window.gsap.fromTo(event.fragment, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" });
 }
 
 function animateReaderCards() {
   if (!window.gsap) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   window.gsap.fromTo(".reader-card", { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.03, ease: "power2.out" });
 }
 
