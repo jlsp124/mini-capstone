@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Design"
+  short_description: "Distinctive UI design direction"
+  default_prompt: "/frontenddesign Use $frontend-design to create a distinctive, intentional frontend design."

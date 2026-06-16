@@ -1,29 +1,29 @@
-const totalSlides = 22;
+﻿const totalSlides = 22;
 
 const landingAssets = [
   {
     title: "Kindergarten Still",
-    detail: "Early dentist clue",
+    detail: "Early clue: wanting to be a dentist",
     path: "assets/photos/kindergarten-still.jpg",
   },
   {
     title: "Japan Photo",
-    detail: "Creative timing and curiosity",
+    detail: "Photography, timing, and noticing moments",
     path: "assets/photos/japan-photo.jpg",
   },
   {
     title: "Ableton Screenshot",
-    detail: "Music production workspace",
+    detail: "Music production and technical creativity",
     path: "assets/screenshots/ableton-session.jpg",
   },
   {
     title: "GitHub / Project Screenshot",
-    detail: "Building things with tools",
+    detail: "Technology, systems, and building projects",
     path: "assets/screenshots/github-project.jpg",
   },
   {
     title: "Little Me + Dad",
-    detail: "Opening-day dental practice photo",
+    detail: "Family connection to dental practice ownership",
     path: "assets/photos/dad-opening-day-practice.jpg",
   },
 ];
@@ -36,30 +36,30 @@ const liveImageAssets = new Set([
 const loadDentalStlFiles = false;
 
 const originInterests = [
-  ["Healthcare / Science", "clinical precision"],
-  ["Business / Money", "ownership thinking"],
-  ["Music Production", "taste and iteration"],
-  ["Technology / Systems", "tools that scale ideas"],
-  ["Photography / Visual Creativity", "seeing the moment"],
-  ["Long-Term Goals / Freedom", "room to keep growing"],
+  ["Healthcare / Science", "oral surgery"],
+  ["Business / Money", "ownership and growth"],
+  ["Music Production", "creative technical work"],
+  ["Technology / Systems", "tools for building"],
+  ["Photography / Visual Creativity", "timing and visual taste"],
+  ["Long-Term Goals / Freedom", "options and improvement"],
 ];
 
 const bigQuestionParts = ["Healthcare", "Business", "Creativity", "Freedom"];
 
 const futureServiceTiles = [
-  ["Clinical Precision", "Healthcare / Science", "Study, diagnose, operate, communicate."],
-  ["Ownership Thinking", "Business / Money", "Understand systems, value, teams, and risk."],
-  ["Creative Iteration", "Music Production", "Make, listen, revise, repeat."],
-  ["Tool Leverage", "Technology / Systems", "Use AI and software to organize and build faster."],
-  ["Visual Taste", "Photography / Design", "Notice moments and shape how ideas feel."],
-  ["Long-Term Freedom", "Direction / Lifestyle", "Build options without deleting parts of myself."],
+  ["Healthcare / Science", "Oral surgery", "Science, skill, and patient care."],
+  ["Business / Money", "Ownership", "Building and growing something real."],
+  ["Music Production", "Creativity", "Sound, taste, rhythm, and practice."],
+  ["Technology / Systems", "Tools", "Research, organization, and building faster."],
+  ["Photography / Visual Creativity", "Seeing", "Timing, detail, and creative choices."],
+  ["Long-Term Goals / Freedom", "Options", "More control over the life I work toward."],
 ];
 
 const originProofStats = [
   ["05", "personal evidence cards"],
   ["06", "connected interests"],
   ["01", "future question"],
-  ["22", "measurable scenes"],
+  ["CLE 10", "Future Plan / Personal System"],
 ];
 
 const chapters = [
@@ -71,6 +71,10 @@ const chapters = [
 ];
 
 const sourceCards = [
+  {
+    title: "Assignment",
+    detail: "CLE 10 Mini Capstone instructions and project expectations.",
+  },
   {
     title: "Canadian Dental Association",
     detail: "Dental specialties and career pathways.",
@@ -96,6 +100,10 @@ const sourceCards = [
     detail: "DMD program and admissions requirements.",
     url: "https://umanitoba.ca/explore/programs-of-study/dentistry-dmd",
   },
+  {
+    title: "Personal experience",
+    detail: "Early dentistry interest, family exposure to practice ownership, creative projects, music, photography, and technology work.",
+  },
 ];
 
 const slides = [
@@ -104,8 +112,8 @@ const slides = [
     chapter: "origin",
     title: "The Future I’m Building",
     lead: "Oral Surgery • Business • Creativity",
-    support: "A future built around precision, ownership, creative work, and freedom.",
-    reader: "This project is not just a career report. It is a first version of a plan. I am trying to understand how healthcare, business, creativity, and technology can fit into one future instead of becoming separate lives.",
+    support: "A future built around healthcare, ownership, creativity, technology, and freedom.",
+    reader: "This project is about the future I can actually see myself building toward. It is not just one career idea. It brings together oral surgery, business, creativity, technology, and the kind of freedom I want later in life. I want a future where the things I care about do not compete with each other, but support each other.",
     layout: "title-assets",
     feature: { type: "asset-grid", assets: landingAssets },
   },
@@ -114,8 +122,8 @@ const slides = [
     chapter: "origin",
     title: "Who I Am",
     lead: "I want a future where I don’t have to give up one side of myself to build another.",
-    support: "Healthcare, business, music, technology, visual creativity, and long-term freedom all orbit the same plan.",
-    reader: "The careers and interests I keep coming back to have a common thread: they reward discipline, taste, problem solving, and the ability to make decisions. I want my future to include science and service, but also ownership and creative output.",
+    support: "Healthcare, business, music, technology, creativity, and freedom all connect.",
+    reader: "I have a lot of interests, but they are not random separate things. Healthcare and science point toward oral surgery. Business connects to ownership and growth. Music, photography, and technology connect to creativity and making things. My long-term goals pull everything together because I care about freedom, options, and being able to keep improving my life.",
     layout: "identity-orbit",
     feature: { type: "identity-orbit" },
   },
@@ -125,12 +133,12 @@ const slides = [
     title: "This Started Early",
     lead: "This started earlier than this project.",
     support: "Kindergarten: I wanted to be a dentist. The idea stayed the same. The vision got bigger.",
-    reader: "Looking back matters because it shows that this interest did not appear out of nowhere. The kindergarten dentist video becomes evidence of an early curiosity around dentistry and helping people.",
+    reader: "One of the biggest reasons this path feels real to me is that it started early. In kindergarten, I already said I wanted to be a dentist. At that time, I obviously did not understand the full career path, the business side, or specialty options. But the basic idea stayed with me. Now the vision is bigger: oral surgery, ownership, technology, and building something long-term.",
     layout: "archive",
     feature: {
       type: "archive",
-      title: "Kindergarten Dentist Video",
-      detail: "Nostalgic archive placeholder",
+      title: "Kindergarten Career Video",
+      detail: "Topic: Future career • Status: Original clue • Updated vision: Oral surgery + ownership",
       path: "assets/photos/kindergarten-dentist-video-still.jpg",
     },
   },
@@ -139,44 +147,43 @@ const slides = [
     chapter: "origin",
     title: "Big Question",
     lead: "How can I build a future that combines healthcare, business, creativity, and freedom?",
-    support: "Four parts, one direction: skill, ownership, expression, and room to choose.",
-    reader: "This question is the center of the whole capstone. I am not only asking what job I might want. I am asking what kind of life, work rhythm, responsibility, and freedom I want to build toward.",
+    support: "Healthcare, business, creativity, and freedom are the parts I want to connect.",
+    reader: "The big question for this project is how I can build a future that combines the main things I care about. I do not want a career that only checks one box. I want something that uses science and skill, but also gives me the chance to build, own, create, and keep improving.",
     layout: "question",
   },
   {
     number: "05",
     chapter: "oral-surgery",
     title: "Oral and Maxillofacial Surgery",
-    lead: "A surgical dental specialty focused on the mouth, jaws, face, and related structures.",
-    support: "It sits between medicine, dentistry, anatomy, diagnosis, and hands-on surgical skill.",
-    reader: "Oral and maxillofacial surgery interests me because it is highly technical, patient-facing, and serious. It connects dental knowledge with surgery and complex decision making, which makes it feel challenging in the right way.",
-    bullets: ["Diagnosis", "Surgery", "Anatomy", "Patient care"],
+    lead: "Oral and maxillofacial surgery is the career I can actually see myself building toward.",
+    support: "It is serious, skilled, and still connects to business and ownership.",
+    reader: "Oral and maxillofacial surgery is the career path I am most interested in. It combines healthcare, science, precision, responsibility, and advanced training. It also connects to business because dental professionals can eventually work toward ownership, practice growth, and building a team. That combination makes it feel like a path that fits more than one side of me.",
   },
   {
     number: "06",
     chapter: "oral-surgery",
     title: "Why It Fits Me",
-    lead: "It rewards focus, calm execution, and long-term discipline.",
-    support: "The work has pressure, but also purpose and a clear standard of excellence.",
-    reader: "This pathway fits because I like the idea of becoming extremely good at something difficult. It also has real-world impact: helping people with pain, function, confidence, injuries, and serious oral health problems.",
-    bullets: ["High skill ceiling", "Hands-on work", "Real patient impact", "Pressure with purpose"],
+    lead: "Oral Surgery",
+    support: "It connects serious work with long-term options.",
+    reader: "Oral surgery fits me because it is not only one thing. It requires skill and discipline, it is connected to healthcare, and it can lead to ownership and business opportunities. It also creates long-term options. For me, freedom does not just mean money. It means having choices, being able to build things, and having more control over the life I work toward.",
+    bullets: ["Skill", "Healthcare", "Business", "Lifestyle", "Freedom", "Helping People"],
   },
   {
     number: "07",
     chapter: "oral-surgery",
     title: "Healthcare, But With Ownership",
-    lead: "Dentistry can be clinical work and a business at the same time.",
-    support: "That makes the career feel more flexible than a single job title.",
-    reader: "The ownership side matters because I do not only want to work inside someone else's system forever. A dental practice can become a place where healthcare, leadership, technology, and business decisions all meet.",
-    bullets: ["Clinical service", "Team leadership", "Practice systems", "Long-term independence"],
+    lead: "I want a healthcare path where I can help people and still build something of my own.",
+    support: "A practice can be care, skill, team, systems, ownership, and growth.",
+    reader: "I like healthcare, but I also like the idea of building something. Dentistry and oral surgery are interesting because they can involve both. A practice is not just a place where treatment happens. It is also a team, a system, a patient experience, and a business. That makes the path feel more flexible than a career where I only do one kind of work.",
+    bullets: ["Care", "Skill", "Team", "Systems", "Ownership", "Growth"],
   },
   {
     number: "08",
     chapter: "oral-surgery",
     title: "The Pathway",
-    lead: "The route is long, but it becomes clearer when it is mapped as decisions.",
-    support: "Each stage builds the next stage: grades, prerequisites, DAT, dental school, licensure, residency, practice.",
-    reader: "The pathway is not one jump. It is a chain of steps. I need strong science foundations, competitive grades, school research, dental admissions requirements, and later specialty training if oral surgery remains the direction.",
+    lead: "The path is long, but it can be broken into stages.",
+    support: "Science, prerequisites, dental school, licensing, specialty training, oral surgery, ownership.",
+    reader: "The path to oral surgery is long, but it can be broken into stages. First, I need to focus on high school science and strong grades. Then I need university prerequisites, dental school, licensing, and specialty training. The main path leads toward oral surgery, but there are also related dental paths and business options along the way.",
     layout: "roadmap",
     feature: { type: "roadmap" },
   },
@@ -184,9 +191,9 @@ const slides = [
     number: "09",
     chapter: "oral-surgery",
     title: "Education and Training Options",
-    lead: "I need to compare schools, prerequisites, timelines, and strategy.",
-    support: "UBC, Toronto, Manitoba, and a strategic first year are starting points for research.",
-    reader: "This slide is not a final admissions plan. It is a research board. Requirements can change, so the real work is to check each official admissions page, plan prerequisites early, and keep the first year strategic instead of random.",
+    lead: "UBC is my preferred path, but the smartest path is the one that builds the strongest momentum.",
+    support: "UBC, Toronto, Manitoba / OMFS Pathway, and a strategic first year are all worth comparing.",
+    reader: "There are multiple education options that could lead toward dentistry and eventually oral surgery. UBC is my preferred option because it is closer to home and feels like the strongest fit. Toronto and Manitoba are also important to consider because they connect to dental education and specialty pathways. A strategic first year at a smaller or local school could also make sense if it helps me build stronger grades, confidence, and momentum before transferring or applying later. I also have family connections in Vancouver, Toronto, and Winnipeg, which makes those cities easier to imagine as real options.",
     layout: "schools",
     feature: { type: "schools" },
   },
@@ -194,18 +201,18 @@ const slides = [
     number: "10",
     chapter: "ownership",
     title: "The Business Side of Dentistry",
-    lead: "A practice is a healthcare space, but it is also an operating system.",
-    support: "People, scheduling, equipment, finance, patient experience, and reputation all matter.",
-    reader: "The business side is interesting because it is practical. A good practice needs great clinical work, but also good systems: how patients enter, how the team communicates, how money is managed, and how the clinic improves over time.",
-    bullets: ["Operations", "Finance", "Patient experience", "Reputation"],
+    lead: "I don’t just like the career. I like the idea of building and scaling the business behind it.",
+    support: "One practice → stronger systems → more rooms → better team → another location → future expansion.",
+    reader: "The business side of dentistry is interesting because a practice is more than one dentist working alone. It involves a team, systems, equipment, reputation, patient experience, and growth. If those pieces are managed well, a practice can become stronger over time. That connects to my interest in ownership because I like the idea of building something that can grow.",
+    bullets: ["Team", "Systems", "Equipment", "Reputation", "Patient Experience", "Growth"],
   },
   {
     number: "11",
     chapter: "ownership",
     title: "What a Practice Actually Looks Like",
-    lead: "Behind the chair is a whole system of rooms, tools, people, and decisions.",
-    support: "A clinic runs on flow: consultation, imaging, treatment, sterilization, admin, follow-up.",
-    reader: "Owning a practice means understanding the whole environment, not just the clinical procedure. Every room and role affects patient trust, team speed, safety, and quality.",
+    lead: "From the outside, a dental practice can look simple. Behind the scenes, it is a whole system.",
+    support: "Front desk, scheduling, hygienists, assistants, patients, equipment, X-rays, decisions.",
+    reader: "When people think of a dental office, they might only think of the dentist and the patient. But behind the scenes, there are many moving parts. There is front desk work, scheduling, hygienists, assistants, patients, equipment, X-rays, and constant decisions. Watching that system makes me realize that a practice is both healthcare and operations.",
     layout: "practice",
     feature: { type: "practice" },
   },
@@ -213,9 +220,9 @@ const slides = [
     number: "12",
     chapter: "ownership",
     title: "Technology in Dentistry",
-    lead: "Digital models, scans, imaging, and planning tools are changing how dentistry gets built.",
-    support: "The STL viewer is a placeholder for real dental model files.",
-    reader: "Technology matters because it turns dentistry into something more visual and buildable. Digital models can help with planning, communication, and precision. Drag to inspect the model.",
+    lead: "A physical scan can become a digital model.",
+    support: "This made dentistry feel modern, technical, and connected to how I already think.",
+    reader: "Technology is a big part of modern dentistry. A physical scan can become a digital model that can be viewed, rotated, and used for planning. Seeing dental scans made dentistry feel connected to technology and systems, not just traditional healthcare. It connects to the way I already like working with digital tools.",
     layout: "stl",
     feature: { type: "stl" },
   },
@@ -223,38 +230,39 @@ const slides = [
     number: "13",
     chapter: "ownership",
     title: "Practice Expansion",
-    lead: "Expansion should mean stronger systems, not just getting bigger.",
-    support: "A better practice can grow through team training, technology, patient trust, and careful leadership.",
-    reader: "Practice expansion is not only opening more locations. It can mean improving the first clinic, adding services, hiring well, building better workflows, or eventually creating a larger business with the same standards.",
-    bullets: ["Better systems", "Trusted team", "Useful technology", "Careful growth"],
+    lead: "A practice can grow into something bigger than one office.",
+    support: "A career can become a starting point for building other things.",
+    reader: "One thing that interests me is how a dental career can become a starting point for bigger projects. A practice can grow through planning, investment, equipment, and team building. Over time, that can create opportunities beyond one office. This connects to the kind of future I want because I like the idea of building something that can keep improving.",
+    bullets: ["Planning", "Investment", "Equipment", "Growth", "Opportunity"],
   },
   {
     number: "14",
     chapter: "creativity",
     title: "Business Is a Skill Too",
-    lead: "Business is not just money. It is learning how value moves.",
-    support: "Marketing, finance, leadership, communication, and decision-making can be trained.",
-    reader: "Seeing business as a skill makes it less mysterious. Like biology or music production, it improves through practice, feedback, research, and better taste in decisions.",
-    bullets: ["Finance", "Marketing", "Leadership", "Communication", "Decision quality"],
+    lead: "Even when a side project does not become huge, the skills still stay with you.",
+    support: "The project might end, but the skill does not.",
+    reader: "I have tried different projects and business ideas, and not every project needs to become huge to matter. Even if a project ends, I still learn how to build, test, organize, solve problems, and use tools. Those skills can transfer into future businesses, school projects, websites, and even practice ownership later.",
+    bullets: ["Build", "Test", "Learn", "Wrap Up", "Apply Later"],
   },
   {
     number: "15",
     chapter: "creativity",
     title: "Music Production",
-    lead: "Music trains patience, taste, layering, and iteration.",
-    support: "It is creative, but it also has structure: timing, mixing, detail, and revision.",
-    reader: "Music production connects to the rest of the plan because it teaches me to keep refining. A track, a business system, a website, and a clinical skill all improve by noticing what is not working and making it better.",
+    lead: "Producing is creative, but it is also technical.",
+    support: "You need to be good at a lot of things to be a producer.",
+    reader: "Music production is one of the clearest examples of creativity and technical skill coming together. It is not just making something sound cool. It involves sound selection, arrangement, rhythm, mixing, collaboration, taste, and practice. Producing has taught me that creative work still requires systems and discipline.",
+    bullets: ["Sound selection", "Arrangement", "Rhythm", "Mixing", "Collaboration", "Taste", "Practice"],
     feature: {
       type: "asset-grid",
       assets: [
         {
-          title: "Ableton Project",
-          detail: "Replace with a real production screenshot",
+          title: "Ableton Screenshot",
+          detail: "Music production workspace",
           path: "assets/screenshots/ableton-session.jpg",
         },
         {
-          title: "Sound Design Notes",
-          detail: "Optional notes or session image",
+          title: "Music Production Notes",
+          detail: "Sound selection, arrangement, mixing, and practice",
           path: "assets/screenshots/music-production-notes.jpg",
         },
       ],
@@ -264,9 +272,9 @@ const slides = [
     number: "16",
     chapter: "creativity",
     title: "Waiting for the Right Moment",
-    lead: "“You can always delete a bad picture, but you can’t go back and take one you never tried to get.”",
-    support: "Trying matters because opportunities can pass before the perfect plan arrives.",
-    reader: "This quote connects to creativity and opportunity. Sometimes the important part is taking the shot, starting the project, asking the question, or trying the idea before the moment disappears.",
+    lead: "You can always delete a bad picture, but you can’t go back and take one you never tried to get.",
+    support: "That applies to more than photography.",
+    reader: "Photography has taught me about timing. Sometimes the best photo comes from waiting, noticing, and taking the chance when it appears. You can delete a bad picture, but you cannot go back and take one you never tried to get. That idea applies to more than photography. It applies to school, opportunities, business, creativity, and the future.",
     layout: "photo-quote",
     feature: { type: "photo-quote" },
   },
@@ -274,27 +282,27 @@ const slides = [
     number: "17",
     chapter: "creativity",
     title: "Opportunity Is a Resource",
-    lead: "AI does not replace my thinking; it helps me move faster with ideas, research, organization, and building.",
-    support: "I still make the decisions, including choosing black and silver because silver is my favourite accent colour.",
-    reader: "Tools are part of opportunity. AI, code, design software, research tools, and creative software can all speed up the process, but they do not remove responsibility. I still choose the direction, judge the quality, and decide what fits.",
-    bullets: ["Research faster", "Organize better", "Build prototypes", "Keep decision-making human"],
+    lead: "AI does not replace my thinking. It helps me move faster, and I still make the decisions.",
+    support: "Doing everything alone is not automatically better.",
+    reader: "One thing I have realized is that opportunity is a resource. Tools, people, timing, and access can help ideas move faster. AI does not replace my thinking, but it can help with research, organizing ideas, building, and testing. I still make the decisions. To me, using tools well is part of learning how to work smarter.",
+    bullets: ["Ideas", "Research", "Organization", "Building", "Testing", "Decisions"],
   },
   {
     number: "18",
     chapter: "creativity",
     title: "Skill Opens Doors, People Show You Where They Are",
-    lead: "Skill creates options, but people often reveal the real opportunities.",
-    support: "Mentors, family, patients, teachers, friends, and collaborators all shape the map.",
-    reader: "This is why I do not want to build the future alone in my head. Skill matters, but conversations and relationships show what careers actually feel like from the inside.",
-    bullets: ["Ask better questions", "Find mentors", "Build trust", "Notice real pathways"],
+    lead: "Connections do not replace skill. They create opportunities to use it.",
+    support: "Dentistry / oral surgery, business, music, and learning from people ahead.",
+    reader: "Skill matters most, but people matter too. Connections do not replace skill. They create opportunities for skill to be seen and used. In dentistry and oral surgery, it would help to meet people already in the field. In business, it helps to learn from people who have built something. In music, connections can lead to sessions, but only if the skill is there.",
+    bullets: ["Dentistry / Oral Surgery", "Business", "Music", "Learning from people ahead"],
   },
   {
     number: "19",
     chapter: "reflection",
     title: "Skills I’m Building",
-    lead: "The plan needs more than grades.",
-    support: "Science, communication, discipline, financial literacy, building tools, creativity, and leadership all matter.",
-    reader: "Grades are important, but they are not the whole plan. I also need skills that make me useful, adaptable, and ready to lead: speaking clearly, managing time, understanding money, using technology, and working with people.",
+    lead: "The Future I’m Building.",
+    support: "Business thinking, creativity, technical skill, long-term planning, adaptability, and initiative.",
+    reader: "The skills I am building are not only for one job. Business thinking helps with ownership and decision-making. Creativity helps with music, photography, and problem solving. Technical skill helps with tools and technology. Long-term planning helps me stay focused. Adaptability helps when plans change. Initiative matters because nothing happens unless I actually start.",
     layout: "skills",
     feature: { type: "skills" },
   },
@@ -303,18 +311,18 @@ const slides = [
     chapter: "reflection",
     title: "Making It Work Without Giving Things Up",
     lead: "I do not want to give up one side of myself to build another.",
-    support: "The challenge is designing a life where serious work and creative work can both exist.",
-    reader: "This is the core reflection. I do not want a future where choosing healthcare means deleting creativity, or choosing business means losing the reason I cared about helping people. The better goal is integration.",
-    bullets: ["Healthcare", "Business", "Creativity", "Freedom"],
+    support: "The goal is to make each part support the future I’m building.",
+    reader: "The main idea I keep coming back to is that I do not want to give up one side of myself to build another. I want career, business, creativity, and experience to support each other. The goal is not to do everything randomly. The goal is to build a future where the different parts connect and make each other stronger.",
+    bullets: ["Oral Surgery", "Business", "Music", "Tech", "Photography", "Lifeguarding / Work", "School"],
   },
   {
     number: "21",
     chapter: "reflection",
     title: "The Next Version of the Plan",
-    lead: "This plan is a direction, not a locked script.",
-    support: "The next version needs more research, conversations, shadowing, school planning, and real experience.",
-    reader: "As I learn more, parts of this plan should change. That does not make the plan weaker. It makes it more realistic. A serious plan should improve when better information shows up.",
-    bullets: ["Research schools", "Talk to people in the field", "Build stronger study habits", "Keep making projects"],
+    lead: "Now → Post-secondary → Dental path → Oral surgery → Practice / business → Keep creating.",
+    support: "Next: school, shadowing, projects, work experience, and building toward a practice.",
+    reader: "The next version of the plan is to keep building in steps. Right now, that means focusing on school, science, grades, work experience, and projects. After high school, it means choosing a strong post-secondary path, completing the prerequisites for dentistry, and learning more about oral surgery by meeting or shadowing people in the field. Long-term, the goal is oral surgery, practice ownership, business growth, and still keeping creativity in my life.",
+    bullets: ["Science / grades", "Meet or shadow oral surgeons", "Business / tech side projects", "Music sessions in university", "Photography / creative work", "Lifeguarding / work experience", "Earning money / responsibility", "Build and scale a practice"],
   },
   {
     number: "22",
@@ -322,37 +330,17 @@ const slides = [
     title: "Sources",
     lead: "This is the direction I’m building toward, but I’m open to the plan getting better as I learn more.",
     support: "Website built by Jovan Pahal.",
-    reader: "These source cards are starting points for checking official information. Admissions requirements and training pathways can change, so the official pages should be checked again before making real course or application decisions.",
+    reader: "This project used a combination of assignment instructions, official dental education sources, career research, and personal experience. Personal experience includes my early interest in dentistry, family exposure to dental practice ownership, creative projects, music production, photography, and technology projects.",
     layout: "sources",
     feature: { type: "sources" },
   },
 ];
 
 const readerDetails = {
-  "01": "The floating cards are placeholders for real memories and work: childhood dentistry, travel, music, code, and family connection to a dental practice. They make the presentation personal instead of only theoretical.",
-  "02": "That matters because a future plan should fit the person building it. If the plan only covers school and ignores creativity or independence, it would not be the full picture.",
-  "03": "This does not mean my exact future was decided when I was young. It means there were early signs, and now I can connect those signs to a more mature plan.",
-  "04": "A good answer has to include more than a career title. It has to explain the kind of work I want, the skills I need, and how different parts of my life can support each other.",
-  "05": "The official specialty descriptions helped me understand that this field is not only about teeth. It can include the jaws, face, injuries, function, aesthetics, and surgical treatment planning.",
-  "06": "It also fits my personality because I respect work where preparation matters. In surgery, small details can change outcomes, so discipline and calm decision-making are not optional.",
-  "07": "Ownership does not mean ignoring patient care. It means building a better environment for care: better systems, a strong team, thoughtful technology, and a clinic that patients can trust.",
-  "08": "Mapping it this way makes the goal feel more practical. Instead of only thinking about the final career, I can focus on the next decision that makes the later options possible.",
-  "09": "A strategic first year means choosing courses carefully, protecting grades, learning how admissions work, and asking for advising early instead of waiting until applications are close.",
-  "10": "This is why business belongs in the project. If I ever own or help lead a practice, the patient experience will depend on both clinical quality and operational decisions.",
-  "11": "The practice map shows that a clinic is not one room. It is a connected system where front desk, imaging, treatment, sterilization, software, and follow-up all need to work together.",
-  "12": "If the STL files are missing, the site shows a clean fallback instead of breaking. That matches the point of the slide: technology should support the explanation, not become a problem during the presentation.",
-  "13": "The important part is that growth should not lower quality. Expansion only makes sense if the systems, team, and patient experience can keep up.",
-  "14": "This connects to dentistry because a clinical career still needs communication, planning, and leadership. Business knowledge can help protect the practice and improve how it serves people.",
-  "15": "I do not see music as the opposite of a serious career. It is another way to practice taste, patience, and iteration, which are useful in many parts of life.",
-  "16": "The Japan photo placeholder is meant to become a real example of that idea. It represents noticing a moment and acting before overthinking ruins the chance.",
-  "17": "That is the mature way I want to use tools: not as a replacement for thinking, but as leverage for research, organization, design, and building. The black and silver style is one example of a human choice behind the tool use.",
-  "18": "People can reveal opportunities that are not obvious from a website or course list. That is why shadowing, asking questions, and learning from adults in the field are part of the next version.",
-  "19": "This slide turns the future into a skill list. If I know which skills matter, I can start practicing them before the career officially begins.",
-  "20": "That does not mean doing everything at once with no focus. It means building a plan where each side has a place, and where one part of my life does not erase another.",
-  "21": "The next step is to turn the plan into evidence: check admissions pages again, talk to people in dentistry, keep building projects, and learn what the daily life of this career actually looks like.",
-  "22": "The ending line matters because this is a direction, not a promise that every detail will stay the same. I want the plan to get sharper as I learn more.",
+  "12": "I scanned my little brother’s teeth, which made the technology feel more real instead of just something I read about.",
+  "15": "My uncle helped get me into music production, and if I keep improving, that could lead to real sessions and opportunities later.",
+  "16": "The Japan photos, especially the Ueno / cherry blossom / empty busy-place idea, connect to this because they show how a real moment can disappear if I do not try to capture it.",
 };
-
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -476,7 +464,7 @@ function chapterFor(slide) {
 
 function renderFeature(feature, mode) {
   if (!feature) {
-    return `<div class="mini-list">${["Research", "Discipline", "Direction"].map((item) => `<span>${item}</span>`).join("")}</div>`;
+    return "";
   }
 
   if (feature.type === "asset-grid") {
@@ -498,25 +486,29 @@ function renderFeature(feature, mode) {
 
   if (feature.type === "roadmap") {
     const nodes = [
-      ["High School", "Build discipline, science foundations, communication, and projects."],
-      ["Strategic First Year", "Choose courses carefully and protect grades early."],
-      ["Dental School", "Research prerequisites, DAT, applications, interviews, and fit."],
-      ["Licensure", "Meet national and provincial requirements before practice."],
-      ["OMFS Residency", "Specialty training if oral surgery remains the target."],
-      ["Ownership", "Use clinical skill, systems, and leadership to build a practice."],
+      ["High School Science", "Focus on science and strong grades."],
+      ["University Prerequisites", "Build the courses needed for dentistry."],
+      ["Dental School", "Train for the dental path."],
+      ["Licensing", "Meet the requirements to practice."],
+      ["Specialty Training", "Move toward oral surgery."],
+      ["Oral Surgery", "Build advanced skill and responsibility."],
+      ["Practice / Ownership / Expansion", "Use the career as a platform for growth."],
+      ["General Dentistry", "Related dental path."],
+      ["Other Dental Specialties", "Other specialty options."],
+      ["Business / Practice Ownership", "Ownership path connected to dentistry."],
     ];
     return `<div class="roadmap">${nodes.map(([title, detail], index) => `
-      <div class="${index === 1 || index === 5 ? "road-branch" : "road-node"}">
+      <div class="${index >= 7 ? "road-branch" : "road-node"}">
         <strong>${title}</strong><span>${detail}</span>
       </div>`).join("")}</div>`;
   }
 
   if (feature.type === "schools") {
     const schools = [
-      ["UBC", "DMD research target; check official prerequisites and admissions procedures."],
-      ["University of Toronto", "DDS research target; compare application timing and requirements."],
-      ["University of Manitoba", "DMD research target; compare DAT, residency, and admission rules."],
-      ["Strategic First Year", "Course planning, grades, habits, volunteering, and early advising."],
+      ["UBC", "Preferred path because it is closer to home and feels like the strongest fit."],
+      ["University of Toronto", "Important dental education option to compare."],
+      ["University of Manitoba / OMFS Pathway", "Important dentistry and specialty pathway option to consider."],
+      ["Strategic First Year", "A smaller or local school could help build grades, confidence, and momentum."],
     ];
     return `
       <div class="school-map">
@@ -529,12 +521,15 @@ function renderFeature(feature, mode) {
 
   if (feature.type === "practice") {
     const cells = [
-      ["Consult", "Trust, diagnosis, options"],
-      ["Imaging", "Scans, X-rays, planning"],
-      ["Treatment", "Clinical skill and safety"],
-      ["Sterilization", "Systems and standards"],
-      ["Front Desk", "Scheduling and patient flow"],
-      ["Software", "Records, payments, follow-up"],
+      ["Front desk", "First contact and patient flow"],
+      ["Scheduling", "Time, rooms, and team coordination"],
+      ["Hygienists", "Preventive care and patient support"],
+      ["Assistants", "Clinical support and room flow"],
+      ["Patients", "Care, trust, and communication"],
+      ["Equipment", "Tools that keep treatment moving"],
+      ["X-rays", "Imaging and planning information"],
+      ["Decisions", "Constant choices behind the scenes"],
+      ["Dentist moving between rooms", "The practice works as one system"],
     ];
     return `<div class="practice-grid">${cells.map(([title, detail]) => `
       <div class="practice-cell"><strong>${title}</strong><span>${detail}</span></div>
@@ -561,7 +556,7 @@ function renderFeature(feature, mode) {
       <div class="photo-quote">
         ${renderAsset({
           title: "Japan Photo",
-          detail: "Replace this slow-zoom image placeholder",
+          detail: "Ueno / cherry blossom / empty busy-place moment",
           path: "assets/photos/japan-photo.jpg",
         })}
         <blockquote>“You can always delete a bad picture, but you can’t go back and take one you never tried to get.”</blockquote>
@@ -570,17 +565,17 @@ function renderFeature(feature, mode) {
   }
 
   if (feature.type === "skills") {
-    const skills = ["Biology", "Communication", "Discipline", "Financial literacy", "Coding and tools", "Research", "Design taste", "Music production", "Leadership"];
+    const skills = ["Business Thinking", "Creativity", "Technical Skill", "Long-Term Planning", "Adaptability", "Initiative"];
     return `<div class="skills-grid">${skills.map((skill) => `<div class="skill-token">${skill}</div>`).join("")}</div>`;
   }
 
   if (feature.type === "sources") {
     return `
       <div class="source-grid">${sourceCards.map((source) => `
-        <a class="source-card" href="${source.url}" target="_blank" rel="noreferrer">
+        ${source.url ? `<a class="source-card" href="${source.url}" target="_blank" rel="noreferrer">` : `<div class="source-card">`}
           <strong>${source.title}</strong>
           <span>${source.detail}</span>
-        </a>
+        ${source.url ? `</a>` : `</div>`}
       `).join("")}</div>
       <p class="built-note">Website built by Jovan Pahal.</p>
     `;
@@ -631,7 +626,7 @@ function renderChapterOneSlide(slide, chapter, index) {
             <span>Reader Mode</span>
           </div>
           <div class="up-hero-copy">
-            <p class="up-kicker"><span></span>Origin system — personal proof</p>
+            <p class="up-kicker"><span></span>CLE 10 — Future Plan / Personal System</p>
             <h2>
               <span class="outline">The Future</span>
               <span class="chrome">I’m Building</span>
@@ -661,7 +656,7 @@ function renderChapterOneSlide(slide, chapter, index) {
           </div>
           <div class="services-copy">
             <p class="up-kicker dark"><span></span>Who I Am</p>
-            <h2><span>Six systems.</span> <span class="outline-dark">One plan.</span></h2>
+            <h2><span>Who I</span> <span class="outline-dark">Am</span></h2>
             <p class="support fragment">${slide.lead}</p>
           </div>
           ${renderServiceSystem()}
@@ -688,7 +683,7 @@ function renderChapterOneSlide(slide, chapter, index) {
           </div>
           <div class="archive-head">
             <p class="up-kicker dark"><span></span>Archive / Kindergarten</p>
-            <h2><span>This started</span> <span class="outline-dark">earlier.</span></h2>
+            <h2><span>This Started</span> <span class="outline-dark">Early</span></h2>
             <p class="support fragment">Kindergarten: I wanted to be a dentist.</p>
           </div>
           <div class="archive-proof">
@@ -697,13 +692,13 @@ function renderChapterOneSlide(slide, chapter, index) {
               <span>ARCHIVE / DENTIST</span>
             </div>
             ${renderMediaFragment({
-              title: "Kindergarten Dentist Video",
-              detail: "Replace with the video still or memory frame",
+              title: "Kindergarten Career Video",
+              detail: "File: Kindergarten Career Video • Topic: Future career",
               path: "assets/photos/kindergarten-dentist-video-still.jpg",
             }, "archive-media-fragment")}
             <div class="memory-file-bottom">
-              <span>SUBJECT: EARLY DIRECTION</span>
-              <span>STATUS: IDEA KEPT GROWING</span>
+              <span>STATUS: ORIGINAL CLUE</span>
+              <span>UPDATED VISION: ORAL SURGERY + OWNERSHIP</span>
             </div>
           </div>
           <p class="archive-close fragment">The idea stayed the same. The vision got bigger.</p>
@@ -729,7 +724,7 @@ function renderChapterOneSlide(slide, chapter, index) {
           <p class="up-kicker"><span></span>Big Question</p>
           <h2>${slide.lead}</h2>
           <p class="support fragment">${slide.support}</p>
-          <div class="future-launch fragment">Start with skill. Build toward freedom.</div>
+          <div class="future-launch fragment">Healthcare • Business • Creativity • Freedom</div>
         </div>
         <span class="slide-number-tag">${String(index + 1).padStart(2, "0")} / ${totalSlides}</span>
       </div>
@@ -1161,3 +1156,4 @@ function init() {
 }
 
 init();
+
