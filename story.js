@@ -1,43 +1,44 @@
-export const placeholderWords = {
-  opening: "OPENING",
-  section: "SECTION",
-  image: "IMAGE",
-  ending: "ENDING"
-};
-
-export const storySections = [
+export const storyBeats = [
   {
-    key: "opening",
-    id: "opening",
-    cursor: placeholderWords.opening
+    key: "beat-1-opening",
+    act: "PROJECTS",
+    sectionId: "opening",
+    phase: "default",
+    desktopUnits: 2.8,
+    mobileUnits: 2.0,
+    transitionIn: null,
+    controller: "opening"
   },
   {
-    key: "drawing",
-    id: "section-2",
-    cursor: placeholderWords.section
+    key: "beat-2-opening-interlude",
+    act: "PROJECTS",
+    sectionId: "opening-interlude",
+    phase: "default",
+    desktopUnits: 2.4,
+    mobileUnits: 1.8,
+    transitionIn: "opening",
+    controller: "openingInterlude"
   },
   {
-    key: "editorial",
-    id: "section-3",
-    cursor: placeholderWords.section
+    key: "beat-3-project-log",
+    act: "PROJECTS",
+    sectionId: "project-log",
+    phase: "default",
+    desktopUnits: 5.5,
+    mobileUnits: 4.5,
+    transitionIn: "element",
+    controller: "projectLog"
   },
   {
-    key: "object",
-    id: "section-6",
-    cursor: placeholderWords.image
-  },
-  {
-    key: "stack",
-    id: "section-7",
-    cursor: placeholderWords.image
-  },
-  {
-    key: "ending",
-    id: "section-8",
-    cursor: placeholderWords.ending
+    key: "beat-4-projects-interlude",
+    act: "PROJECTS",
+    sectionId: "projects-interlude",
+    phase: "default",
+    desktopUnits: 3.2,
+    mobileUnits: 2.3,
+    transitionIn: "signal",
+    controller: "projectsInterlude"
   }
 ];
 
-export function getSectionById(id) {
-  return storySections.find((section) => section.id === id);
-}
+export const scrollUnitVh = 100;

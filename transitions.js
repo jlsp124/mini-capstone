@@ -165,22 +165,22 @@ export function glitchTransitionEl(outEl, inEl, onMidpoint) {
     .to(inEl, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
 }
 
-export function glitchTransitionReverse(onMidpoint) {
+export function glitchTransitionReverse(onMidpoint, outEl = null) {
   lockScroll();
   const canvas = document.getElementById("hero-canvas");
-  const drawing = document.getElementById("section-2");
-  if (!window.gsap || !canvas || !drawing) {
+  const outgoing = outEl || document.getElementById("opening-interlude") || document.getElementById("section-2");
+  if (!window.gsap || !canvas || !outgoing) {
     completeWithoutGsap(onMidpoint);
     return;
   }
   canvas.style.visibility = "visible";
   window.gsap.set(canvas, { opacity: 0, skewX: 0 });
   const timeline = window.gsap.timeline({ onComplete: releaseLock });
-  timeline.to(drawing, { skewX: 10, duration: 0.05, ease: "none" })
-    .to(drawing, { skewX: -8, duration: 0.05, ease: "none" })
-    .to(drawing, { skewX: 5, duration: 0.05, ease: "none" })
-    .to(drawing, { skewX: 0, duration: 0.05, ease: "none" })
-    .to(drawing, { opacity: 0, duration: 0.1, ease: "none" })
+  timeline.to(outgoing, { skewX: 10, duration: 0.05, ease: "none" })
+    .to(outgoing, { skewX: -8, duration: 0.05, ease: "none" })
+    .to(outgoing, { skewX: 5, duration: 0.05, ease: "none" })
+    .to(outgoing, { skewX: 0, duration: 0.05, ease: "none" })
+    .to(outgoing, { opacity: 0, duration: 0.1, ease: "none" })
     .add(() => {
       try { onMidpoint(); } catch (error) { console.error(error); }
     })
@@ -224,7 +224,57 @@ export function transitionEl(outEl, inEl, callback) {
   }
 }
 
-export function transitionReverse(callback) {
+export function transitionReverse(callback, outEl = null) {
   if (mobileMode) mobileTransition(callback);
-  else glitchTransitionReverse(callback);
+  else glitchTransitionReverse(callback, outEl);
+}
+
+function waitForTransitionRelease(resolve) {
+  if (!isTransitionLocked()) {
+    resolve();
+    return;
+  }
+  requestAnimationFrame(() => waitForTransitionRelease(resolve));
+}
+
+function completeImmediately(onMidpoint) {
+  try {
+    onMidpoint();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const transitionRegistry = {
+  none({ onMidpoint }) {
+    completeImmediately(onMidpoint);
+  },
+  opening({ fromEl, direction, onMidpoint }) {
+    if (direction < 0) transitionReverse(onMidpoint, fromEl);
+    else transition(onMidpoint);
+  },
+  element({ fromEl, toEl, onMidpoint }) {
+    transitionEl(fromEl, toEl, onMidpoint);
+  },
+  signal({ onMidpoint }) {
+    staticTransition(onMidpoint);
+  },
+  curtain({ onMidpoint }) {
+    curtainTransition(onMidpoint);
+  }
+};
+
+export function runRegisteredTransition(type, context) {
+  const transitionType = transitionRegistry[type] ? type : "none";
+
+  return new Promise((resolve) => {
+    if (context.reducedMotion || transitionType === "none") {
+      transitionRegistry.none(context);
+      resolve();
+      return;
+    }
+
+    transitionRegistry[transitionType](context);
+    requestAnimationFrame(() => waitForTransitionRelease(resolve));
+  });
 }

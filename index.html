@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="SECTION">
-    <title>OPENING</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='black'/%3E%3Cpath d='M12 32h40' stroke='white' stroke-width='6'/%3E%3C/svg%3E">
+    <meta name="description" content="A scroll-driven web story by Jovan Pahal">
+    <title>The Future I'm Building</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='black'/%3E%3Cpath d='M12 32h40' stroke='%23cc0000' stroke-width='6'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -28,109 +28,95 @@
     </script>
   </head>
   <body>
-    <script>document.body.style.overflow = 'hidden';</script>
+    <script>document.body.style.overflow = "hidden";</script>
 
     <div id="loader" aria-live="polite">
       <div id="loader-number"></div>
       <div id="loader-title"></div>
     </div>
 
-    <div id="top-left" class="corner">OPENING</div>
-    <div id="top-right" class="corner">SECTION</div>
-    <div id="bottom-left" class="corner">IMAGE</div>
-    <div id="bottom-right" class="corner">ENDING</div>
+    <div id="top-left" class="corner opening-corner">CREATIVITY</div>
+    <div id="top-right" class="corner opening-corner">SKILLS</div>
+    <div id="bottom-left" class="corner opening-corner">AMBITION</div>
+    <div id="bottom-right" class="corner opening-corner">PROJECTS</div>
 
     <canvas id="hero-canvas" aria-hidden="true"></canvas>
     <div id="hero-vignette" aria-hidden="true"></div>
     <div id="wipe" aria-hidden="true"></div>
 
-    <main id="story-stage" aria-label="SECTION">
-      <section id="opening" class="story-section section-opening is-active" aria-hidden="false">
-        <h1 id="opening-title">OPENING</h1>
+    <main id="story-stage" aria-label="The Future I'm Building">
+      <section id="opening" class="story-section section-opening is-active" aria-labelledby="opening-title" aria-hidden="false">
+        <h1 id="opening-title">who am i</h1>
       </section>
 
-      <section id="section-2" class="story-section section-drawing" aria-hidden="true">
-        <div id="s2-vignette" aria-hidden="true"></div>
-        <div id="s2-prisoners" class="reference-drawing" aria-hidden="true">
-          <svg viewBox="0 0 606 340" role="img" aria-label="IMAGE">
-            <path d="M68 250C116 116 178 91 258 169C299 209 342 207 389 158C438 107 489 110 539 168" />
-            <path d="M86 277C154 221 221 221 287 276C352 329 420 319 507 243" />
-            <path d="M142 86C186 51 239 48 298 78C359 109 414 99 463 49" />
-            <path d="M202 270C230 201 275 167 337 169C397 171 438 204 459 268" />
-            <path d="M67 178H539" />
-          </svg>
-        </div>
-        <div id="s2-quote">
-          <p>SECTION</p>
-        </div>
-        <div class="s2-corner-text s2-corner-text-a">SECTION</div>
-        <div class="s2-corner-text s2-corner-text-b">SECTION</div>
+      <section id="opening-interlude" class="story-section section-sparse-quote" aria-label="Opening interlude" aria-hidden="true">
+        <p id="opening-interlude-text" class="sparse-quote-line">I love building, learning, creating, and trying things.</p>
       </section>
 
-      <section id="section-3" class="story-section section-editorial" aria-hidden="true">
-        <div id="section-3-inner">
-          <div class="newspaper-left">
-            <div class="paper-line">SECTION</div>
-            <div class="paper-line">SECTION</div>
+      <section id="project-log" class="story-section section-editorial" aria-labelledby="project-log-headline" aria-hidden="true">
+        <div id="project-log-inner">
+          <article class="newspaper-left">
+            <div class="paper-masthead">PROJECT LOG</div>
             <div class="paper-rule"></div>
-            <div class="paper-line paper-spaced">SECTION</div>
-            <h1 id="s3-headline" data-type-text="SECTION"></h1>
-            <div class="paper-rule"></div>
-            <div class="paper-copy">
-              <div>SECTION</div>
-              <div class="redacted-line redacted" data-truth="SECTION">SECTION</div>
-              <div>SECTION</div>
-              <div class="redacted-line redacted" data-truth="SECTION">SECTION</div>
-              <div>SECTION</div>
+            <h1 id="project-log-headline" data-type-text="THE THINGS I TRY LIVE HERE"></h1>
+            <div class="paper-rule paper-rule-tight"></div>
+            <p id="project-log-body" class="paper-copy">GitHub is where I keep the websites, applications, experiments, and side projects I build. The contribution squares do not show that every idea succeeded. They show how often I returned to making something. When an idea does not work, I can try again, change direction, or carry what I learned into the next project.</p>
+          </article>
+          <figure id="project-log-image-wrap">
+            <div class="project-log-image-frame">
+              <img id="project-log-image" data-src="assets/personal/projects/github-contributions.png" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
             </div>
-            <div class="paper-footer">SECTION</div>
-          </div>
-          <div id="s3-photo-wrap" aria-label="IMAGE">
-            <div id="s3-photo">IMAGE</div>
-            <div id="s3-caption">IMAGE</div>
-          </div>
+            <figcaption id="project-log-caption">My projects do not all have to lead to the same result. I build them because technology lets me turn almost any idea into something real.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <section id="section-6" class="story-section section-object" aria-hidden="true">
+      <section id="projects-interlude" class="story-section section-sparse-quote section-two-line-quote" aria-label="Projects interlude" aria-hidden="true">
+        <div id="projects-interlude-lines">
+          <p id="projects-interlude-line-1" class="sparse-quote-line">Not every idea works.</p>
+          <p id="projects-interlude-line-2" class="sparse-quote-line">That does not make the attempt useless.</p>
+        </div>
+      </section>
+
+      <section id="section-6" class="story-section section-object" data-template-reserve="true" aria-hidden="true" hidden>
         <div id="s6-left" class="s6-column">
-          <div id="s6-left-text">SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION</div>
+          <div id="s6-left-text">RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY</div>
         </div>
         <div id="s6-right" class="s6-column">
-          <div id="s6-right-text">SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION SECTION</div>
+          <div id="s6-right-text">RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY RESERVE COPY</div>
         </div>
-        <canvas id="book-canvas" aria-label="IMAGE"></canvas>
-        <div id="s6-object-label">IMAGE</div>
+        <canvas id="book-canvas" aria-hidden="true"></canvas>
+        <div id="s6-object-label"></div>
         <div id="s6-thoughtcrime" aria-hidden="true">
-          <div>SECTION</div>
-          <div>SECTION</div>
+          <div></div>
+          <div></div>
         </div>
       </section>
 
-      <section id="section-7" class="story-section section-stack" aria-hidden="true">
+      <section id="section-7" class="story-section section-stack" data-template-reserve="true" aria-hidden="true" hidden>
         <div id="s7-spotlight" aria-hidden="true"></div>
-        <div id="s7-math">IMAGE</div>
-        <div id="s7-cards-wrapper" aria-label="IMAGE">
-          <div class="s7-card" id="s7-card-1"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-2"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-3"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-4"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-5"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-6"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-7"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-8"><span>IMAGE</span></div>
-          <div class="s7-card" id="s7-card-9"><span>IMAGE</span></div>
+        <div id="s7-math"></div>
+        <div id="s7-cards-wrapper" aria-hidden="true">
+          <div class="s7-card" id="s7-card-1"><span></span></div>
+          <div class="s7-card" id="s7-card-2"><span></span></div>
+          <div class="s7-card" id="s7-card-3"><span></span></div>
+          <div class="s7-card" id="s7-card-4"><span></span></div>
+          <div class="s7-card" id="s7-card-5"><span></span></div>
+          <div class="s7-card" id="s7-card-6"><span></span></div>
+          <div class="s7-card" id="s7-card-7"><span></span></div>
+          <div class="s7-card" id="s7-card-8"><span></span></div>
+          <div class="s7-card" id="s7-card-9"><span></span></div>
         </div>
       </section>
 
-      <section id="section-8" class="story-section section-ending" aria-hidden="true">
+      <section id="section-8" class="story-section section-ending" data-template-reserve="true" aria-hidden="true" hidden>
         <div id="s8-quote">
-          <div>ENDING</div>
+          <div></div>
         </div>
-        <div id="s8-author">ENDING</div>
+        <div id="s8-author"></div>
         <div id="s8-divider"></div>
-        <div id="s8-holm">ENDING</div>
-        <div id="s8-url">ENDING</div>
+        <div id="s8-holm"></div>
+        <div id="s8-url"></div>
       </section>
     </main>
 

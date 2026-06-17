@@ -9,8 +9,12 @@
   document.body.style.overflow = "hidden";
 
   var isMob = window.innerWidth <= 768;
-  var titleText = "OPENING";
+  var titleText = "JOVAN PAHAL";
   var titleIndex = 0;
+
+  function hasGsap() {
+    return window.gsap && window.gsap.set && window.gsap.to;
+  }
 
   function startTypewriter(callback) {
     var speed = isMob ? 30 : 55;
@@ -39,6 +43,10 @@
         return '<span style="display:inline-block">' + digit + "</span>";
       }).join("");
       var spans = loaderNumber.querySelectorAll("span");
+      if (!hasGsap()) {
+        setTimeout(callback, 120);
+        return;
+      }
       window.gsap.set(spans, { clipPath: "inset(100% 0 0% 0)", y: 60 });
       window.gsap.to(spans, {
         clipPath: "inset(0% 0 0% 0)",
@@ -52,6 +60,10 @@
 
     var existing = loaderNumber.querySelectorAll("span");
     if (existing.length > 0) {
+      if (!hasGsap()) {
+        animateIn();
+        return;
+      }
       window.gsap.to(existing, {
         clipPath: "inset(0 0 100% 0)",
         y: -40,
@@ -150,6 +162,14 @@
 
     showNumber(num, function () {
       if (num === 100) {
+        if (!hasGsap()) {
+          loaderNumber.style.color = "#cc0000";
+          setTimeout(function () {
+            animDone = true;
+            tryHide();
+          }, 300);
+          return;
+        }
         window.gsap.to(loaderNumber, {
           color: "#cc0000",
           duration: 0.3,
