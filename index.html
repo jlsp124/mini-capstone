@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=story-stage-20260616">
   </head>
   <body>
     <div class="intro-loader" id="intro-loader" aria-hidden="true">
@@ -38,7 +38,7 @@
           <p class="landing-line">A personal blueprint for building a future that combines healthcare, ownership, creativity, and freedom.</p>
           <div class="landing-actions" aria-label="Choose how to view the project">
             <button class="primary-action" type="button" data-set-mode="story">Begin the Story</button>
-            <button class="secondary-action" type="button" data-set-mode="reader">Read Mode</button>
+            <button class="secondary-action" type="button" data-set-mode="reader">Reader Mode</button>
           </div>
         </div>
         <div class="landing-frame" aria-hidden="true">
@@ -56,13 +56,13 @@
         <div class="story-progress" aria-hidden="true">
           <span id="story-progress-bar"></span>
         </div>
-        <button class="text-button" type="button" data-set-mode="reader">Read Mode</button>
+        <button class="text-button" type="button" data-set-mode="reader">Reader Mode</button>
       </header>
       <aside class="scene-index" aria-label="Scene progress">
         <span id="scene-index-current">01</span>
         <span>22</span>
       </aside>
-      <div class="story-scenes" id="story-scenes"></div>
+      <div class="story-stage" id="story-scenes"></div>
     </section>
 
     <section id="reader-screen" class="reader-screen mode-screen" hidden>
@@ -111,6 +111,6 @@
         }
       }
     </script>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./app.js?v=story-stage-20260616"></script>
   </body>
 </html>

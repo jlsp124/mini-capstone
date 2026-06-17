@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <filter id="n">
+    <feTurbulence type="fractalNoise" baseFrequency="0.86" numOctaves="4" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="240" height="240" filter="url(#n)" opacity=".34"/>
+  <path d="M0 40H240M0 99H240M0 166H240M36 0V240M138 0V240M213 0V240" stroke="#f4f7fa" stroke-opacity=".12" stroke-width=".75"/>
+</svg>

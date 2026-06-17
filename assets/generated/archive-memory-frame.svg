@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#07080A"/>
+  <rect x="36" y="32" width="828" height="556" fill="none" stroke="#D9DEE7" stroke-opacity=".34"/>
+  <rect x="78" y="78" width="744" height="430" fill="#101216" stroke="#D9DEE7" stroke-opacity=".18"/>
+  <g stroke="#F4F7FA" stroke-opacity=".2">
+    <path d="M78 142H822M78 205H822M78 268H822M78 331H822M78 394H822M78 457H822"/>
+    <path d="M152 78V508M290 78V508M452 78V508M610 78V508M748 78V508"/>
+  </g>
+  <circle cx="452" cy="284" r="92" fill="none" stroke="#F4F7FA" stroke-opacity=".36"/>
+  <circle cx="452" cy="284" r="31" fill="#F4F7FA" fill-opacity=".08" stroke="#F4F7FA" stroke-opacity=".42"/>
+  <path d="M366 366C397 404 505 404 538 366" fill="none" stroke="#F4F7FA" stroke-opacity=".22" stroke-width="3"/>
+  <text x="80" y="552" fill="#A8B0BD" font-family="monospace" font-size="18" letter-spacing="4">KINDERGARTEN MEMORY FILE / INTENTIONAL PLACEHOLDER</text>
+</svg>

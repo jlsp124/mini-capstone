@@ -2,3 +2,14 @@ reference/lando/repos/
 reference/lando/repos/
 reference/updigital/mirror/
 reference/orwell/mirror/
+assets\screenshotsassets/screenshots/*.mp4
+reference/orwell/**/*.mp4
+reference/orwell/**/*.mov
+reference/orwell/**/*.webm
+assets/screenshots/
+artifacts/screenshots/
+reference/orwell/source/
+reference/orwell/mirror/
+reference/orwell/**/*.mp4
+reference/orwell/**/*.mov
+reference/orwell/**/*.webm

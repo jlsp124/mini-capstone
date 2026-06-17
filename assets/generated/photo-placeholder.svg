@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#07080A"/>
+      <stop offset=".5" stop-color="#252A31"/>
+      <stop offset="1" stop-color="#020203"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="640" fill="url(#g)"/>
+  <path d="M0 454C168 360 312 398 448 342C594 282 708 186 900 222V640H0Z" fill="#D9DEE7" fill-opacity=".12"/>
+  <circle cx="650" cy="170" r="74" fill="#F4F7FA" fill-opacity=".12"/>
+  <g stroke="#F4F7FA" stroke-opacity=".2">
+    <path d="M72 72H828V568H72Z"/>
+    <path d="M116 116H784V524H116Z"/>
+  </g>
+  <text x="116" y="492" fill="#A8B0BD" font-family="monospace" font-size="20" letter-spacing="4">JAPAN PHOTO / MOMENT STILL</text>
+</svg>

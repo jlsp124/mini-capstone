@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <rect width="1200" height="520" fill="#020203"/>
+  <path d="M94 292C224 152 338 160 458 255C598 366 720 342 846 230C945 142 1042 166 1110 248" fill="none" stroke="#F4F7FA" stroke-opacity=".36" stroke-width="3"/>
+  <g fill="#D9DEE7" fill-opacity=".1" stroke="#D9DEE7" stroke-opacity=".34">
+    <circle cx="94" cy="292" r="18"/>
+    <circle cx="260" cy="174" r="18"/>
+    <circle cx="458" cy="255" r="18"/>
+    <circle cx="640" cy="350" r="18"/>
+    <circle cx="846" cy="230" r="18"/>
+    <circle cx="990" cy="176" r="18"/>
+    <circle cx="1110" cy="248" r="18"/>
+  </g>
+  <g fill="#A8B0BD" font-family="monospace" font-size="15" letter-spacing="2">
+    <text x="58" y="340">HIGH SCHOOL</text>
+    <text x="192" y="130">PREREQS</text>
+    <text x="410" y="214">DENTAL SCHOOL</text>
+    <text x="598" y="404">LICENSING</text>
+    <text x="790" y="190">SPECIALTY</text>
+    <text x="954" y="132">ORAL SURGERY</text>
+    <text x="1022" y="302">OWNERSHIP</text>
+  </g>
+</svg>
