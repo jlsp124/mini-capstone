@@ -94,11 +94,11 @@ function setSplitProgress(element, progress) {
   });
 }
 
-function setSplitExit(element, progress) {
+function setSplitExit(element, progress, minimumOpacity = 0.8) {
   if (!element) return;
   const exit = easeIn(progress);
-  element.style.opacity = String(1 - exit);
-  element.style.transform = `translate3d(0, ${-36 * exit}px, 0)`;
+  element.style.opacity = String(1 - (1 - minimumOpacity) * exit);
+  element.style.transform = `translate3d(0, ${-18 * exit}px, 0)`;
 }
 
 export function collectSections() {
@@ -277,17 +277,23 @@ function createOpeningController() {
     update({ localProgress }) {
       const exit = easeIn(rangeProgress(localProgress, 0.74, 0.96));
       if (exit > 0 && window.gsap) window.gsap.killTweensOf([title, ...corners]);
-      const visible = 1 - exit;
+      const visible = 1 - exit * 0.2;
       if (revealed || reducedMotionMode) setOpeningOpacity(visible);
-      document.documentElement.style.setProperty("--opening-title-exit-y", `${-60 * exit}px`);
+      document.documentElement.style.setProperty("--opening-title-exit-y", `${-24 * exit}px`);
+      if (title) title.style.filter = exit > 0 ? `blur(${exit * 1.2}px)` : "";
       corners.forEach((corner, index) => {
         const sign = index < 2 ? -1 : 1;
-        corner.style.transform = `translate3d(0, ${sign * 30 * exit}px, 0)`;
+        corner.style.transform = `translate3d(0, ${sign * 14 * exit}px, 0)`;
       });
+    },
+    prepareExit() {
+      if (window.gsap) window.gsap.killTweensOf([title, ...corners]);
     },
     exit() {
       if (window.gsap) window.gsap.killTweensOf([title, ...corners]);
       setOpeningOpacity(0);
+      if (title) title.style.filter = "";
+      document.documentElement.style.setProperty("--opening-title-exit-y", "0px");
       corners.forEach((corner) => { corner.style.transform = ""; });
     },
     pointerMove() {
@@ -325,7 +331,9 @@ function createOpeningInterludeController() {
       setSplitExit(sentence, rangeProgress(localProgress, 0.72, 1));
     },
     exit() {
-      setSplitExit(sentence, 1);
+      if (!sentence) return;
+      sentence.style.opacity = "0";
+      sentence.style.transform = "translate3d(0, -18px, 0)";
     }
   };
 }
@@ -395,10 +403,11 @@ function createProjectLogController() {
       }
       setElementVisible(caption, reducedMotionMode ? 1 : rangeProgress(localProgress, 0.42, 0.62), 20);
 
-      const exit = reducedMotionMode ? 0 : rangeProgress(localProgress, 0.88, 1);
+      const exit = reducedMotionMode ? 0 : easeIn(rangeProgress(localProgress, 0.88, 1));
       if (inner) {
-        inner.style.filter = exit > 0 ? `blur(${exit * 3}px)` : "";
-        inner.style.opacity = String(Math.max(0, entrance * (1 - exit * 0.6)));
+        inner.style.filter = exit > 0 ? `blur(${exit * 2}px)` : "";
+        inner.style.opacity = String(Math.max(0, entrance * (1 - exit * 0.18)));
+        if (exit > 0) inner.style.transform = `scale(${1 - exit * 0.015}) rotate(0deg)`;
       }
     },
     exit() {

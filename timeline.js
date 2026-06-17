@@ -75,6 +75,11 @@ export function createTimelineController({
     runUpdate(progress);
   }
 
+  function getTransitionType(fromEntry, toEntry, transitionDirection) {
+    const transitionEntry = transitionDirection < 0 ? fromEntry : toEntry;
+    return transitionEntry?.transitionIn || (toEntry?.index === 0 ? "opening" : "none");
+  }
+
   async function transitionTo(targetIndex, progress) {
     const fromEntry = beatEntries[currentIndex];
     const toEntry = beatEntries[targetIndex];
@@ -82,20 +87,23 @@ export function createTimelineController({
     const toController = getController(toEntry);
     const fromEl = getSectionElement(fromEntry.sectionId);
     const toEl = getSectionElement(toEntry.sectionId);
-    const transitionType = toEntry.transitionIn || (toEntry.index === 0 ? "opening" : "none");
+    const transitionDirection = targetIndex > currentIndex ? 1 : -1;
+    const transitionType = getTransitionType(fromEntry, toEntry, transitionDirection);
 
     transitioning = true;
     pendingIndex = null;
-    fromController?.exit?.({ beat: fromEntry, toBeat: toEntry, direction });
+    direction = transitionDirection;
+    fromController?.prepareExit?.({ beat: fromEntry, toBeat: toEntry, direction: transitionDirection });
 
     await transitionRunner(transitionType, {
       fromBeat: fromEntry,
       toBeat: toEntry,
       fromEl,
       toEl,
-      direction,
+      direction: transitionDirection,
       reducedMotion: prefersReducedMotion,
       onMidpoint: () => {
+        fromController?.exit?.({ beat: fromEntry, toBeat: toEntry, direction: transitionDirection });
         previousIndex = currentIndex;
         currentIndex = targetIndex;
         setAct(toEntry);
@@ -103,14 +111,14 @@ export function createTimelineController({
         toController?.enter?.({
           beat: toEntry,
           fromBeat: fromEntry,
-          direction,
+          direction: transitionDirection,
           localProgress: getLocalProgress(progress, toEntry)
         });
         toController?.update?.({
           beat: toEntry,
           localProgress: getLocalProgress(progress, toEntry),
           pageProgress: progress,
-          direction
+          direction: transitionDirection
         });
       }
     });
