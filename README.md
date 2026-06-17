@@ -24,11 +24,11 @@ http://localhost:8000/
 
 ## Modes
 
-- Landing screen: default route, with `Start Presentation` and `Reader Mode`.
-- Presentation mode: `?mode=present`
+- Landing screen: default route, with `Begin the Story` and `Read Mode`.
+- Story mode: `?mode=story`
 - Reader mode: `?mode=reader`
 
-Presentation mode uses Reveal.js, so the right arrow and space advance reveals/slides, and the left arrow goes backward.
+Story mode is a scroll-driven cinematic story. The down/right arrows, Page Down, and space move forward; the up/left arrows and Page Up move backward.
 
 ## Replace Assets
 
@@ -46,7 +46,7 @@ assets/dental/Visualization_DigitalModelUnsectioned_18-28.stl
 assets/dental/Visualization_DigitalModelUnsectioned_38-48.stl
 ```
 
-The STL viewer on slide 12 starts with a polished Three.js fallback model and keeps the exact file paths visible.
+The STL viewer in scene 12 starts with a polished Three.js fallback model and keeps the exact file paths visible.
 
 Recommended image formats are `.jpg`, `.png`, or `.webp`. Keep filenames exactly the same unless you also update the matching path in `app.js`.
 
@@ -139,6 +139,5 @@ The name field is optional and defaults to `Anonymous`. Messages are limited to 
 
 ## Libraries
 
-- Reveal.js for the presentation deck
-- GSAP for entrance and mode animations
+- Native scroll and IntersectionObserver for story mode
 - Three.js with STLLoader and OrbitControls for the dental model viewer

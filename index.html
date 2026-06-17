@@ -4,67 +4,75 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The Future I'm Building - a CLE 10 mini capstone by Jovan Pahal.">
-    <title>The Future I’m Building</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+    <title>The Future I'm Building</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <div class="intro-loader" id="intro-loader" aria-hidden="true">
       <div class="loader-inner">
-        <span class="loader-kicker">CLE 10 MINI CAPSTONE</span>
-        <strong class="loader-word"><span>Building Future Blueprint</span></strong>
+        <span class="loader-kicker">CLE 10 CAPSTONE</span>
+        <strong class="loader-word"><span>Future Blueprint</span></strong>
         <div class="loader-meter"><span></span></div>
       </div>
     </div>
 
-    <div class="site-backdrop" aria-hidden="true"></div>
-    <div class="blueprint-grid" aria-hidden="true"></div>
+    <div class="global-texture" aria-hidden="true"></div>
+    <div class="cursor-light" id="cursor-light" aria-hidden="true"></div>
+    <div class="signal-transition" id="signal-transition" aria-hidden="true"></div>
 
     <main id="landing-screen" class="landing-screen mode-screen">
-      <nav class="landing-nav" aria-label="Landing navigation">
-        <a class="brand-mark" href="./" aria-label="The Future I'm Building home">future<span>build</span>.</a>
-        <div class="landing-nav-links" aria-hidden="true">
-          <span>Origin</span>
-          <span>Oral Surgery</span>
-          <span>Ownership</span>
-          <span>Creative Tools</span>
-        </div>
-        <button class="nav-action" type="button" data-set-mode="present">Start Presentation</button>
+      <div class="ambient-video-slot" id="landing-ambient" aria-hidden="true"></div>
+      <nav class="landing-meta" aria-label="Project metadata">
+        <span>CLE 10 Capstone</span>
+        <span>Jovan Pahal</span>
+        <span>Future Plan / Personal System</span>
       </nav>
       <section class="landing-hero" aria-labelledby="landing-title">
         <div class="landing-copy">
-          <p class="eyebrow"><span></span>CLE 10 — Future Plan / Personal System</p>
-          <h1 id="landing-title"><span>The Future</span> <span>I’m <em>Building</em></span></h1>
-          <p class="subtitle">Oral Surgery • Business • Creativity</p>
-          <p class="landing-line">This project is about the future I’m building: a mix of healthcare, ownership, creativity, technology, and freedom.</p>
+          <p class="eyebrow">Personal Future Blueprint</p>
+          <h1 id="landing-title">The Future I'm Building</h1>
+          <p class="subtitle">Oral Surgery &bull; Business &bull; Creativity</p>
+          <p class="landing-line">A personal blueprint for building a future that combines healthcare, ownership, creativity, and freedom.</p>
           <div class="landing-actions" aria-label="Choose how to view the project">
-            <button class="primary-action" type="button" data-set-mode="present">Start Presentation</button>
-            <button class="secondary-action" type="button" data-set-mode="reader">Reader Mode</button>
+            <button class="primary-action" type="button" data-set-mode="story">Begin the Story</button>
+            <button class="secondary-action" type="button" data-set-mode="reader">Read Mode</button>
           </div>
         </div>
-        <div class="landing-assets" id="landing-assets" aria-label="Project asset placeholders"></div>
+        <div class="landing-frame" aria-hidden="true">
+          <span class="chrome-line line-a"></span>
+          <span class="chrome-line line-b"></span>
+          <span class="chrome-line line-c"></span>
+          <span class="frame-code">ARCHIVE / FUTURE PLAN</span>
+        </div>
       </section>
     </main>
 
-    <section id="presentation-screen" class="presentation-screen mode-screen" hidden>
-      <div class="deck-topline">
-        <span>The Future I’m Building</span>
-        <button class="mode-link" type="button" data-set-mode="reader">Reader Mode</button>
-      </div>
-      <div class="reveal">
-        <div class="slides" id="presentation-slides"></div>
-      </div>
+    <section id="story-screen" class="story-screen mode-screen" hidden>
+      <header class="story-ui" aria-label="Story controls">
+        <button class="text-button" type="button" data-set-mode="landing">Exit</button>
+        <div class="story-progress" aria-hidden="true">
+          <span id="story-progress-bar"></span>
+        </div>
+        <button class="text-button" type="button" data-set-mode="reader">Read Mode</button>
+      </header>
+      <aside class="scene-index" aria-label="Scene progress">
+        <span id="scene-index-current">01</span>
+        <span>22</span>
+      </aside>
+      <div class="story-scenes" id="story-scenes"></div>
     </section>
 
     <section id="reader-screen" class="reader-screen mode-screen" hidden>
       <header class="reader-header">
         <div>
-          <p class="eyebrow">Reader Mode</p>
-          <h1>The Future I’m Building</h1>
-          <p>Oral Surgery • Business • Creativity</p>
+          <p class="eyebrow">Read Mode</p>
+          <h1>The Future I'm Building</h1>
+          <p>Oral Surgery &bull; Business &bull; Creativity</p>
         </div>
-        <button class="secondary-action" type="button" data-set-mode="present">Open Presentation</button>
+        <button class="secondary-action" type="button" data-set-mode="story">Open Story</button>
       </header>
       <nav class="chapter-menu" id="chapter-menu" aria-label="Chapter menu"></nav>
       <main id="reader-slides" class="reader-slides"></main>
@@ -94,8 +102,6 @@
     <script>
       window.CAPSTONE_COMMENTS_ENDPOINT = "";
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script type="importmap">
       {
         "imports": {
