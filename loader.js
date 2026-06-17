@@ -9,34 +9,30 @@
   document.body.style.overflow = "hidden";
 
   var isMob = window.innerWidth <= 768;
-  var steps = [
-    { number: 0, title: "BUILDING FUTURE BLUEPRINT" },
-    { number: 22, title: "OPENING PERSONAL ARCHIVE" },
-    { number: 84, title: "ASSEMBLING PATHWAY" },
-    { number: 100, title: "PRESENTATION READY" },
-  ];
-  var stepIndex = 0;
-  var animDone = false;
-  var readyPromise = null;
-  var hiding = false;
+  var titleText = "OPENING";
+  var titleIndex = 0;
 
-  function typeTitle(text, callback) {
-    var i = 0;
-    loaderTitle.textContent = "";
-    var speed = isMob ? 24 : 42;
+  function startTypewriter(callback) {
+    var speed = isMob ? 30 : 55;
     var interval = setInterval(function () {
-      if (i < text.length) {
-        loaderTitle.textContent += text[i++];
+      if (titleIndex < titleText.length) {
+        loaderTitle.textContent += titleText[titleIndex++];
       } else {
         clearInterval(interval);
-        setTimeout(callback, isMob ? 180 : 320);
+        setTimeout(callback, 400);
       }
     }, speed);
   }
 
+  var numbers = [0, 19, 84, 100];
+  var numIndex = 0;
+  var animDone = false;
+  var readyPromise = null;
+  var hiding = false;
+
   function showNumber(num, callback) {
-    var staggerIn = isMob ? 0.06 : 0.12;
-    var staggerOut = isMob ? 0.035 : 0.07;
+    var staggerIn = isMob ? 0.08 : 0.15;
+    var staggerOut = isMob ? 0.05 : 0.10;
 
     function animateIn() {
       loaderNumber.innerHTML = String(num).split("").map(function (digit) {
@@ -50,7 +46,7 @@
         duration: 0.5,
         ease: "power3.out",
         stagger: staggerIn,
-        onComplete: callback,
+        onComplete: callback
       });
     }
 
@@ -59,43 +55,14 @@
       window.gsap.to(existing, {
         clipPath: "inset(0 0 100% 0)",
         y: -40,
-        duration: 0.38,
+        duration: 0.4,
         ease: "power3.in",
         stagger: staggerOut,
-        onComplete: animateIn,
+        onComplete: animateIn
       });
     } else {
       animateIn();
     }
-  }
-
-  function runSteps() {
-    if (stepIndex >= steps.length) {
-      animDone = true;
-      tryHide();
-      return;
-    }
-
-    var step = steps[stepIndex++];
-    typeTitle(step.title, function () {
-      showNumber(step.number, function () {
-        if (step.number === 100) {
-          window.gsap.to(loaderNumber, {
-            color: "#c8a96a",
-            duration: 0.32,
-            delay: 0.14,
-            onComplete: function () {
-              setTimeout(function () {
-                animDone = true;
-                tryHide();
-              }, 260);
-            },
-          });
-        } else {
-          setTimeout(runSteps, isMob ? 260 : 520);
-        }
-      });
-    });
   }
 
   function tryHide() {
@@ -110,8 +77,8 @@
     var height = window.innerHeight;
     var glitch = document.createElement("canvas");
     glitch.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:100000;pointer-events:none;image-rendering:pixelated;";
-    glitch.width = Math.max(1, Math.floor(width / 2));
-    glitch.height = Math.max(1, Math.floor(height / 2));
+    glitch.width = width;
+    glitch.height = height;
     document.body.appendChild(glitch);
     var ctx = glitch.getContext("2d");
     var start = Date.now();
@@ -120,28 +87,30 @@
     function frame() {
       var t = Math.min(1, (Date.now() - start) / duration);
       var ease = t * t;
-      ctx.clearRect(0, 0, glitch.width, glitch.height);
+      ctx.clearRect(0, 0, width, height);
 
-      var bars = Math.floor(4 + ease * 22);
+      var bars = Math.floor(4 + ease * 20);
       for (var i = 0; i < bars; i++) {
-        var y = Math.random() * glitch.height;
-        var h = 1 + Math.random() * (ease * 30);
-        var dx = (Math.random() - 0.5) * ease * 90;
-        ctx.fillStyle = "rgba(0,0,0,0.92)";
-        ctx.fillRect(0, y, glitch.width, h);
-        if (Math.random() < 0.68) {
-          ctx.fillStyle = "rgba(200,169,106," + (Math.random() * 0.55 * ease) + ")";
-          ctx.fillRect(dx - 4, y, glitch.width, h);
+        var y = Math.random() * height;
+        var h = 1 + Math.random() * (ease * 55);
+        var dx = (Math.random() - 0.5) * ease * 160;
+
+        ctx.fillStyle = "rgba(0,0,0,0.9)";
+        ctx.fillRect(0, y, width, h);
+
+        if (Math.random() < 0.65) {
+          ctx.fillStyle = "rgba(204,0,0," + (Math.random() * 0.6 * ease) + ")";
+          ctx.fillRect(dx - 6, y, width, h);
         }
         if (Math.random() < 0.55) {
-          ctx.fillStyle = "rgba(200,230,255," + (Math.random() * 0.4 * ease) + ")";
-          ctx.fillRect(dx + 6, y, glitch.width, h);
+          ctx.fillStyle = "rgba(180,230,255," + (Math.random() * 0.45 * ease) + ")";
+          ctx.fillRect(dx + 9, y, width, h);
         }
       }
 
-      if (Math.random() < ease * 0.5) {
-        ctx.fillStyle = "rgba(255,255,255," + (0.3 + Math.random() * 0.55) + ")";
-        ctx.fillRect(0, Math.random() * glitch.height, glitch.width, Math.random() < 0.6 ? 1 : 2);
+      if (Math.random() < ease * 0.45) {
+        ctx.fillStyle = "rgba(255,255,255," + (0.4 + Math.random() * 0.6) + ")";
+        ctx.fillRect(0, Math.random() * height, width, Math.random() < 0.6 ? 1 : 2);
       }
 
       if (t > 0.48) {
@@ -152,7 +121,7 @@
         requestAnimationFrame(frame);
       } else {
         ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, glitch.width, glitch.height);
+        ctx.fillRect(0, 0, width, height);
         loaderEl.style.opacity = "0";
         setTimeout(function () {
           if (glitch.parentNode) glitch.parentNode.removeChild(glitch);
@@ -172,5 +141,33 @@
     tryHide();
   };
 
-  runSteps();
+  window._loaderSetHandPromise = window._loaderSetReadyPromise;
+
+  function runNumbers() {
+    if (numIndex >= numbers.length) return;
+    var num = numbers[numIndex++];
+    var wait = isMob ? 300 : 600;
+
+    showNumber(num, function () {
+      if (num === 100) {
+        window.gsap.to(loaderNumber, {
+          color: "#cc0000",
+          duration: 0.3,
+          delay: 0.2,
+          onComplete: function () {
+            setTimeout(function () {
+              animDone = true;
+              tryHide();
+            }, 300);
+          }
+        });
+      } else {
+        setTimeout(runNumbers, wait);
+      }
+    });
+  }
+
+  startTypewriter(function () {
+    runNumbers();
+  });
 })();
