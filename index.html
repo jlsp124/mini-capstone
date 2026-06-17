@@ -3,114 +3,57 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Future I'm Building - a CLE 10 mini capstone by Jovan Pahal.">
+    <meta name="description" content="The Future I'm Building - a CLE 10 capstone by Jovan Pahal.">
     <title>The Future I'm Building</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='black'/%3E%3Cpath d='M12 36h40M32 12v40' stroke='%23d00000' stroke-width='6'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css?v=story-stage-20260616">
-  </head>
-  <body>
-    <div class="intro-loader" id="intro-loader" aria-hidden="true">
-      <div class="loader-inner">
-        <span class="loader-kicker">CLE 10 CAPSTONE</span>
-        <strong class="loader-word"><span>Future Blueprint</span></strong>
-        <div class="loader-meter"><span></span></div>
-      </div>
-    </div>
-
-    <div class="global-texture" aria-hidden="true"></div>
-    <div class="cursor-light" id="cursor-light" aria-hidden="true"></div>
-    <div class="signal-transition" id="signal-transition" aria-hidden="true"></div>
-
-    <main id="landing-screen" class="landing-screen mode-screen">
-      <div class="ambient-video-slot" id="landing-ambient" aria-hidden="true"></div>
-      <nav class="landing-meta" aria-label="Project metadata">
-        <span>CLE 10 Capstone</span>
-        <span>Jovan Pahal</span>
-        <span>Future Plan / Personal System</span>
-      </nav>
-      <section class="landing-hero" aria-labelledby="landing-title">
-        <div class="landing-copy">
-          <p class="eyebrow">Personal Future Blueprint</p>
-          <h1 id="landing-title">The Future I'm Building</h1>
-          <p class="subtitle">Oral Surgery &bull; Business &bull; Creativity</p>
-          <p class="landing-line">A personal blueprint for building a future that combines healthcare, ownership, creativity, and freedom.</p>
-          <div class="landing-actions" aria-label="Choose how to view the project">
-            <button class="primary-action" type="button" data-set-mode="story">Begin the Story</button>
-            <button class="secondary-action" type="button" data-set-mode="reader">Reader Mode</button>
-          </div>
-        </div>
-        <div class="landing-frame" aria-hidden="true">
-          <span class="chrome-line line-a"></span>
-          <span class="chrome-line line-b"></span>
-          <span class="chrome-line line-c"></span>
-          <span class="frame-code">ARCHIVE / FUTURE PLAN</span>
-        </div>
-      </section>
-    </main>
-
-    <section id="story-screen" class="story-screen mode-screen" hidden>
-      <header class="story-ui" aria-label="Story controls">
-        <button class="text-button" type="button" data-set-mode="landing">Exit</button>
-        <div class="story-progress" aria-hidden="true">
-          <span id="story-progress-bar"></span>
-        </div>
-        <button class="text-button" type="button" data-set-mode="reader">Reader Mode</button>
-      </header>
-      <aside class="scene-index" aria-label="Scene progress">
-        <span id="scene-index-current">01</span>
-        <span>22</span>
-      </aside>
-      <div class="story-stage" id="story-scenes"></div>
-    </section>
-
-    <section id="reader-screen" class="reader-screen mode-screen" hidden>
-      <header class="reader-header">
-        <div>
-          <p class="eyebrow">Read Mode</p>
-          <h1>The Future I'm Building</h1>
-          <p>Oral Surgery &bull; Business &bull; Creativity</p>
-        </div>
-        <button class="secondary-action" type="button" data-set-mode="story">Open Story</button>
-      </header>
-      <nav class="chapter-menu" id="chapter-menu" aria-label="Chapter menu"></nav>
-      <main id="reader-slides" class="reader-slides"></main>
-      <section class="comments-panel" id="comments" aria-labelledby="comments-title">
-        <div>
-          <p class="eyebrow">Reader Comments</p>
-          <h2 id="comments-title">Comments</h2>
-          <p class="comment-status" id="comment-status">Comments are not connected yet.</p>
-        </div>
-        <form id="comment-form" class="comment-form">
-          <label>
-            <span>Name <small>optional</small></span>
-            <input id="comment-name" name="name" maxlength="80" autocomplete="name" placeholder="Anonymous">
-          </label>
-          <label>
-            <span>Message <small>2000 characters max</small></span>
-            <textarea id="comment-message" name="message" maxlength="2000" rows="5" placeholder="Write a comment for the end of the reader version."></textarea>
-          </label>
-          <div class="comment-actions">
-            <span id="comment-count">0 / 2000</span>
-            <button class="primary-action compact" type="submit">Submit</button>
-          </div>
-        </form>
-      </section>
-    </section>
-
-    <script>
-      window.CAPSTONE_COMMENTS_ENDPOINT = "";
-    </script>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+    <script src="./loader.js" defer></script>
     <script type="importmap">
       {
         "imports": {
           "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-          "three/addons/loaders/STLLoader.js": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/STLLoader.js",
-          "three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/controls/OrbitControls.js"
+          "three/addons/loaders/STLLoader.js": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/STLLoader.js"
         }
       }
     </script>
-    <script type="module" src="./app.js?v=story-stage-20260616"></script>
+  </head>
+  <body>
+    <script>document.body.style.overflow = 'hidden';</script>
+
+    <div id="loader" aria-live="polite">
+      <div id="loader-number"></div>
+      <div id="loader-title"></div>
+    </div>
+
+    <div id="top-left" class="corner">CLE 10 CAPSTONE</div>
+    <div id="top-right" class="corner">PERSONAL ARCHIVE</div>
+    <div id="bottom-left" class="corner">FUTURE PLAN</div>
+    <div id="bottom-right" class="corner">JOVAN PAHAL</div>
+
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div id="hero-vignette" aria-hidden="true"></div>
+    <div id="cursor-light" aria-hidden="true"></div>
+    <div id="wipe" aria-hidden="true"></div>
+
+    <main id="story-stage" aria-label="The Future I'm Building scroll story"></main>
+
+    <aside id="scene-counter" aria-live="polite">
+      <span id="scene-current">01</span>
+      <span id="scene-total">22</span>
+    </aside>
+
+    <div id="cursor-text" aria-hidden="true"></div>
+
+    <script type="module" src="./app.js"></script>
   </body>
 </html>
