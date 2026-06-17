@@ -9,11 +9,14 @@
   document.body.style.overflow = "hidden";
 
   var isMob = window.innerWidth <= 768;
+  var motionParams = new URLSearchParams(window.location.search);
+  var forceNoGsap = motionParams.get("forceNoGsap") === "1";
+  var reducedMotion = motionParams.get("forceReducedMotion") === "1" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var titleText = "JOVAN PAHAL";
   var titleIndex = 0;
 
   function hasGsap() {
-    return window.gsap && window.gsap.set && window.gsap.to;
+    return !forceNoGsap && !reducedMotion && window.gsap && window.gsap.set && window.gsap.to;
   }
 
   function startTypewriter(callback) {
@@ -85,6 +88,28 @@
   }
 
   function doHide() {
+    function finishHide() {
+      loaderEl.style.display = "none";
+      document.body.style.overflow = "";
+      if (window.lenis) window.lenis.start();
+      if (window._onLoaderHidden) window._onLoaderHidden();
+    }
+
+    if (reducedMotion) {
+      if (typeof loaderEl.animate === "function") {
+        loaderEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 180,
+          easing: "linear",
+          fill: "forwards"
+        });
+      }
+      setTimeout(function () {
+        loaderEl.style.opacity = "0";
+        finishHide();
+      }, 210);
+      return;
+    }
+
     var width = window.innerWidth;
     var height = window.innerHeight;
     var glitch = document.createElement("canvas");
@@ -137,10 +162,7 @@
         loaderEl.style.opacity = "0";
         setTimeout(function () {
           if (glitch.parentNode) glitch.parentNode.removeChild(glitch);
-          loaderEl.style.display = "none";
-          document.body.style.overflow = "";
-          if (window.lenis) window.lenis.start();
-          if (window._onLoaderHidden) window._onLoaderHidden();
+          finishHide();
         }, 55);
       }
     }

@@ -1,12 +1,22 @@
 let lenisInstance = null;
 let mobileMode = false;
+let gsapMode = false;
+let reducedMotionMode = false;
 let globalTransitionLock = false;
 
 const preventTouch = (event) => event.preventDefault();
+const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
+const settle = (promise, onDone) => promise.then(onDone, onDone);
 
-export function setTransitionContext({ lenis, isMobile }) {
+export function setTransitionContext({ lenis, isMobile, gsapAvailable, reducedMotion }) {
   lenisInstance = lenis || null;
   mobileMode = Boolean(isMobile);
+  gsapMode = Boolean(gsapAvailable && window.gsap?.timeline);
+  reducedMotionMode = Boolean(reducedMotion);
+}
+
+function getGsap() {
+  return gsapMode ? window.gsap : null;
 }
 
 export function isTransitionLocked() {
@@ -26,33 +36,186 @@ export function releaseLock() {
   window.dispatchEvent(new Event("scroll"));
 }
 
-function completeWithoutGsap(onMidpoint) {
+function callMidpoint(onMidpoint) {
   try {
     onMidpoint();
   } catch (error) {
     console.error(error);
   }
-  releaseLock();
 }
 
-export function glitchTransition(onMidpoint, outEl = null) {
+function uniqueElements(elements) {
+  return [...new Set(elements.filter(Boolean))];
+}
+
+function applyFrame(element, frame) {
+  ["opacity", "transform", "clipPath"].forEach((property) => {
+    if (frame[property] !== undefined) element.style[property] = String(frame[property]);
+  });
+}
+
+async function animateElement(element, keyframes, options) {
+  if (!element || !keyframes.length) return;
+  const finalFrame = keyframes[keyframes.length - 1];
+
+  if (typeof element.animate === "function") {
+    try {
+      const animation = element.animate(keyframes, { fill: "forwards", ...options });
+      await Promise.race([
+        animation.finished?.catch(() => undefined) || Promise.resolve(),
+        wait((Number(options.duration) || 0) + 80)
+      ]);
+      applyFrame(element, finalFrame);
+      animation.cancel();
+      return;
+    } catch (error) {
+      // Continue with the CSS transition fallback below.
+    }
+  }
+
+  const duration = Number(options.duration) || 0;
+  const previousTransition = element.style.transition;
+  applyFrame(element, keyframes[0]);
+  void element.offsetWidth;
+  element.style.setProperty(
+    "transition",
+    `opacity ${duration}ms linear, transform ${duration}ms linear, clip-path ${duration}ms linear`,
+    "important"
+  );
+  let finalApplied = false;
+  const applyFinalFrame = () => {
+    if (finalApplied) return;
+    finalApplied = true;
+    applyFrame(element, finalFrame);
+  };
+  requestAnimationFrame(applyFinalFrame);
+  setTimeout(applyFinalFrame, 32);
+  await wait(duration + 24);
+  element.style.transition = previousTransition;
+}
+
+function animateElements(elements, keyframesFactory, options) {
+  return Promise.all(uniqueElements(elements).map((element) => (
+    animateElement(element, keyframesFactory(element), options)
+  )));
+}
+
+function getOpacity(element, fallback = 1) {
+  const value = Number.parseFloat(getComputedStyle(element).opacity);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function getOpeningElements(section) {
+  if (section?.id !== "opening") return [section].filter(Boolean);
+  return uniqueElements([
+    document.getElementById("hero-canvas"),
+    section,
+    ...document.querySelectorAll(".opening-corner")
+  ]);
+}
+
+async function runWaapiGlitch({ outgoing, incoming, onMidpoint, direction = 1 }) {
+  const sign = direction < 0 ? -1 : 1;
+  await animateElements(outgoing, (element) => {
+    const startOpacity = getOpacity(element);
+    return [
+      { opacity: startOpacity, transform: "translateX(0) skewX(0deg)" },
+      { offset: 0.2, opacity: Math.max(0.72, startOpacity * 0.9), transform: `translateX(${12 * sign}px) skewX(${9 * sign}deg)` },
+      { offset: 0.4, opacity: Math.max(0.92, startOpacity), transform: `translateX(${-9 * sign}px) skewX(${-7 * sign}deg)` },
+      { offset: 0.6, opacity: Math.max(0.56, startOpacity * 0.7), transform: `translateX(${7 * sign}px) skewX(${5 * sign}deg)` },
+      { offset: 0.8, opacity: Math.max(0.86, startOpacity * 0.9), transform: `translateX(${-4 * sign}px) skewX(${-3 * sign}deg)` },
+      { opacity: 0, transform: `translateX(${18 * sign}px) skewX(0deg)` }
+    ];
+  }, { duration: 300, easing: "linear" });
+
+  callMidpoint(onMidpoint);
+  const incomingElements = uniqueElements(incoming);
+  incomingElements.forEach((element) => {
+    element.style.opacity = "0.12";
+    element.style.transform = `translateX(${-16 * sign}px) skewX(${-5 * sign}deg)`;
+  });
+
+  await animateElements(incomingElements, () => [
+    { opacity: 0.12, transform: `translateX(${-16 * sign}px) skewX(${-5 * sign}deg)` },
+    { offset: 0.28, opacity: 0.82, transform: `translateX(${7 * sign}px) skewX(${4 * sign}deg)` },
+    { offset: 0.48, opacity: 0.42, transform: `translateX(${-5 * sign}px) skewX(${-3 * sign}deg)` },
+    { offset: 0.7, opacity: 0.9, transform: `translateX(${3 * sign}px) skewX(${2 * sign}deg)` },
+    { opacity: 1, transform: "translateX(0) skewX(0deg)" }
+  ], { duration: 270, easing: "linear" });
+}
+
+async function runWaapiElement({ outEl, inEl, onMidpoint, direction = 1 }) {
+  const sign = direction < 0 ? -1 : 1;
+  if (outEl) {
+    const startOpacity = getOpacity(outEl);
+    await animateElement(outEl, [
+      { opacity: startOpacity, transform: "translateX(0) skewX(0deg) scale(1)" },
+      { offset: 0.45, opacity: Math.max(0.78, startOpacity * 0.9), transform: `translateX(${12 * sign}px) skewX(${7 * sign}deg) scale(1.01)` },
+      { offset: 0.72, opacity: Math.max(0.48, startOpacity * 0.62), transform: `translateX(${-8 * sign}px) skewX(${-5 * sign}deg) scale(0.995)` },
+      { opacity: 0, transform: `translateX(${24 * sign}px) skewX(${3 * sign}deg) scale(0.985)` }
+    ], { duration: 300, easing: "cubic-bezier(0.55, 0, 1, 0.45)" });
+  }
+
+  callMidpoint(onMidpoint);
+  if (inEl) {
+    inEl.style.opacity = "0.12";
+    inEl.style.transform = `translateX(${-24 * sign}px) skewX(${-4 * sign}deg) scale(0.985)`;
+    await animateElement(inEl, [
+      { opacity: 0.12, transform: `translateX(${-24 * sign}px) skewX(${-4 * sign}deg) scale(0.985)` },
+      { offset: 0.48, opacity: 0.76, transform: `translateX(${7 * sign}px) skewX(${3 * sign}deg) scale(1.008)` },
+      { opacity: 1, transform: "translateX(0) skewX(0deg) scale(1)" }
+    ], { duration: 290, easing: "cubic-bezier(0, 0.55, 0.45, 1)" });
+  }
+}
+
+async function runReducedTransition({ fromEl, toEl, onMidpoint }) {
+  lockScroll();
+  const overlay = document.createElement("div");
+  overlay.className = "transition-reduced";
+  document.body.appendChild(overlay);
+  const outgoing = getOpeningElements(fromEl);
+  const incoming = getOpeningElements(toEl);
+  try {
+    await Promise.all([
+      animateElements(outgoing, (element) => [
+        { opacity: getOpacity(element) },
+        { opacity: 0 }
+      ], { duration: 180, easing: "ease-out" }),
+      animateElement(overlay, [{ opacity: 0 }, { opacity: 0.2 }], { duration: 180, easing: "ease-out" })
+    ]);
+
+    callMidpoint(onMidpoint);
+    incoming.forEach((element) => { element.style.opacity = "0.16"; });
+
+    await Promise.all([
+      animateElements(incoming, () => [{ opacity: 0.16 }, { opacity: 1 }], { duration: 180, easing: "ease-in" }),
+      animateElement(overlay, [{ opacity: 0.2 }, { opacity: 0 }], { duration: 180, easing: "ease-in" })
+    ]);
+  } finally {
+    overlay.remove();
+    releaseLock();
+  }
+}
+
+export function glitchTransition(onMidpoint, outEl = null, inEl = null, direction = 1) {
   lockScroll();
   const canvas = document.getElementById("hero-canvas");
   const corners = [...document.querySelectorAll(".opening-corner")];
-  const outgoing = [canvas, outEl, ...corners].filter(Boolean);
-  if (!window.gsap || !canvas) {
-    completeWithoutGsap(onMidpoint);
+  const outgoing = uniqueElements([canvas, outEl, ...corners]);
+  const gsap = getGsap();
+
+  if (!gsap || !canvas) {
+    settle(runWaapiGlitch({ outgoing, incoming: [inEl], onMidpoint, direction }), releaseLock);
     return;
   }
-  const timeline = window.gsap.timeline({ onComplete: releaseLock });
+
+  const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outgoing, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: -8, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: 5, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outgoing, { opacity: 0, duration: 0.1, ease: "none" })
-    .add(() => {
-      try { onMidpoint(); } catch (error) { console.error(error); }
-    })
+    .add(() => callMidpoint(onMidpoint))
     .to(canvas, { skewX: -5, duration: 0.05, ease: "none" })
     .to(canvas, { skewX: 3, duration: 0.05, ease: "none" })
     .to(canvas, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
@@ -71,26 +234,24 @@ export function staticTransition(onMidpoint) {
 
   function drawStatic() {
     const imageData = ctx.createImageData(canvas.width, canvas.height);
-    for (let i = 0; i < imageData.data.length; i += 4) {
+    for (let index = 0; index < imageData.data.length; index += 4) {
       const value = Math.random() * 255;
-      imageData.data[i] = value;
-      imageData.data[i + 1] = value;
-      imageData.data[i + 2] = value;
-      imageData.data[i + 3] = 255;
+      imageData.data[index] = value;
+      imageData.data[index + 1] = value;
+      imageData.data[index + 2] = value;
+      imageData.data[index + 3] = 255;
     }
     ctx.putImageData(imageData, 0, 0);
     frame++;
     if (frame === 8 && !midpointCalled) {
       midpointCalled = true;
-      try { onMidpoint(); } catch (error) { console.error(error); }
+      callMidpoint(onMidpoint);
     }
     if (frame < 16) {
       requestAnimationFrame(drawStatic);
     } else {
-      if (!midpointCalled) {
-        try { onMidpoint(); } catch (error) { console.error(error); }
-      }
-      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      if (!midpointCalled) callMidpoint(onMidpoint);
+      canvas.remove();
       releaseLock();
     }
   }
@@ -99,125 +260,116 @@ export function staticTransition(onMidpoint) {
 }
 
 export function curtainTransition(onMidpoint) {
-  if (lenisInstance) lenisInstance.stop();
-  document.addEventListener("touchmove", preventTouch, { passive: false });
-  globalTransitionLock = true;
+  lockScroll();
   const overlay = document.createElement("div");
   overlay.className = "transition-curtain";
   document.body.appendChild(overlay);
   document.body.style.pointerEvents = "none";
   let midpointCalled = false;
+  const cleanup = () => {
+    overlay.remove();
+    document.body.style.pointerEvents = "";
+    releaseLock();
+  };
+  const midpoint = () => {
+    if (midpointCalled) return;
+    midpointCalled = true;
+    callMidpoint(onMidpoint);
+  };
+  const gsap = getGsap();
 
-  if (!window.gsap) {
-    overlay.style.opacity = "1";
-    setTimeout(() => {
-      try { onMidpoint(); } catch (error) { console.error(error); }
-      overlay.remove();
-      document.body.style.pointerEvents = "";
-      releaseLock();
-    }, 300);
+  if (!gsap) {
+    settle((async () => {
+      await animateElement(overlay, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: "ease-in-out" });
+      midpoint();
+      await animateElement(overlay, [{ opacity: 1 }, { opacity: 0 }], { duration: 480, easing: "ease-in-out" });
+    })(), cleanup);
     return;
   }
 
-  const timeline = window.gsap.timeline({
-    onComplete: () => {
-      if (document.body.contains(overlay)) document.body.removeChild(overlay);
-      document.body.style.pointerEvents = "";
-      releaseLock();
-    }
-  });
-
-  timeline.to(overlay, {
-    opacity: 1,
-    duration: 2.5,
-    ease: "power1.inOut",
-    onComplete: () => {
-      if (!midpointCalled) {
-        midpointCalled = true;
-        try { onMidpoint(); } catch (error) { console.error(error); }
-      }
-    }
-  }).to(overlay, {
-    opacity: 0,
-    duration: 3,
-    ease: "power1.inOut"
-  }, "+=0.5");
+  gsap.timeline({ onComplete: cleanup })
+    .to(overlay, {
+      opacity: 1,
+      duration: 2.5,
+      ease: "power1.inOut",
+      onComplete: midpoint
+    })
+    .to(overlay, { opacity: 0, duration: 3, ease: "power1.inOut" }, "+=0.5");
 }
 
-export function glitchTransitionEl(outEl, inEl, onMidpoint) {
+export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
   lockScroll();
-  if (!window.gsap || !outEl || !inEl) {
-    if (outEl) outEl.style.opacity = "0";
-    if (inEl) inEl.style.opacity = "1";
-    completeWithoutGsap(onMidpoint);
+  const gsap = getGsap();
+  if (!gsap || !outEl || !inEl) {
+    settle(runWaapiElement({ outEl, inEl, onMidpoint, direction }), releaseLock);
     return;
   }
-  window.gsap.set(inEl, { opacity: 0 });
-  const timeline = window.gsap.timeline({ onComplete: releaseLock });
+
+  gsap.set(inEl, { opacity: 0 });
+  const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outEl, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outEl, { skewX: -8, duration: 0.05, ease: "none" })
     .to(outEl, { skewX: 5, duration: 0.05, ease: "none" })
     .to(outEl, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outEl, { opacity: 0, duration: 0.1, ease: "none" })
-    .add(() => {
-      try { onMidpoint(); } catch (error) { console.error(error); }
-    })
+    .add(() => callMidpoint(onMidpoint))
     .to(inEl, { skewX: -5, duration: 0.05, ease: "none" })
     .to(inEl, { skewX: 3, duration: 0.05, ease: "none" })
     .to(inEl, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
 }
 
-export function glitchTransitionReverse(onMidpoint, outEl = null) {
+export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1) {
   lockScroll();
   const canvas = document.getElementById("hero-canvas");
   const opening = document.getElementById("opening");
   const corners = [...document.querySelectorAll(".opening-corner")];
-  const incoming = [canvas, opening, ...corners].filter(Boolean);
+  const incoming = uniqueElements([canvas, opening, ...corners]);
   const outgoing = outEl || document.getElementById("opening-interlude") || document.getElementById("section-2");
-  if (!window.gsap || !canvas || !outgoing) {
-    completeWithoutGsap(onMidpoint);
+  const gsap = getGsap();
+
+  if (!gsap || !canvas || !outgoing) {
+    if (canvas) canvas.style.visibility = "visible";
+    settle(runWaapiGlitch({ outgoing: [outgoing], incoming, onMidpoint, direction }), releaseLock);
     return;
   }
+
   canvas.style.visibility = "visible";
-  window.gsap.set(incoming, { opacity: 0, skewX: 0 });
-  const timeline = window.gsap.timeline({ onComplete: releaseLock });
+  gsap.set(incoming, { opacity: 0, skewX: 0 });
+  const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outgoing, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: -8, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: 5, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outgoing, { opacity: 0, duration: 0.1, ease: "none" })
-    .add(() => {
-      try { onMidpoint(); } catch (error) { console.error(error); }
-    })
+    .add(() => callMidpoint(onMidpoint))
     .to(incoming, { skewX: -5, duration: 0.05, ease: "none" })
     .to(incoming, { skewX: 3, duration: 0.05, ease: "none" })
     .to(incoming, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
 }
 
 export function mobileTransition(onMidpoint) {
-  globalTransitionLock = true;
+  lockScroll();
   const overlay = document.createElement("div");
   overlay.className = "transition-mobile";
   document.body.appendChild(overlay);
   void overlay.offsetHeight;
   overlay.style.opacity = "1";
   setTimeout(() => {
-    try { onMidpoint(); } catch (error) { console.error(error); }
+    callMidpoint(onMidpoint);
     overlay.style.opacity = "0";
     setTimeout(() => {
-      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-      globalTransitionLock = false;
-      window.dispatchEvent(new Event("scroll"));
+      overlay.remove();
+      releaseLock();
     }, 270);
   }, 270);
 }
 
-export function transition(callback, outEl = null) {
+export function transition(callback, outEl = null, inEl = null, direction = 1) {
   if (mobileMode) mobileTransition(callback);
-  else glitchTransition(callback, outEl);
+  else glitchTransition(callback, outEl, inEl, direction);
 }
 
-export function transitionEl(outEl, inEl, callback) {
+export function transitionEl(outEl, inEl, callback, direction = 1) {
   if (mobileMode) {
     mobileTransition(() => {
       if (outEl) outEl.style.opacity = "0";
@@ -225,13 +377,13 @@ export function transitionEl(outEl, inEl, callback) {
       callback();
     });
   } else {
-    glitchTransitionEl(outEl, inEl, callback);
+    glitchTransitionEl(outEl, inEl, callback, direction);
   }
 }
 
-export function transitionReverse(callback, outEl = null) {
+export function transitionReverse(callback, outEl = null, direction = -1) {
   if (mobileMode) mobileTransition(callback);
-  else glitchTransitionReverse(callback, outEl);
+  else glitchTransitionReverse(callback, outEl, direction);
 }
 
 function waitForTransitionRelease(resolve) {
@@ -243,23 +395,19 @@ function waitForTransitionRelease(resolve) {
 }
 
 function completeImmediately(onMidpoint) {
-  try {
-    onMidpoint();
-  } catch (error) {
-    console.error(error);
-  }
+  callMidpoint(onMidpoint);
 }
 
 export const transitionRegistry = {
   none({ onMidpoint }) {
     completeImmediately(onMidpoint);
   },
-  opening({ fromEl, direction, onMidpoint }) {
-    if (direction < 0) transitionReverse(onMidpoint, fromEl);
-    else transition(onMidpoint, fromEl);
+  opening({ fromEl, toEl, direction, onMidpoint }) {
+    if (direction < 0) transitionReverse(onMidpoint, fromEl, direction);
+    else transition(onMidpoint, fromEl, toEl, direction);
   },
-  element({ fromEl, toEl, onMidpoint }) {
-    transitionEl(fromEl, toEl, onMidpoint);
+  element({ fromEl, toEl, direction, onMidpoint }) {
+    transitionEl(fromEl, toEl, onMidpoint, direction);
   },
   signal({ onMidpoint }) {
     staticTransition(onMidpoint);
@@ -273,9 +421,14 @@ export function runRegisteredTransition(type, context) {
   const transitionType = transitionRegistry[type] ? type : "none";
 
   return new Promise((resolve) => {
-    if (context.reducedMotion || transitionType === "none") {
+    if (transitionType === "none") {
       transitionRegistry.none(context);
       resolve();
+      return;
+    }
+
+    if (context.reducedMotion || reducedMotionMode) {
+      runReducedTransition(context).then(resolve, resolve);
       return;
     }
 

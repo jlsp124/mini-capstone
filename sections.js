@@ -12,6 +12,8 @@ let heroAnimationStarted = false;
 let heroAvailable = false;
 let isMobileMode = false;
 let reducedMotionMode = false;
+let gsapMode = false;
+let splitTextMode = false;
 
 let objectRenderer = null;
 let objectScene = null;
@@ -48,6 +50,7 @@ let stackClimaxDone = false;
 const clamp01 = (value) => Math.max(0, Math.min(1, value));
 const easeOut = (value) => 1 - Math.pow(1 - clamp01(value), 3);
 const easeIn = (value) => Math.pow(clamp01(value), 3);
+const getGsap = () => (gsapMode ? window.gsap : null);
 
 function rangeProgress(value, start, end) {
   return clamp01((value - start) / Math.max(0.0001, end - start));
@@ -116,7 +119,7 @@ export function showOnlySection(id) {
   activeSectionId = id;
   const corners = [...document.querySelectorAll(".opening-corner")];
   if (id !== "opening") {
-    if (window.gsap) window.gsap.killTweensOf(corners);
+    if (getGsap()) getGsap().killTweensOf(corners);
     corners.forEach((corner) => {
       corner.style.opacity = "0";
       corner.style.transform = "";
@@ -248,8 +251,8 @@ function createOpeningController() {
     init() {
       setHeroVisible(true);
       if (!title) return;
-      if (window.gsap && !reducedMotionMode) {
-        window.gsap.set([title, ...corners], { opacity: 0, y: 80 });
+      if (getGsap() && !reducedMotionMode) {
+        getGsap().set([title, ...corners], { opacity: 0, y: 80 });
       } else {
         setOpeningOpacity(1);
       }
@@ -267,16 +270,16 @@ function createOpeningController() {
     reveal() {
       if (revealed || !title) return;
       revealed = true;
-      if (window.gsap && !reducedMotionMode) {
-        window.gsap.to(corners, { opacity: 1, y: 0, duration: 1.2, stagger: 0.08, ease: "power4.out" });
-        window.gsap.fromTo(title, { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 1.8, ease: "power4.out" });
+      if (getGsap() && !reducedMotionMode) {
+        getGsap().to(corners, { opacity: 1, y: 0, duration: 1.2, stagger: 0.08, ease: "power4.out" });
+        getGsap().fromTo(title, { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 1.8, ease: "power4.out" });
       } else {
         setOpeningOpacity(1);
       }
     },
     update({ localProgress }) {
       const exit = easeIn(rangeProgress(localProgress, 0.74, 0.96));
-      if (exit > 0 && window.gsap) window.gsap.killTweensOf([title, ...corners]);
+      if (exit > 0 && getGsap()) getGsap().killTweensOf([title, ...corners]);
       const visible = 1 - exit * 0.2;
       if (revealed || reducedMotionMode) setOpeningOpacity(visible);
       document.documentElement.style.setProperty("--opening-title-exit-y", `${-24 * exit}px`);
@@ -287,10 +290,10 @@ function createOpeningController() {
       });
     },
     prepareExit() {
-      if (window.gsap) window.gsap.killTweensOf([title, ...corners]);
+      if (getGsap()) getGsap().killTweensOf([title, ...corners]);
     },
     exit() {
-      if (window.gsap) window.gsap.killTweensOf([title, ...corners]);
+      if (getGsap()) getGsap().killTweensOf([title, ...corners]);
       setOpeningOpacity(0);
       if (title) title.style.filter = "";
       document.documentElement.style.setProperty("--opening-title-exit-y", "0px");
@@ -620,15 +623,15 @@ function resetStackSection() {
   if (wrapper) wrapper.classList.remove("s7-alive");
   if (math) {
     math.classList.remove("s7-alive");
-    if (window.gsap) window.gsap.set(math, { opacity: 0, scale: 3, x: 0, y: 0 });
+    if (getGsap()) getGsap().set(math, { opacity: 0, scale: 3, x: 0, y: 0 });
     else math.style.opacity = "0";
   }
   for (let i = 0; i < stackCount; i++) {
     const card = document.getElementById(`s7-card-${i + 1}`);
     if (!card) continue;
     card.style.filter = "";
-    if (window.gsap) {
-      window.gsap.set(card, {
+    if (getGsap()) {
+      getGsap().set(card, {
         x: stackStarts[i].x,
         y: stackStarts[i].y,
         rotation: 0,
@@ -645,8 +648,8 @@ function resetStackSection() {
 function flyStackCard(index) {
   const card = document.getElementById(`s7-card-${index + 1}`);
   if (!card) return;
-  if (window.gsap) {
-    window.gsap.to(card, {
+  if (getGsap()) {
+    getGsap().to(card, {
       x: stackOffsets[index].x,
       y: stackOffsets[index].y,
       rotation: stackRotations[index],
@@ -669,8 +672,8 @@ function stackClimax() {
   if (stackClimaxDone) return;
   stackClimaxDone = true;
   const section = document.getElementById("section-7");
-  if (window.gsap && section) {
-    window.gsap.timeline()
+  if (getGsap() && section) {
+    getGsap().timeline()
       .to(section, { filter: "hue-rotate(180deg) saturate(4) brightness(2)", duration: 0.05 })
       .to(section, { filter: "hue-rotate(-90deg) saturate(5) brightness(0.2)", duration: 0.05 })
       .to(section, { filter: "hue-rotate(60deg) saturate(2) brightness(1.8)", duration: 0.05 })
@@ -714,9 +717,9 @@ function handleStackPointer(event) {
   }
   [6, 7, 8].forEach((index, order) => {
     const card = document.getElementById(`s7-card-${index + 1}`);
-    if (!card || !window.gsap) return;
+    if (!card || !getGsap()) return;
     const depth = (order + 1) / 3;
-    window.gsap.to(card, {
+    getGsap().to(card, {
       rotateX: -ny * 14 * depth,
       rotateY: nx * 14 * depth,
       x: stackOffsets[index].x - nx * 30 * depth,
@@ -731,14 +734,14 @@ function handleStackPointer(event) {
 
 function startEndingAnimation() {
   const quoteEl = document.getElementById("s8-quote");
-  if (!quoteEl || !window.gsap) return;
-  window.gsap.set(["#s8-author", "#s8-holm", "#s8-url"], { opacity: 0 });
-  window.gsap.set("#s8-divider", { width: "0px" });
+  if (!quoteEl || !getGsap()) return;
+  getGsap().set(["#s8-author", "#s8-holm", "#s8-url"], { opacity: 0 });
+  getGsap().set("#s8-divider", { width: "0px" });
   quoteEl.style.opacity = "1";
 
   if (quoteEl._splitInstance) quoteEl._splitInstance.revert();
   let chars = [];
-  if (window.SplitText) {
+  if (splitTextMode && window.SplitText) {
     const split = new window.SplitText(quoteEl, { type: "chars,words,lines", linesClass: "s8-line" });
     quoteEl._splitInstance = split;
     chars = split.chars;
@@ -748,8 +751,8 @@ function startEndingAnimation() {
     chars = [...quoteEl.querySelectorAll(".s8-char")];
   }
 
-  window.gsap.set(chars, { opacity: 0, y: 60, rotationX: -90, transformOrigin: "50% 50% -20px" });
-  window.gsap.timeline()
+  getGsap().set(chars, { opacity: 0, y: 60, rotationX: -90, transformOrigin: "50% 50% -20px" });
+  getGsap().timeline()
     .to({}, { duration: 0.4 })
     .to(chars, {
       opacity: 1,
@@ -807,6 +810,8 @@ function createReserveEndingController() {
 export function createSectionControllers(options = {}) {
   isMobileMode = Boolean(options.isMobile);
   reducedMotionMode = Boolean(options.prefersReducedMotion);
+  gsapMode = Boolean(options.gsapAvailable && window.gsap);
+  splitTextMode = Boolean(options.splitTextAvailable && window.SplitText);
   collectSections();
   initHero({ isMobile: isMobileMode });
 

@@ -15,21 +15,50 @@ import {
 
 const mobileQuery = window.matchMedia("(max-width: 768px)");
 const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const motionParams = new URLSearchParams(window.location.search);
+const forceNoGsap = motionParams.get("forceNoGsap") === "1";
+const forceReducedMotion = motionParams.get("forceReducedMotion") === "1";
+const reducedMotion = forceReducedMotion || reducedMotionQuery.matches;
+const gsapAvailable = !forceNoGsap && Boolean(window.gsap?.timeline);
+const splitTextAvailable = gsapAvailable && typeof window.SplitText === "function";
 
 let isMobile = mobileQuery.matches;
 let progressModel = buildProgressTimeline(storyBeats, { isMobile, unitVh: scrollUnitVh });
 let lenis = null;
 let lastScrollY = 0;
 
+function getTransitionMode() {
+  if (reducedMotion) return "reduced-motion";
+  if (isMobile) return "mobile";
+  return gsapAvailable ? "gsap-desktop" : "waapi-desktop-fallback";
+}
+
+const motionDiagnostics = {};
+Object.defineProperties(motionDiagnostics, {
+  isMobile: { enumerable: true, get: () => isMobile },
+  reducedMotion: { enumerable: true, get: () => reducedMotion },
+  gsapAvailable: { enumerable: true, get: () => gsapAvailable },
+  splitTextAvailable: { enumerable: true, get: () => splitTextAvailable },
+  transitionMode: { enumerable: true, get: getTransitionMode }
+});
+Object.freeze(motionDiagnostics);
+Object.defineProperty(window, "__motionDiagnostics", {
+  configurable: false,
+  enumerable: false,
+  writable: false,
+  value: motionDiagnostics
+});
+console.info(`Motion mode: ${getTransitionMode()}`);
+
 document.documentElement.style.scrollBehavior = "auto";
 document.body.style.height = progressModel.bodyHeight;
 window.scrollTo(0, 0);
 
-if (window.gsap && window.SplitText) {
+if (gsapAvailable && splitTextAvailable) {
   window.gsap.registerPlugin(window.SplitText);
 }
 
-if (window.Lenis && !reducedMotionQuery.matches) {
+if (window.Lenis && !reducedMotion) {
   lenis = new window.Lenis({
     lerp: 0.08,
     smoothWheel: true,
@@ -39,11 +68,13 @@ if (window.Lenis && !reducedMotionQuery.matches) {
   window.lenis = lenis;
 }
 
-setTransitionContext({ lenis, isMobile });
+setTransitionContext({ lenis, isMobile, gsapAvailable, reducedMotion });
 
 const controllers = createSectionControllers({
   isMobile,
-  prefersReducedMotion: reducedMotionQuery.matches
+  prefersReducedMotion: reducedMotion,
+  gsapAvailable,
+  splitTextAvailable
 });
 
 const timeline = createTimelineController({
@@ -53,7 +84,7 @@ const timeline = createTimelineController({
   setCursorWord,
   showOnlySection,
   getSectionElement,
-  prefersReducedMotion: reducedMotionQuery.matches
+  prefersReducedMotion: reducedMotion
 });
 
 timeline.update(getPageProgress());
@@ -77,7 +108,7 @@ function rebuildProgressTimeline() {
   isMobile = nextIsMobile;
   progressModel = buildProgressTimeline(storyBeats, { isMobile, unitVh: scrollUnitVh });
   document.body.style.height = progressModel.bodyHeight;
-  setTransitionContext({ lenis, isMobile });
+  setTransitionContext({ lenis, isMobile, gsapAvailable, reducedMotion });
   timeline.setEntries(progressModel.entries);
 }
 

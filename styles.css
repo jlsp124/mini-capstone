@@ -435,7 +435,7 @@ body {
 .transition-static {
   position: fixed;
   inset: 0;
-  z-index: 500;
+  z-index: 12000;
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -443,10 +443,11 @@ body {
 }
 
 .transition-curtain,
-.transition-mobile {
+.transition-mobile,
+.transition-reduced {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 20000;
   background: #000;
   opacity: 0;
 }
@@ -458,6 +459,11 @@ body {
 .transition-mobile {
   pointer-events: none;
   transition: opacity 0.25s linear;
+}
+
+.transition-reduced {
+  pointer-events: none;
+  background: #150000;
 }
 
 #section-6 {
