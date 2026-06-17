@@ -41,6 +41,10 @@ function metadataMarkup(items = []) {
   return `<div class="meta-row">${items.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>`;
 }
 
+function contextMarkup(scene) {
+  return scene.context ? `<p class="context-line">${escapeHtml(scene.context)}</p>` : "";
+}
+
 function splitWords(text = "") {
   return escapeHtml(text)
     .split(" ")
@@ -69,6 +73,7 @@ function templateMarkup(scene) {
           <h1>${escapeHtml(scene.title)}</h1>
           <p class="opening-subtitle">${escapeHtml(scene.subtitle)}</p>
           <p class="opening-line">${escapeHtml(scene.line)}</p>
+          ${contextMarkup(scene)}
         </div>
       `;
     case "text-reveal":
@@ -76,6 +81,7 @@ function templateMarkup(scene) {
         <div class="quote-panel">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${splitWords(scene.line)}</h2>
+          ${contextMarkup(scene)}
           ${listMarkup(scene.items, "orbit-list")}
         </div>
       `;
@@ -88,11 +94,12 @@ function templateMarkup(scene) {
             <div class="typed-block">
               <span class="typed-target" data-text="${escapeHtml(scene.typed)}"></span><span class="caret">_</span>
             </div>
+            ${contextMarkup(scene)}
             ${listMarkup(scene.lines, "archive-lines")}
           </div>
           <div class="archive-visual hover-reactive">
             <div class="archive-file">
-              <span>FILE</span>
+              <span>${escapeHtml(scene.recordLabel || "Record")}</span>
               <strong>${escapeHtml(scene.fileTitle)}</strong>
               ${listMarkup(scene.metadata, "file-meta")}
             </div>
@@ -104,6 +111,7 @@ function templateMarkup(scene) {
         <div class="quote-panel">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${splitWords(scene.quote)}</h2>
+          ${contextMarkup(scene)}
           ${listMarkup(scene.items, "module-row")}
         </div>
       `;
@@ -114,6 +122,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${escapeHtml(scene.title)}</h2>
             ${listMarkup(scene.lines, "large-lines")}
+            ${contextMarkup(scene)}
           </div>
           <div class="poster-object hover-reactive">
             <span class="object-label">${escapeHtml(scene.objectLabel)}</span>
@@ -128,6 +137,7 @@ function templateMarkup(scene) {
           <div class="system-core drift-object">${escapeHtml(scene.center)}</div>
           ${listMarkup(scene.items, "system-nodes")}
           <p class="support-line">${escapeHtml(scene.line)}</p>
+          ${contextMarkup(scene)}
         </div>
       `;
     case "split":
@@ -136,6 +146,7 @@ function templateMarkup(scene) {
           <div>
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${splitWords(scene.line)}</h2>
+            ${contextMarkup(scene)}
           </div>
           ${listMarkup(scene.items, "split-keywords")}
         </div>
@@ -149,11 +160,12 @@ function templateMarkup(scene) {
             <div class="typed-block">
               <span class="typed-target" data-text="${escapeHtml(scene.roadmap)}"></span><span class="caret">_</span>
             </div>
+            ${contextMarkup(scene)}
+            ${listMarkup(scene.branches, "branch-list")}
           </div>
           <div class="route-scroll">
             ${scene.stages.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
           </div>
-          ${listMarkup(scene.branches, "branch-list")}
         </div>
       `;
     case "file-stack":
@@ -163,6 +175,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${escapeHtml(scene.title)}</h2>
             <p class="support-line">${escapeHtml(scene.note)}</p>
+            ${contextMarkup(scene)}
           </div>
           <div class="file-stack hover-reactive">
             ${scene.items.map((item, index) => `<article class="stack-file" style="--i:${index}"><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(item)}</strong></article>`).join("")}
@@ -174,6 +187,7 @@ function templateMarkup(scene) {
         <div class="sequence-layout">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${splitWords(scene.line)}</h2>
+          ${contextMarkup(scene)}
           <div class="sequence-rail">
             ${scene.items.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
           </div>
@@ -186,6 +200,7 @@ function templateMarkup(scene) {
           <div>
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${splitWords(scene.line)}</h2>
+            ${contextMarkup(scene)}
           </div>
           <div class="practice-map drift-object">
             ${scene.items.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
@@ -199,6 +214,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${escapeHtml(scene.title)}</h2>
             ${listMarkup(scene.lines, "large-lines")}
+            ${contextMarkup(scene)}
           </div>
           <div class="model-stage hover-reactive">
             <canvas id="dental-canvas" aria-label="Rotating dental scan model"></canvas>
@@ -214,6 +230,7 @@ function templateMarkup(scene) {
         <div class="network-layout">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${splitWords(scene.line)}</h2>
+          ${contextMarkup(scene)}
           <div class="network-field">
             ${scene.items.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
           </div>
@@ -227,6 +244,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${escapeHtml(scene.title)}</h2>
             <p class="support-line">${escapeHtml(scene.line)}</p>
+            ${contextMarkup(scene)}
           </div>
           <div class="motion-loop" aria-hidden="true">
             <div>${[...scene.items, ...scene.items].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
@@ -244,6 +262,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${splitWords(scene.quote)}</h2>
             <p class="support-line">${escapeHtml(scene.final)}</p>
+            ${contextMarkup(scene)}
           </div>
         </div>
       `;
@@ -252,7 +271,8 @@ function templateMarkup(scene) {
         <div class="command-layout">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${escapeHtml(scene.title)}</h2>
-          <div class="command-window">
+          ${contextMarkup(scene)}
+          <div class="typed-note">
             <span class="typed-target" data-text="${escapeHtml(scene.lines.join(" / "))}"></span><span class="caret">_</span>
           </div>
           <p class="support-line">${escapeHtml(scene.final)}</p>
@@ -265,6 +285,7 @@ function templateMarkup(scene) {
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <div class="system-core drift-object">${escapeHtml(scene.center)}</div>
           ${listMarkup(scene.items, "skill-wheel")}
+          ${contextMarkup(scene)}
         </div>
       `;
     case "image-stack":
@@ -274,6 +295,7 @@ function templateMarkup(scene) {
             <p class="kicker">${escapeHtml(scene.kicker)}</p>
             <h2>${splitWords(scene.line)}</h2>
             <p class="support-line">${escapeHtml(scene.final)}</p>
+            ${contextMarkup(scene)}
           </div>
           <div class="image-stack hover-reactive">
             ${scene.items.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
@@ -285,6 +307,7 @@ function templateMarkup(scene) {
         <div class="roadmap-layout">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
           <h2>${escapeHtml(scene.title)}</h2>
+          ${contextMarkup(scene)}
           <div class="roadmap-line">
             ${scene.stages.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
           </div>
@@ -295,10 +318,11 @@ function templateMarkup(scene) {
       return `
         <div class="final-layout">
           <p class="kicker">${escapeHtml(scene.kicker)}</p>
-          <h2 id="final-quote">${splitWords(scene.title)}</h2>
           <div class="source-stack">
             ${scene.items.map((item, index) => `<span style="--i:${index}">${escapeHtml(item)}</span>`).join("")}
           </div>
+          <h2 id="final-quote">${splitWords(scene.quote || scene.title)}</h2>
+          ${contextMarkup(scene)}
           <div class="final-divider"></div>
           <p class="final-credit">${escapeHtml(scene.final)}</p>
         </div>
@@ -492,7 +516,7 @@ function runSceneAnimation(sceneEl, scene) {
         delay: 0.12,
       });
     });
-    animateTargets(sceneEl.querySelectorAll(".archive-lines li, .system-nodes li, .split-keywords li, .module-row li, .branch-list li, .skill-wheel li, .roadmap-details li, .large-lines li"), (targets) => {
+    animateTargets(sceneEl.querySelectorAll(".context-line, .archive-lines li, .system-nodes li, .split-keywords li, .module-row li, .branch-list li, .skill-wheel li, .roadmap-details li, .large-lines li"), (targets) => {
       window.gsap.killTweensOf(targets);
       window.gsap.fromTo(targets,
         { opacity: 0, y: 30 },
@@ -606,7 +630,7 @@ async function initDentalModel() {
     const key = new THREE.PointLight(0xffffff, 180);
     key.position.set(36, 46, 72);
     scene.add(key);
-    const rim = new THREE.PointLight(0xff1b1b, 80);
+    const rim = new THREE.PointLight(0x6ea8c7, 70);
     rim.position.set(-48, -18, 50);
     scene.add(rim);
 

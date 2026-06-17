@@ -11,9 +11,9 @@
   var isMob = window.innerWidth <= 768;
   var steps = [
     { number: 0, title: "BUILDING FUTURE BLUEPRINT" },
-    { number: 22, title: "LOADING PERSONAL ARCHIVE" },
-    { number: 84, title: "CALIBRATING PATHWAY" },
-    { number: 100, title: "SYSTEM READY" },
+    { number: 22, title: "OPENING PERSONAL ARCHIVE" },
+    { number: 84, title: "ASSEMBLING PATHWAY" },
+    { number: 100, title: "PRESENTATION READY" },
   ];
   var stepIndex = 0;
   var animDone = false;
@@ -81,7 +81,7 @@
       showNumber(step.number, function () {
         if (step.number === 100) {
           window.gsap.to(loaderNumber, {
-            color: "#d00000",
+            color: "#c8a96a",
             duration: 0.32,
             delay: 0.14,
             onComplete: function () {
@@ -130,7 +130,7 @@
         ctx.fillStyle = "rgba(0,0,0,0.92)";
         ctx.fillRect(0, y, glitch.width, h);
         if (Math.random() < 0.68) {
-          ctx.fillStyle = "rgba(208,0,0," + (Math.random() * 0.65 * ease) + ")";
+          ctx.fillStyle = "rgba(200,169,106," + (Math.random() * 0.55 * ease) + ")";
           ctx.fillRect(dx - 4, y, glitch.width, h);
         }
         if (Math.random() < 0.55) {
