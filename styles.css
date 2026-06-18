@@ -432,6 +432,206 @@ body {
   will-change: transform;
 }
 
+.lazy-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lazy-media.is-missing,
+video.is-missing {
+  opacity: 0 !important;
+}
+
+.section-music-production {
+  z-index: 46;
+  background: #070707;
+  color: #f5f0e8;
+}
+
+.music-production-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 56%) minmax(340px, 44%);
+  width: 100%;
+  height: 100%;
+}
+
+.music-production-media {
+  --media-drift: 0px;
+  position: relative;
+  min-width: 0;
+  margin: clamp(36px, 5vw, 84px) 0 clamp(36px, 5vw, 84px) clamp(36px, 5vw, 84px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.28);
+  background: #151515;
+  transform: translate3d(0, var(--media-drift), 0);
+  will-change: opacity, transform;
+}
+
+#music-production-still {
+  object-fit: contain;
+  filter: grayscale(100%) contrast(1.18);
+}
+
+.music-production-video-frame {
+  position: absolute;
+  right: clamp(16px, 3vw, 44px);
+  bottom: clamp(16px, 3vw, 44px);
+  width: min(46%, 430px);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 8px solid #070707;
+  outline: 1px solid rgba(255,255,255,0.5);
+  background: #181818;
+  transform: rotate(1.2deg);
+}
+
+#music-production-poster,
+#music-production-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.12);
+}
+
+#music-production-video {
+  z-index: 2;
+}
+
+.music-production-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(18px, 2.4vh, 32px);
+  padding: clamp(36px, 5vw, 84px);
+}
+
+.music-production-copy p,
+.editorial-copy p {
+  max-width: 46ch;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(17px, 1.45vw, 24px);
+  line-height: 1.38;
+  letter-spacing: 0;
+  will-change: opacity, transform;
+}
+
+.section-editorial-split {
+  z-index: 47;
+  display: grid;
+  grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+  padding: clamp(32px, 5vw, 76px);
+  gap: clamp(30px, 5vw, 84px);
+  background: #cc0000;
+  color: #080808;
+}
+
+.editorial-visual {
+  align-self: stretch;
+  min-width: 0;
+  overflow: hidden;
+  border: 12px solid #111;
+  background: #171717;
+  box-shadow: 18px 22px 0 rgba(0,0,0,0.16);
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.editorial-visual img {
+  filter: grayscale(100%) contrast(1.2);
+}
+
+.editorial-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 3.6vh, 44px);
+}
+
+.music-opportunity-copy p:nth-child(2) {
+  margin-left: clamp(12px, 5vw, 82px);
+  font-size: clamp(21px, 2vw, 34px);
+  line-height: 1.18;
+}
+
+.section-photography-sequence {
+  z-index: 49;
+  background: #050505;
+  color: #f5f0e8;
+  perspective: 1200px;
+}
+
+.photography-stack,
+.photography-phase {
+  position: absolute;
+  inset: 0;
+}
+
+.photography-phase {
+  display: grid;
+  grid-template-columns: minmax(0, 67%) minmax(320px, 33%);
+  opacity: 0;
+  background: #050505;
+  will-change: opacity, transform;
+}
+
+.photography-phase.is-current {
+  z-index: 3;
+}
+
+.photography-image-frame {
+  min-width: 0;
+  height: calc(100% - clamp(48px, 7vw, 110px));
+  margin: clamp(24px, 3.5vw, 55px) 0 clamp(24px, 3.5vw, 55px) clamp(24px, 3.5vw, 55px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: #181818;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.photography-image-frame img {
+  object-fit: cover;
+  filter: grayscale(12%) contrast(1.05);
+  will-change: transform;
+}
+
+.photography-copy {
+  position: relative;
+  align-self: center;
+  z-index: 4;
+  margin-left: clamp(-72px, -4vw, -34px);
+  padding: clamp(28px, 3.6vw, 58px);
+  background: #eee7da;
+  color: #151515;
+  box-shadow: 18px 20px 0 rgba(204,0,0,0.76);
+  transform: rotate(-0.7deg);
+  will-change: opacity, transform;
+}
+
+.photography-copy h2 {
+  max-width: 11ch;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(44px, 5.5vw, 98px);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: 0;
+}
+
+.photography-copy p {
+  max-width: 38ch;
+  margin-top: clamp(20px, 2.4vw, 36px);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(16px, 1.35vw, 22px);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
 .transition-static {
   position: fixed;
   inset: 0;
@@ -837,6 +1037,87 @@ body {
     padding: 8px 10px;
     font-size: clamp(10px, 2.6vw, 11px);
     line-height: 1.22;
+  }
+
+  .music-production-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 45%) minmax(0, 55%);
+  }
+
+  .music-production-media {
+    margin: 16px 16px 0;
+  }
+
+  .music-production-video-frame {
+    right: 12px;
+    bottom: 12px;
+    width: 42%;
+    border-width: 4px;
+  }
+
+  .music-production-copy {
+    gap: 12px;
+    justify-content: start;
+    padding: 18px 18px 22px;
+  }
+
+  .music-production-copy p,
+  .editorial-copy p {
+    max-width: none;
+    font-size: clamp(12px, 3.4vw, 15px);
+    line-height: 1.28;
+  }
+
+  .section-editorial-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 42%) minmax(0, 58%);
+    gap: 0;
+    padding: 16px;
+  }
+
+  .editorial-visual {
+    border-width: 6px;
+    box-shadow: 9px 10px 0 rgba(0,0,0,0.16);
+  }
+
+  .editorial-copy {
+    gap: 14px;
+    justify-content: start;
+    padding: 20px 4px 0;
+  }
+
+  .music-opportunity-copy p:nth-child(2) {
+    margin-left: 8vw;
+    font-size: clamp(16px, 4.5vw, 21px);
+  }
+
+  .photography-phase {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 60%) minmax(0, 40%);
+  }
+
+  .photography-image-frame {
+    height: auto;
+    margin: 14px 14px 0;
+  }
+
+  .photography-copy {
+    align-self: stretch;
+    margin: -18px 22px 16px;
+    padding: 20px;
+    box-shadow: 9px 10px 0 rgba(204,0,0,0.76);
+  }
+
+  .photography-copy h2 {
+    max-width: 14ch;
+    font-size: clamp(33px, 10vw, 54px);
+  }
+
+  .photography-copy p {
+    max-width: none;
+    margin-top: 12px;
+    font-size: clamp(12px, 3.4vw, 15px);
+    line-height: 1.28;
   }
 
   #s7-cards-wrapper {

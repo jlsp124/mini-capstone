@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { activateLazyVideo, loadLazyImage, loadLazyImages, pauseLazyVideo } from "./asset-loader.js";
 
 const sectionEls = new Map();
 const pointer = { x: 0, y: 0, nx: 0, ny: 0 };
@@ -352,22 +353,11 @@ function createProjectLogController() {
   const masthead = section?.querySelector(".paper-masthead");
   const headlineText = headline?.dataset.typeText || "";
 
-  function updateMissingImage() {
-    if (!image) return;
-    const finalSrc = image.dataset.src;
-    if (!finalSrc) {
-      image.classList.add("is-missing");
-      return;
-    }
-    image.classList.add("is-missing");
-  }
-
   return {
     init() {
       if (headline) headline.textContent = "";
       if (image) {
-        image.addEventListener("error", () => image.classList.add("is-missing"), { once: true });
-        updateMissingImage();
+        image.dataset.fallbackSrc = "assets/personal/github-contributions.png";
       }
       [body, caption, imageWrap, masthead].forEach((element) => {
         if (!element) return;
@@ -382,7 +372,7 @@ function createProjectLogController() {
       setHeroVisible(false);
       showOnlySection("project-log");
       if (headline) headline.textContent = "";
-      updateMissingImage();
+      loadLazyImage(image);
     },
     update({ localProgress }) {
       const entrance = reducedMotionMode ? 1 : easeOut(rangeProgress(localProgress, 0, 0.15));
@@ -458,6 +448,173 @@ function createProjectsInterludeController() {
     exit() {
       setSplitProgress(line1, 1);
       setSplitProgress(line2, 1);
+    }
+  };
+}
+
+function createSparseQuoteController(sectionId, textId) {
+  const sentence = document.getElementById(textId);
+
+  return {
+    init() {
+      splitLine(sentence);
+      setSplitProgress(sentence, 0);
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection(sectionId);
+      if (sentence) {
+        sentence.style.opacity = "1";
+        sentence.style.transform = "translate3d(0, 0, 0)";
+      }
+    },
+    update({ localProgress }) {
+      if (reducedMotionMode) {
+        setSplitProgress(sentence, 1);
+        if (sentence) sentence.style.opacity = "1";
+        return;
+      }
+      setSplitProgress(sentence, rangeProgress(localProgress, 0.04, 0.28));
+      setSplitExit(sentence, rangeProgress(localProgress, 0.78, 1), 0.7);
+    },
+    exit() {
+      if (!sentence) return;
+      sentence.style.opacity = "0";
+      sentence.style.transform = "translate3d(0, -18px, 0)";
+    }
+  };
+}
+
+function createMusicProductionController() {
+  const section = document.getElementById("music-production");
+  const media = document.getElementById("music-production-media");
+  const poster = document.getElementById("music-production-poster");
+  const video = document.getElementById("music-production-video");
+  const paragraphs = [1, 2, 3].map((index) => document.getElementById(`music-production-paragraph-${index}`));
+  let active = false;
+
+  return {
+    init() {
+      [media, ...paragraphs].forEach((element) => setElementVisible(element, 0, 34));
+    },
+    enter() {
+      active = true;
+      setHeroVisible(false);
+      showOnlySection("music-production");
+      loadLazyImages(section).then(() => {
+        if (active && !reducedMotionMode) activateLazyVideo(video, poster);
+      });
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(media, rangeProgress(progress, 0, 0.18), 26);
+      setElementVisible(paragraphs[0], rangeProgress(progress, 0.12, 0.32), 34);
+      setElementVisible(paragraphs[1], rangeProgress(progress, 0.36, 0.56), 34);
+      setElementVisible(paragraphs[2], rangeProgress(progress, 0.62, 0.82), 34);
+      if (media) {
+        const drift = reducedMotionMode ? 0 : (progress - 0.5) * -16;
+        media.style.setProperty("--media-drift", `${drift}px`);
+      }
+    },
+    exit() {
+      active = false;
+      pauseLazyVideo(video);
+    }
+  };
+}
+
+function createMusicOpportunityController() {
+  const section = document.getElementById("music-opportunity");
+  const visual = document.getElementById("music-opportunity-visual");
+  const paragraphs = [1, 2, 3].map((index) => document.getElementById(`music-opportunity-paragraph-${index}`));
+
+  return {
+    init() {
+      [visual, ...paragraphs].forEach((element) => setElementVisible(element, 0, 38));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("music-opportunity");
+      loadLazyImages(section);
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(visual, rangeProgress(progress, 0, 0.22), 28);
+      setElementVisible(paragraphs[0], rangeProgress(progress, 0.1, 0.3), 34);
+      setElementVisible(paragraphs[1], rangeProgress(progress, 0.34, 0.54), 34);
+      setElementVisible(paragraphs[2], rangeProgress(progress, 0.58, 0.8), 34);
+      if (visual && !reducedMotionMode) {
+        visual.style.transform = `translate3d(0, ${(0.5 - progress) * 18}px, 0) rotate(${(progress - 0.5) * 1.4}deg)`;
+      }
+    }
+  };
+}
+
+function createPhotographySequenceController() {
+  const section = document.getElementById("photography-sequence");
+  const phases = section ? [...section.querySelectorAll(".photography-phase")] : [];
+  let activePhase = "sunglasses";
+
+  function setPhase(phase, localProgress = 0) {
+    activePhase = phase;
+    if (section) section.dataset.phase = phase;
+    const activeIndex = phases.findIndex((item) => item.dataset.photoPhase === phase);
+    phases.forEach((item, index) => {
+      const active = index === activeIndex;
+      item.classList.toggle("is-current", active);
+      item.setAttribute("aria-hidden", active ? "false" : "true");
+      item.style.pointerEvents = active ? "auto" : "none";
+      const image = item.querySelector("img[data-src]");
+      if (active || index === activeIndex + 1) loadLazyImage(image);
+      if (!active) {
+        const offset = index < activeIndex ? -105 : 105;
+        item.style.opacity = "0";
+        item.style.transform = `translate3d(${offset}%, 0, 0) rotate(${offset < 0 ? -2 : 2}deg)`;
+      }
+    });
+    updatePhase(localProgress);
+  }
+
+  function updatePhase(localProgress) {
+    const current = phases.find((item) => item.dataset.photoPhase === activePhase);
+    if (!current) return;
+    const progress = reducedMotionMode ? 1 : localProgress;
+    const entrance = easeOut(rangeProgress(progress, 0, 0.2));
+    const copy = current.querySelector(".photography-copy");
+    const imageFrame = current.querySelector(".photography-image-frame");
+    current.style.opacity = String(entrance);
+    current.style.transform = `translate3d(${(1 - entrance) * 12}%, 0, 0) rotate(${(1 - entrance) * 1.2}deg)`;
+    if (imageFrame) {
+      const scale = 1.055 - progress * 0.035;
+      imageFrame.style.transform = `scale(${scale}) translate3d(0, ${(0.5 - progress) * 10}px, 0)`;
+    }
+    setElementVisible(copy, rangeProgress(progress, 0.18, 0.42), 34);
+  }
+
+  return {
+    init() {
+      setPhase("sunglasses", 0);
+    },
+    enter({ beat, localProgress }) {
+      setHeroVisible(false);
+      showOnlySection("photography-sequence");
+      setPhase(beat.phase, localProgress);
+    },
+    changePhase({ phase, localProgress }) {
+      setPhase(phase, localProgress);
+    },
+    update({ beat, localProgress }) {
+      if (beat.phase !== activePhase) setPhase(beat.phase, localProgress);
+      updatePhase(localProgress);
+    },
+    pointerMove(event) {
+      if (reducedMotionMode) return;
+      const current = phases.find((item) => item.dataset.photoPhase === activePhase);
+      const image = current?.querySelector("img");
+      if (!image) return;
+      const nx = (event.clientX / window.innerWidth) * 2 - 1;
+      const ny = (event.clientY / window.innerHeight) * 2 - 1;
+      image.style.transform = `translate3d(${nx * 8}px, ${ny * 6}px, 0) scale(1.03)`;
     }
   };
 }
@@ -820,12 +977,31 @@ export function createSectionControllers(options = {}) {
     openingInterlude: createOpeningInterludeController(),
     projectLog: createProjectLogController(),
     projectsInterlude: createProjectsInterludeController(),
+    musicIntroduction: createSparseQuoteController("music-introduction", "music-introduction-text"),
+    musicProduction: createMusicProductionController(),
+    musicProgress: createSparseQuoteController("music-progress", "music-progress-text"),
+    musicOpportunity: createMusicOpportunityController(),
+    photographyIntroduction: createSparseQuoteController("photography-introduction", "photography-introduction-text"),
+    photographySequence: createPhotographySequenceController(),
+    photographyEnding: createSparseQuoteController("photography-ending", "photography-ending-text"),
     object: createReserveObjectController(),
     stack: createReserveStackController(),
     ending: createReserveEndingController()
   };
 
-  ["opening", "openingInterlude", "projectLog", "projectsInterlude"].forEach((key) => {
+  [
+    "opening",
+    "openingInterlude",
+    "projectLog",
+    "projectsInterlude",
+    "musicIntroduction",
+    "musicProduction",
+    "musicProgress",
+    "musicOpportunity",
+    "photographyIntroduction",
+    "photographySequence",
+    "photographyEnding"
+  ].forEach((key) => {
     controllers[key]?.init?.();
   });
 
