@@ -180,6 +180,13 @@ export function setCursorWord(word) {
   cursorText.textContent = word;
 }
 
+export function setCursorHidden(hidden) {
+  const cursorText = document.getElementById("cursor-text");
+  if (!cursorText) return;
+  cursorText.dataset.hidden = hidden ? "true" : "false";
+  if (hidden) cursorText.style.opacity = "0";
+}
+
 export function handlePointerMove(event) {
   pointer.x = event.clientX;
   pointer.y = event.clientY;
@@ -192,7 +199,7 @@ export function handlePointerMove(event) {
   if (cursorText) {
     cursorText.style.left = `${event.clientX}px`;
     cursorText.style.top = `${event.clientY}px`;
-    cursorText.style.opacity = currentCursorWord ? "1" : "0";
+    cursorText.style.opacity = currentCursorWord && cursorText.dataset.hidden !== "true" ? "1" : "0";
   }
 }
 
@@ -1021,6 +1028,243 @@ function createBuildingProjectController() {
   };
 }
 
+function createAiToolsController() {
+  const section = document.getElementById("ai-tools");
+  const statement = document.getElementById("ai-tools-statement");
+  const visual = section?.querySelector(".ai-tools-visual");
+  const process = section?.querySelector(".ai-tools-process");
+  const lines = process ? [...process.querySelectorAll("p")] : [];
+  let phase = "statement";
+
+  function applyPhase(nextPhase) {
+    phase = nextPhase;
+    if (section) section.dataset.phase = phase;
+    if (process) process.setAttribute("aria-hidden", phase === "process" ? "false" : "true");
+  }
+
+  function updatePhase(localProgress) {
+    const progress = reducedMotionMode ? 1 : localProgress;
+    if (phase === "statement") {
+      setElementVisible(statement, rangeProgress(progress, 0.02, 0.28), 44);
+      if (visual) visual.style.opacity = "0";
+      if (process) process.style.opacity = "0";
+      return;
+    }
+
+    loadLazyImages(section);
+    if (statement) statement.style.opacity = "0";
+    setElementVisible(visual, rangeProgress(progress, 0, 0.22), 30);
+    if (process) process.style.opacity = "1";
+    lines.forEach((line, index) => {
+      const start = 0.12 + index * 0.24;
+      setElementVisible(line, rangeProgress(progress, start, start + 0.2), 34);
+    });
+  }
+
+  return {
+    init() {
+      applyPhase("statement");
+      [statement, visual, ...lines].forEach((element) => setElementVisible(element, 0, 38));
+    },
+    enter({ beat, localProgress }) {
+      setHeroVisible(false);
+      showOnlySection("ai-tools");
+      applyPhase(beat.phase);
+      updatePhase(localProgress);
+    },
+    changePhase({ phase: nextPhase, localProgress }) {
+      applyPhase(nextPhase);
+      updatePhase(localProgress);
+    },
+    update({ beat, localProgress }) {
+      if (beat.phase !== phase) applyPhase(beat.phase);
+      updatePhase(localProgress);
+    }
+  };
+}
+
+function createConnectionsController() {
+  const section = document.getElementById("connections");
+  const visual = document.getElementById("connections-visual");
+  const quoteLines = [...document.querySelectorAll("#connections-quote p")];
+  const context = document.getElementById("connections-context");
+  return {
+    init() {
+      [visual, ...quoteLines, context].forEach((element) => setElementVisible(element, 0, 40));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("connections");
+      loadLazyImages(section);
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(visual, rangeProgress(progress, 0, 0.22), 30);
+      setElementVisible(quoteLines[0], rangeProgress(progress, 0.14, 0.34), 38);
+      setElementVisible(quoteLines[1], rangeProgress(progress, 0.36, 0.56), 38);
+      setElementVisible(context, rangeProgress(progress, 0.6, 0.8), 28);
+    },
+    pointerMove(event) {
+      if (!visual || reducedMotionMode) return;
+      const nx = (event.clientX / window.innerWidth) * 2 - 1;
+      const ny = (event.clientY / window.innerHeight) * 2 - 1;
+      visual.style.transform = `translate3d(${nx * 8}px, ${ny * 6}px, 0) rotate(${nx * 0.8}deg)`;
+    }
+  };
+}
+
+function createContinuationStackController() {
+  const section = document.getElementById("continuation-stack");
+  const images = section ? [...section.querySelectorAll(".continuation-images figure")] : [];
+  const main = document.getElementById("continuation-main");
+  const context = document.getElementById("continuation-context");
+  const rotations = [-5, 4, -3, 5];
+
+  return {
+    init() {
+      images.forEach((image) => { image.style.opacity = "0"; });
+      [main, context].forEach((element) => setElementVisible(element, 0, 40));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("continuation-stack");
+      loadLazyImages(section);
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      images.forEach((image, index) => {
+        const start = 0.02 + index * 0.12;
+        const reveal = easeOut(rangeProgress(progress, start, start + 0.18));
+        image.style.opacity = String(reveal);
+        image.style.transform = `translate3d(${(1 - reveal) * (index % 2 ? 90 : -90)}px, ${(1 - reveal) * 55}px, 0) rotate(${rotations[index]}deg)`;
+      });
+      setElementVisible(main, rangeProgress(progress, 0.42, 0.64), 40);
+      setElementVisible(context, rangeProgress(progress, 0.68, 0.84), 28);
+    }
+  };
+}
+
+function createNextVersionController() {
+  const section = document.getElementById("next-version");
+  const visual = section?.querySelector(".next-version-visual");
+  const path = document.getElementById("next-version-path");
+  const copy = section?.querySelector(".next-version-copy");
+  const lines = copy ? [...copy.querySelectorAll("p")] : [];
+  let phase = "path";
+
+  function applyPhase(nextPhase) {
+    phase = nextPhase;
+    if (section) section.dataset.phase = phase;
+    if (copy) copy.setAttribute("aria-hidden", phase === "keep-going" ? "false" : "true");
+  }
+
+  function updatePhase(localProgress) {
+    const progress = reducedMotionMode ? 1 : localProgress;
+    setElementVisible(visual, rangeProgress(progress, 0, 0.2), 22);
+    if (phase === "path") {
+      setElementVisible(path, rangeProgress(progress, 0.08, 0.32), 46);
+      if (copy) copy.style.opacity = "0";
+      return;
+    }
+
+    if (path) path.style.opacity = "0";
+    if (copy) copy.style.opacity = "1";
+    lines.forEach((line, index) => {
+      const start = index === 0 ? 0.02 : 0.16 + (index - 1) * 0.125;
+      const end = index === lines.length - 1 ? start + 0.11 : start + 0.16;
+      setElementVisible(line, rangeProgress(progress, start, end), 30);
+    });
+  }
+
+  return {
+    init() {
+      applyPhase("path");
+      [visual, path, ...lines].forEach((element) => setElementVisible(element, 0, 40));
+    },
+    enter({ beat, localProgress }) {
+      setCursorHidden(false);
+      setHeroVisible(false);
+      showOnlySection("next-version");
+      loadLazyImages(section);
+      applyPhase(beat.phase);
+      updatePhase(localProgress);
+    },
+    changePhase({ phase: nextPhase, localProgress }) {
+      applyPhase(nextPhase);
+      updatePhase(localProgress);
+    },
+    update({ beat, localProgress }) {
+      if (beat.phase !== phase) applyPhase(beat.phase);
+      updatePhase(localProgress);
+    }
+  };
+}
+
+function createEndingController() {
+  const section = document.getElementById("ending");
+  const sourcesWrap = section?.querySelector(".ending-sources");
+  const sourceLines = sourcesWrap ? [...sourcesWrap.querySelectorAll("p")] : [];
+  const finalWrap = section?.querySelector(".ending-final");
+  const quote = document.getElementById("ending-quote");
+  const credit = document.getElementById("ending-credit");
+  let phase = "sources";
+
+  function applyPhase(nextPhase) {
+    phase = nextPhase;
+    if (section) section.dataset.phase = phase;
+    if (sourcesWrap) sourcesWrap.setAttribute("aria-hidden", phase === "sources" ? "false" : "true");
+    if (finalWrap) finalWrap.setAttribute("aria-hidden", phase === "final" ? "false" : "true");
+    if (phase === "sources") setCursorHidden(false);
+  }
+
+  function updatePhase(localProgress) {
+    if (phase === "sources") {
+      const progress = reducedMotionMode ? 0.7 : localProgress;
+      const fade = reducedMotionMode ? 1 : 1 - rangeProgress(progress, 0.78, 0.98);
+      if (sourcesWrap) sourcesWrap.style.opacity = "1";
+      if (finalWrap) finalWrap.style.opacity = "0";
+      sourceLines.forEach((line, index) => {
+        const reveal = rangeProgress(progress, 0.05 + index * 0.15, 0.2 + index * 0.15);
+        setElementVisible(line, reveal * fade, 30);
+      });
+      return;
+    }
+
+    const progress = reducedMotionMode ? 1 : localProgress;
+    sourceLines.forEach((line) => { line.style.opacity = "0"; });
+    if (sourcesWrap) sourcesWrap.style.opacity = "0";
+    if (finalWrap) finalWrap.style.opacity = "1";
+    setElementVisible(quote, rangeProgress(progress, 0.1, 0.42), 50);
+    setElementVisible(credit, rangeProgress(progress, 0.56, 0.74), 28);
+    setCursorHidden(progress >= 0.74);
+  }
+
+  return {
+    init() {
+      applyPhase("sources");
+      sourceLines.forEach((line) => setElementVisible(line, 0, 30));
+      [quote, credit].forEach((element) => setElementVisible(element, 0, 46));
+    },
+    enter({ beat, localProgress }) {
+      setHeroVisible(false);
+      showOnlySection("ending");
+      applyPhase(beat.phase);
+      updatePhase(localProgress);
+    },
+    changePhase({ phase: nextPhase, localProgress }) {
+      applyPhase(nextPhase);
+      updatePhase(localProgress);
+    },
+    update({ beat, localProgress }) {
+      if (beat.phase !== phase) applyPhase(beat.phase);
+      updatePhase(localProgress);
+    },
+    exit() {
+      setCursorHidden(false);
+    }
+  };
+}
+
 function initObjectSection() {
   const canvas = document.getElementById("book-canvas");
   if (!canvas || objectRenderer) return;
@@ -1395,9 +1639,15 @@ export function createSectionControllers(options = {}) {
     healthcareOwnership: createHealthcareOwnershipController(),
     practiceSystem: createPracticeSystemController(),
     buildingProject: createBuildingProjectController(),
+    aiTools: createAiToolsController(),
+    connections: createConnectionsController(),
+    continuationStack: createContinuationStackController(),
+    integration: createSparseQuoteController("integration", "integration-text"),
+    nextVersion: createNextVersionController(),
+    ending: createEndingController(),
     object: createReserveObjectController(),
     stack: createReserveStackController(),
-    ending: createReserveEndingController()
+    reserveEnding: createReserveEndingController()
   };
 
   [
@@ -1420,7 +1670,13 @@ export function createSectionControllers(options = {}) {
     "dentalModel",
     "healthcareOwnership",
     "practiceSystem",
-    "buildingProject"
+    "buildingProject",
+    "aiTools",
+    "connections",
+    "continuationStack",
+    "integration",
+    "nextVersion",
+    "ending"
   ].forEach((key) => {
     controllers[key]?.init?.();
   });

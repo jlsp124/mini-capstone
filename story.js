@@ -248,6 +248,96 @@ export const storyBeats = [
     mobileUnits: 3.6,
     transitionIn: "none",
     controller: "buildingProject"
+  },
+  {
+    key: "beat-26-tools",
+    act: "OPPORTUNITY",
+    sectionId: "ai-tools",
+    phase: "statement",
+    desktopUnits: 3.2,
+    mobileUnits: 2.4,
+    transitionIn: "signal",
+    controller: "aiTools"
+  },
+  {
+    key: "beat-27-how-i-use-ai",
+    act: "OPPORTUNITY",
+    sectionId: "ai-tools",
+    phase: "process",
+    desktopUnits: 5.0,
+    mobileUnits: 4.0,
+    transitionIn: "none",
+    controller: "aiTools"
+  },
+  {
+    key: "beat-28-connections",
+    act: "OPPORTUNITY",
+    sectionId: "connections",
+    phase: "default",
+    desktopUnits: 5.2,
+    mobileUnits: 4.2,
+    transitionIn: "element",
+    controller: "connections"
+  },
+  {
+    key: "beat-29-parts-continue",
+    act: "OPPORTUNITY",
+    sectionId: "continuation-stack",
+    phase: "default",
+    desktopUnits: 6.4,
+    mobileUnits: 5.0,
+    transitionIn: "signal",
+    controller: "continuationStack"
+  },
+  {
+    key: "beat-30-integration",
+    act: "OPPORTUNITY",
+    sectionId: "integration",
+    phase: "default",
+    desktopUnits: 4.0,
+    mobileUnits: 3.0,
+    transitionIn: "signal",
+    controller: "integration"
+  },
+  {
+    key: "beat-31-path",
+    act: "DIRECTION",
+    sectionId: "next-version",
+    phase: "path",
+    desktopUnits: 3.6,
+    mobileUnits: 2.7,
+    transitionIn: "element",
+    controller: "nextVersion"
+  },
+  {
+    key: "beat-32-next-version",
+    act: "DIRECTION",
+    sectionId: "next-version",
+    phase: "keep-going",
+    desktopUnits: 7.2,
+    mobileUnits: 5.5,
+    transitionIn: "none",
+    controller: "nextVersion"
+  },
+  {
+    key: "beat-33-sources",
+    act: "DIRECTION",
+    sectionId: "ending",
+    phase: "sources",
+    desktopUnits: 5.4,
+    mobileUnits: 4.2,
+    transitionIn: "curtain",
+    controller: "ending"
+  },
+  {
+    key: "beat-34-ending",
+    act: "DIRECTION",
+    sectionId: "ending",
+    phase: "final",
+    desktopUnits: 5.0,
+    mobileUnits: 3.8,
+    transitionIn: "none",
+    controller: "ending"
   }
 ];
 
