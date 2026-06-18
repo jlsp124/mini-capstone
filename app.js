@@ -55,12 +55,24 @@ function getTransitionMode() {
 }
 
 const motionDiagnostics = {};
+let getTimelineDiagnostics = () => ({
+  currentBeat: null,
+  revealProgress: reducedMotion ? 1 : 0,
+  revealComplete: reducedMotion,
+  queuedBeat: null,
+  transitioning: false
+});
 Object.defineProperties(motionDiagnostics, {
   isMobile: { enumerable: true, get: () => isMobile },
   reducedMotion: { enumerable: true, get: () => reducedMotion },
   gsapAvailable: { enumerable: true, get: () => gsapAvailable },
   splitTextAvailable: { enumerable: true, get: () => splitTextAvailable },
-  transitionMode: { enumerable: true, get: getTransitionMode }
+  transitionMode: { enumerable: true, get: getTransitionMode },
+  currentBeat: { enumerable: true, get: () => getTimelineDiagnostics().currentBeat },
+  revealProgress: { enumerable: true, get: () => getTimelineDiagnostics().revealProgress },
+  revealComplete: { enumerable: true, get: () => getTimelineDiagnostics().revealComplete },
+  queuedBeat: { enumerable: true, get: () => getTimelineDiagnostics().queuedBeat },
+  transitioning: { enumerable: true, get: () => getTimelineDiagnostics().transitioning }
 });
 Object.freeze(motionDiagnostics);
 Object.defineProperty(window, "__motionDiagnostics", {
@@ -106,8 +118,20 @@ const timeline = createTimelineController({
   showOnlySection,
   getSectionElement,
   setBeatLabel,
-  prefersReducedMotion: reducedMotion
+  prefersReducedMotion: reducedMotion,
+  getIsMobile: () => isMobile
 });
+
+getTimelineDiagnostics = () => {
+  const state = timeline.getState();
+  return {
+    currentBeat: state.currentBeat?.key || null,
+    revealProgress: state.revealProgress,
+    revealComplete: state.revealComplete,
+    queuedBeat: state.queuedBeat?.key || null,
+    transitioning: state.transitioning
+  };
+};
 
 timeline.update(getPageProgress());
 
@@ -157,6 +181,21 @@ window.__foundationState = {
   },
   get progress() {
     return getPageProgress();
+  },
+  get currentBeat() {
+    return getTimelineDiagnostics().currentBeat;
+  },
+  get revealProgress() {
+    return getTimelineDiagnostics().revealProgress;
+  },
+  get revealComplete() {
+    return getTimelineDiagnostics().revealComplete;
+  },
+  get queuedBeat() {
+    return getTimelineDiagnostics().queuedBeat;
+  },
+  get transitioning() {
+    return getTimelineDiagnostics().transitioning;
   },
   get timeline() {
     return timeline.getState();

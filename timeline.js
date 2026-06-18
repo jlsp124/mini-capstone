@@ -10,7 +10,8 @@ export function createTimelineController({
   showOnlySection,
   getSectionElement,
   setBeatLabel,
-  prefersReducedMotion = false
+  prefersReducedMotion = false,
+  getIsMobile = () => false
 }) {
   let beatEntries = entries;
   let currentIndex = -1;
@@ -22,18 +23,46 @@ export function createTimelineController({
   let activeAct = null;
   let initialRevealed = false;
   let revealStartedAt = null;
+  let revealProgress = prefersReducedMotion ? 1 : 0;
+  let revealComplete = prefersReducedMotion;
+
+  function getAutoplayDuration(entry) {
+    const isMobile = getIsMobile();
+    const configuredDuration = isMobile ? entry?.mobileAutoplayMs : entry?.autoplayMs;
+    const defaultDuration = isMobile ? 1450 : 2300;
+    return Math.max(300, Number(configuredDuration) || defaultDuration);
+  }
 
   function startReveal(entry) {
     revealStartedAt = prefersReducedMotion ? null : performance.now();
+    revealProgress = prefersReducedMotion ? 1 : 0;
+    revealComplete = prefersReducedMotion;
     setBeatLabel?.(entry);
   }
 
   function getRevealProgress(entry, localProgress) {
-    if (prefersReducedMotion) return 1;
-    if (revealStartedAt === null) return localProgress;
-    const duration = Math.max(300, Number(entry?.autoplayMs) || 1450);
+    if (prefersReducedMotion) {
+      revealProgress = 1;
+      revealComplete = true;
+      return revealProgress;
+    }
+    if (revealStartedAt === null) {
+      revealProgress = getIsMobile() ? localProgress : 0;
+      revealComplete = revealProgress >= 1;
+      return revealProgress;
+    }
+    const duration = getAutoplayDuration(entry);
     const autoplayProgress = Math.min(1, (performance.now() - revealStartedAt) / duration);
-    return Math.max(localProgress, autoplayProgress);
+    revealProgress = getIsMobile()
+      ? Math.max(localProgress, autoplayProgress)
+      : autoplayProgress;
+    revealComplete = revealProgress >= 1;
+    return revealProgress;
+  }
+
+  function getInitialRevealProgress(entry, progress) {
+    if (prefersReducedMotion) return 1;
+    return getIsMobile() ? getLocalProgress(progress, entry) : 0;
   }
 
   function getProgressContext(entry, progress, updateDirection = direction) {
@@ -87,7 +116,7 @@ export function createTimelineController({
       beat: toEntry,
       phase: toEntry.phase,
       direction,
-      localProgress: getLocalProgress(progress, toEntry)
+      localProgress: getInitialRevealProgress(toEntry, progress)
     });
     runUpdate(progress);
   }
@@ -130,7 +159,7 @@ export function createTimelineController({
           beat: toEntry,
           fromBeat: fromEntry,
           direction: transitionDirection,
-          localProgress: getLocalProgress(progress, toEntry)
+          localProgress: getInitialRevealProgress(toEntry, progress)
         });
         toController?.update?.(getProgressContext(toEntry, progress, transitionDirection));
       }
@@ -153,6 +182,7 @@ export function createTimelineController({
     if (!beatEntries.length) return;
     const targetIndex = clampIndex(index, beatEntries);
     if (targetIndex === currentIndex) {
+      pendingIndex = null;
       runUpdate(progress);
       return;
     }
@@ -164,6 +194,14 @@ export function createTimelineController({
 
     const current = beatEntries[currentIndex];
     const target = beatEntries[targetIndex];
+    getRevealProgress(current, getLocalProgress(progress, current));
+    if (!getIsMobile() && !prefersReducedMotion && !revealComplete) {
+      pendingIndex = targetIndex;
+      runUpdate(progress);
+      return;
+    }
+
+    pendingIndex = null;
     if (current && target && current.sectionId === target.sectionId) {
       changeWithinSection(targetIndex, progress);
       return;
@@ -221,7 +259,10 @@ export function createTimelineController({
         direction,
         transitioning,
         pendingIndex,
-        currentBeat: beatEntries[currentIndex] || null
+        currentBeat: beatEntries[currentIndex] || null,
+        revealProgress,
+        revealComplete,
+        queuedBeat: pendingIndex === null ? null : beatEntries[pendingIndex] || null
       };
     }
   };
