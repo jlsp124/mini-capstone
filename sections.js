@@ -30,6 +30,19 @@ let objectTextInitialized = false;
 let objectTiltX = 0;
 let objectTiltZ = 0;
 
+let dentalRenderer = null;
+let dentalScene = null;
+let dentalCamera = null;
+let dentalModel = null;
+let dentalActive = false;
+let dentalLoading = false;
+let dentalLoaded = false;
+let dentalFailed = false;
+let dentalAnimationStarted = false;
+let dentalVelocity = 0;
+let dentalTiltX = 0;
+let dentalTiltZ = 0;
+
 const stackCount = 9;
 const stackRotations = [-6, 5, -8, 4, -3, 7, -5, 3, 0];
 const stackOffsets = [
@@ -185,6 +198,7 @@ export function handlePointerMove(event) {
 
 export function updateObjectVelocity(deltaY) {
   if (objectActive) objectVelocity = Math.min(Math.abs(deltaY) / 20, 3);
+  if (dentalActive) dentalVelocity = Math.min(Math.abs(deltaY) / 20, 3);
 }
 
 function initHero({ isMobile }) {
@@ -619,6 +633,394 @@ function createPhotographySequenceController() {
   };
 }
 
+function createOriginInterludeController() {
+  const line1 = document.getElementById("origin-interlude-line-1");
+  const line2 = document.getElementById("origin-interlude-line-2");
+
+  return {
+    init() {
+      [line1, line2].forEach((line) => {
+        splitLine(line);
+        setSplitProgress(line, 0);
+      });
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("origin-interlude");
+      [line1, line2].forEach((line) => {
+        if (!line) return;
+        line.style.opacity = "1";
+        line.style.transform = "translate3d(0, 0, 0)";
+      });
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setSplitProgress(line1, rangeProgress(progress, 0, 0.24));
+      setSplitProgress(line2, rangeProgress(progress, 0.4, 0.68));
+    }
+  };
+}
+
+function createKindergartenArchiveController() {
+  const section = document.getElementById("kindergarten-archive");
+  const frame = section?.querySelector(".archive-media-frame");
+  const headline = document.getElementById("kindergarten-headline");
+  const context = document.getElementById("kindergarten-context");
+  const poster = document.getElementById("kindergarten-poster");
+  const video = document.getElementById("kindergarten-video");
+  let active = false;
+
+  return {
+    init() {
+      [frame, headline, context].forEach((element) => setElementVisible(element, 0, 38));
+    },
+    enter() {
+      active = true;
+      setHeroVisible(false);
+      showOnlySection("kindergarten-archive");
+      loadLazyImages(section).then(() => {
+        if (active && !reducedMotionMode) activateLazyVideo(video, poster);
+      });
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(frame, rangeProgress(progress, 0, 0.22), 26);
+      setElementVisible(headline, rangeProgress(progress, 0.18, 0.46), 42);
+      setElementVisible(context, rangeProgress(progress, 0.5, 0.72), 28);
+    },
+    exit() {
+      active = false;
+      pauseLazyVideo(video);
+    }
+  };
+}
+
+function createOralSurgeryRevealController() {
+  const title = document.getElementById("oral-surgery-title");
+  const main = document.getElementById("oral-surgery-main");
+  const context = document.getElementById("oral-surgery-context");
+
+  return {
+    init() {
+      [title, main, context].forEach((element) => setElementVisible(element, 0, 54));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("oral-surgery-reveal");
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      const titleProgress = easeOut(rangeProgress(progress, 0.02, 0.32));
+      if (title) {
+        title.style.opacity = String(titleProgress);
+        title.style.clipPath = `inset(${(1 - titleProgress) * 100}% 0 0 0)`;
+        title.style.transform = `translate3d(0, ${(1 - titleProgress) * 56}px, 0)`;
+      }
+      setElementVisible(main, rangeProgress(progress, 0.36, 0.58), 34);
+      setElementVisible(context, rangeProgress(progress, 0.62, 0.82), 28);
+    }
+  };
+}
+
+function createWhyItFitsController() {
+  const main = document.getElementById("why-it-fits-main");
+  const phrases = [...document.querySelectorAll("#why-it-fits .why-it-fits-phrases span")];
+
+  return {
+    init() {
+      setElementVisible(main, 0, 44);
+      phrases.forEach((phrase) => setElementVisible(phrase, 0, 26));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("why-it-fits");
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(main, rangeProgress(progress, 0, 0.25), 42);
+      phrases.forEach((phrase, index) => {
+        const start = 0.2 + index * 0.085;
+        setElementVisible(phrase, rangeProgress(progress, start, start + 0.16), index % 2 ? -24 : 24);
+      });
+    }
+  };
+}
+
+function renderDentalFrame() {
+  if (!dentalRenderer || !dentalScene || !dentalCamera) return;
+  dentalRenderer.render(dentalScene, dentalCamera);
+}
+
+function animateDentalModel() {
+  requestAnimationFrame(animateDentalModel);
+  if (!dentalActive || reducedMotionMode) return;
+  dentalVelocity *= 0.9;
+  if (dentalModel) {
+    dentalModel.rotation.y += 0.004 + dentalVelocity * 0.055;
+    dentalModel.rotation.x += (dentalTiltX - dentalModel.rotation.x) * 0.045;
+    dentalModel.rotation.z += (dentalTiltZ - dentalModel.rotation.z) * 0.045;
+  }
+  renderDentalFrame();
+}
+
+async function prepareDentalModel() {
+  if (dentalLoading || dentalLoaded || dentalFailed) return;
+  const canvas = document.getElementById("dental-model-canvas");
+  if (!canvas) return;
+  dentalLoading = true;
+
+  try {
+    dentalScene = new THREE.Scene();
+    dentalCamera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
+    dentalCamera.position.set(0, 0.15, isMobileMode ? 5.2 : 4.2);
+    dentalRenderer = new THREE.WebGLRenderer({
+      antialias: !isMobileMode,
+      alpha: true,
+      canvas,
+      powerPreference: "high-performance"
+    });
+    dentalRenderer.setSize(window.innerWidth, window.innerHeight);
+    dentalRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileMode ? 1 : 2));
+    dentalRenderer.setClearColor(0x000000, 0);
+    dentalRenderer.outputColorSpace = THREE.SRGBColorSpace;
+    dentalRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    dentalRenderer.toneMappingExposure = 1.25;
+
+    const key = new THREE.DirectionalLight(0xffffff, 5.2);
+    key.position.set(4, 6, 5);
+    const fill = new THREE.DirectionalLight(0xb9d9ff, 2.4);
+    fill.position.set(-5, 1, 4);
+    const rim = new THREE.DirectionalLight(0xffffff, 3.2);
+    rim.position.set(0, -3, -4);
+    dentalScene.add(key, fill, rim, new THREE.AmbientLight(0xffffff, 0.8));
+
+    const { STLLoader } = await import("jsm/loaders/STLLoader.js");
+    const loader = new STLLoader();
+    loader.load(
+      "assets/dental/lower-teeth.stl",
+      (geometry) => {
+        geometry.computeBoundingBox();
+        const box = geometry.boundingBox;
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
+        box.getCenter(center);
+        box.getSize(size);
+        geometry.translate(-center.x, -center.y, -center.z);
+        geometry.computeVertexNormals();
+
+        const material = new THREE.MeshPhysicalMaterial({
+          color: 0xe9eef1,
+          roughness: 0.32,
+          metalness: 0.04,
+          clearcoat: 0.28,
+          clearcoatRoughness: 0.24
+        });
+        dentalModel = new THREE.Mesh(geometry, material);
+        const maxDimension = Math.max(size.x, size.y, size.z) || 1;
+        dentalModel.scale.setScalar((isMobileMode ? 2.55 : 3.15) / maxDimension);
+        dentalModel.rotation.set(-0.34, -0.4, 0.03);
+        dentalScene.add(dentalModel);
+        dentalLoaded = true;
+        dentalLoading = false;
+        document.getElementById("dental-model")?.classList.add("is-model-ready");
+        renderDentalFrame();
+      },
+      undefined,
+      () => {
+        dentalLoading = false;
+        dentalFailed = true;
+        document.getElementById("dental-model")?.classList.add("is-model-missing");
+        window.__missingAssets = [...new Set([...(window.__missingAssets || []), "assets/dental/lower-teeth.stl"] )];
+      }
+    );
+
+    if (!dentalAnimationStarted) {
+      dentalAnimationStarted = true;
+      animateDentalModel();
+    }
+  } catch (error) {
+    dentalLoading = false;
+    dentalFailed = true;
+    document.getElementById("dental-model")?.classList.add("is-model-missing");
+    console.error("Unable to initialize the dental model", error);
+  }
+}
+
+function resizeDentalRenderer() {
+  if (!dentalRenderer || !dentalCamera) return;
+  dentalCamera.aspect = window.innerWidth / window.innerHeight;
+  dentalCamera.position.z = isMobileMode ? 5.2 : 4.2;
+  dentalCamera.updateProjectionMatrix();
+  dentalRenderer.setSize(window.innerWidth, window.innerHeight);
+  renderDentalFrame();
+}
+
+function createDentalScanIntroductionController() {
+  const base = createSparseQuoteController("dental-scan-introduction", "dental-scan-introduction-text");
+  return {
+    ...base,
+    enter(args) {
+      base.enter(args);
+      prepareDentalModel();
+    }
+  };
+}
+
+function createDentalModelController() {
+  const paragraphs = [1, 2].map((index) => document.getElementById(`dental-model-paragraph-${index}`));
+  const words = [...document.querySelectorAll("#dental-model .dental-model-words span")];
+
+  return {
+    init() {
+      paragraphs.forEach((paragraph) => setElementVisible(paragraph, 0, 34));
+      words.forEach((word) => setElementVisible(word, 0, 22));
+    },
+    enter() {
+      dentalActive = true;
+      setHeroVisible(false);
+      showOnlySection("dental-model");
+      prepareDentalModel();
+      renderDentalFrame();
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(paragraphs[0], rangeProgress(progress, 0.1, 0.32), 34);
+      setElementVisible(paragraphs[1], rangeProgress(progress, 0.48, 0.7), 34);
+      words.forEach((word, index) => {
+        const start = 0.04 + index * 0.095;
+        setElementVisible(word, rangeProgress(progress, start, start + 0.16), index % 2 ? -18 : 18);
+      });
+      if (reducedMotionMode) renderDentalFrame();
+    },
+    exit() {
+      dentalActive = false;
+      dentalVelocity = 0;
+    },
+    pointerMove(event) {
+      if (reducedMotionMode) return;
+      const nx = (event.clientX / window.innerWidth) * 2 - 1;
+      const ny = (event.clientY / window.innerHeight) * 2 - 1;
+      dentalTiltX = -0.34 + ny * 0.22;
+      dentalTiltZ = -nx * 0.14;
+    },
+    resize: resizeDentalRenderer
+  };
+}
+
+function createHealthcareOwnershipController() {
+  const main = document.getElementById("healthcare-ownership-main");
+  const context = document.getElementById("healthcare-ownership-context");
+  return {
+    init() {
+      [main, context].forEach((element) => setElementVisible(element, 0, 46));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("healthcare-ownership");
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(main, rangeProgress(progress, 0, 0.34), 44);
+      setElementVisible(context, rangeProgress(progress, 0.46, 0.72), 32);
+    }
+  };
+}
+
+function createPracticeSystemController() {
+  const main = document.getElementById("practice-system-main");
+  const phrases = [...document.querySelectorAll("#practice-system .practice-system-phrases span")];
+  return {
+    init() {
+      setElementVisible(main, 0, 44);
+      phrases.forEach((phrase) => setElementVisible(phrase, 0, 24));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("practice-system");
+    },
+    update({ localProgress }) {
+      const progress = reducedMotionMode ? 1 : localProgress;
+      setElementVisible(main, rangeProgress(progress, 0, 0.24), 42);
+      phrases.forEach((phrase, index) => {
+        const start = 0.18 + index * 0.062;
+        setElementVisible(phrase, rangeProgress(progress, start, start + 0.15), index % 2 ? -20 : 20);
+      });
+    }
+  };
+}
+
+function createBuildingProjectController() {
+  const section = document.getElementById("building-project");
+  const images = section ? [...section.querySelectorAll(".building-image")] : [];
+  const projectCopy = section?.querySelector('[data-building-copy="project"]');
+  const expansionCopy = section?.querySelector('[data-building-copy="expansion"]');
+  const headline = document.getElementById("building-project-headline");
+  const context = document.getElementById("building-project-context");
+  const reflection = document.getElementById("building-project-reflection");
+  const expansionMain = document.getElementById("building-expansion-main");
+  const expansionContext = document.getElementById("building-expansion-context");
+  let phase = "project";
+
+  function applyPhase(nextPhase) {
+    phase = nextPhase;
+    if (section) section.dataset.phase = phase;
+    if (projectCopy) projectCopy.setAttribute("aria-hidden", phase === "project" ? "false" : "true");
+    if (expansionCopy) expansionCopy.setAttribute("aria-hidden", phase === "expansion" ? "false" : "true");
+  }
+
+  function updateProject(progress) {
+    setElementVisible(headline, rangeProgress(progress, 0, 0.16), 36);
+    images.forEach((image, index) => {
+      const start = 0.04 + index * 0.17;
+      const reveal = easeOut(rangeProgress(progress, start, start + 0.17));
+      image.style.opacity = String(reveal);
+      image.style.transform = `translate3d(${(1 - reveal) * (index % 2 ? 90 : -90)}px, ${(1 - reveal) * 60}px, 0) rotate(${(index - 1) * 3.5}deg)`;
+    });
+    setElementVisible(context, rangeProgress(progress, 0.58, 0.72), 28);
+    setElementVisible(reflection, rangeProgress(progress, 0.76, 0.9), 28);
+    if (projectCopy) projectCopy.style.opacity = "1";
+    if (expansionCopy) expansionCopy.style.opacity = "0";
+  }
+
+  function updateExpansion(progress) {
+    images.forEach((image, index) => {
+      image.style.opacity = String(0.34 + index * 0.18);
+      image.style.transform = `translate3d(${index * 52 - 52}px, ${index * 26 - 28}px, 0) rotate(${index * 3 - 3}deg) scale(0.72)`;
+    });
+    if (projectCopy) projectCopy.style.opacity = "0";
+    if (expansionCopy) expansionCopy.style.opacity = "1";
+    setElementVisible(expansionMain, rangeProgress(progress, 0.04, 0.28), 38);
+    setElementVisible(expansionContext, rangeProgress(progress, 0.38, 0.66), 30);
+  }
+
+  return {
+    init() {
+      applyPhase("project");
+      [headline, context, reflection, expansionMain, expansionContext].forEach((element) => setElementVisible(element, 0, 36));
+      images.forEach((image) => { image.style.opacity = "0"; });
+    },
+    enter({ beat, localProgress }) {
+      setHeroVisible(false);
+      showOnlySection("building-project");
+      loadLazyImages(section);
+      applyPhase(beat.phase);
+      if (phase === "project") updateProject(reducedMotionMode ? 1 : localProgress);
+      else updateExpansion(reducedMotionMode ? 1 : localProgress);
+    },
+    changePhase({ phase: nextPhase, localProgress }) {
+      applyPhase(nextPhase);
+      if (phase === "project") updateProject(reducedMotionMode ? 1 : localProgress);
+      else updateExpansion(reducedMotionMode ? 1 : localProgress);
+    },
+    update({ beat, localProgress }) {
+      if (phase !== beat.phase) applyPhase(beat.phase);
+      const progress = reducedMotionMode ? 1 : localProgress;
+      if (phase === "project") updateProject(progress);
+      else updateExpansion(progress);
+    }
+  };
+}
+
 function initObjectSection() {
   const canvas = document.getElementById("book-canvas");
   if (!canvas || objectRenderer) return;
@@ -984,6 +1386,15 @@ export function createSectionControllers(options = {}) {
     photographyIntroduction: createSparseQuoteController("photography-introduction", "photography-introduction-text"),
     photographySequence: createPhotographySequenceController(),
     photographyEnding: createSparseQuoteController("photography-ending", "photography-ending-text"),
+    originInterlude: createOriginInterludeController(),
+    kindergartenArchive: createKindergartenArchiveController(),
+    oralSurgeryReveal: createOralSurgeryRevealController(),
+    whyItFits: createWhyItFitsController(),
+    dentalScanIntroduction: createDentalScanIntroductionController(),
+    dentalModel: createDentalModelController(),
+    healthcareOwnership: createHealthcareOwnershipController(),
+    practiceSystem: createPracticeSystemController(),
+    buildingProject: createBuildingProjectController(),
     object: createReserveObjectController(),
     stack: createReserveStackController(),
     ending: createReserveEndingController()
@@ -1000,7 +1411,16 @@ export function createSectionControllers(options = {}) {
     "musicOpportunity",
     "photographyIntroduction",
     "photographySequence",
-    "photographyEnding"
+    "photographyEnding",
+    "originInterlude",
+    "kindergartenArchive",
+    "oralSurgeryReveal",
+    "whyItFits",
+    "dentalScanIntroduction",
+    "dentalModel",
+    "healthcareOwnership",
+    "practiceSystem",
+    "buildingProject"
   ].forEach((key) => {
     controllers[key]?.init?.();
   });
@@ -1012,5 +1432,6 @@ export function createSectionControllers(options = {}) {
 export function resizeFoundation() {
   resizeHeroRenderer();
   resizeObjectRenderer();
+  resizeDentalRenderer();
   computeStackStarts();
 }

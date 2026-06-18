@@ -148,6 +148,106 @@ export const storyBeats = [
     mobileUnits: 2.3,
     transitionIn: "signal",
     controller: "photographyEnding"
+  },
+  {
+    key: "beat-16-origin-interlude",
+    act: "ORIGIN",
+    sectionId: "origin-interlude",
+    phase: "default",
+    desktopUnits: 3.4,
+    mobileUnits: 2.5,
+    transitionIn: "signal",
+    controller: "originInterlude"
+  },
+  {
+    key: "beat-17-kindergarten-archive",
+    act: "ORIGIN",
+    sectionId: "kindergarten-archive",
+    phase: "default",
+    desktopUnits: 5.8,
+    mobileUnits: 4.6,
+    transitionIn: "element",
+    controller: "kindergartenArchive"
+  },
+  {
+    key: "beat-18-oral-surgery-reveal",
+    act: "ORIGIN",
+    sectionId: "oral-surgery-reveal",
+    phase: "default",
+    desktopUnits: 4.2,
+    mobileUnits: 3.2,
+    transitionIn: "signal",
+    controller: "oralSurgeryReveal"
+  },
+  {
+    key: "beat-19-why-it-fits",
+    act: "PRECISION",
+    sectionId: "why-it-fits",
+    phase: "default",
+    desktopUnits: 4.8,
+    mobileUnits: 3.8,
+    transitionIn: "element",
+    controller: "whyItFits"
+  },
+  {
+    key: "beat-20-dental-scan-introduction",
+    act: "PRECISION",
+    sectionId: "dental-scan-introduction",
+    phase: "default",
+    desktopUnits: 3.0,
+    mobileUnits: 2.2,
+    transitionIn: "signal",
+    controller: "dentalScanIntroduction"
+  },
+  {
+    key: "beat-21-dental-model",
+    act: "PRECISION",
+    sectionId: "dental-model",
+    phase: "default",
+    desktopUnits: 7.2,
+    mobileUnits: 5.8,
+    transitionIn: "element",
+    controller: "dentalModel"
+  },
+  {
+    key: "beat-22-healthcare-and-ownership",
+    act: "PRECISION",
+    sectionId: "healthcare-ownership",
+    phase: "default",
+    desktopUnits: 4.8,
+    mobileUnits: 3.8,
+    transitionIn: "element",
+    controller: "healthcareOwnership"
+  },
+  {
+    key: "beat-23-practice-system",
+    act: "BUILD",
+    sectionId: "practice-system",
+    phase: "default",
+    desktopUnits: 5.2,
+    mobileUnits: 4.1,
+    transitionIn: "signal",
+    controller: "practiceSystem"
+  },
+  {
+    key: "beat-24-building-project",
+    act: "BUILD",
+    sectionId: "building-project",
+    phase: "project",
+    desktopUnits: 7.0,
+    mobileUnits: 5.4,
+    transitionIn: "element",
+    controller: "buildingProject"
+  },
+  {
+    key: "beat-25-practice-expansion",
+    act: "BUILD",
+    sectionId: "building-project",
+    phase: "expansion",
+    desktopUnits: 4.6,
+    mobileUnits: 3.6,
+    transitionIn: "none",
+    controller: "buildingProject"
   }
 ];
 

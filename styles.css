@@ -632,6 +632,377 @@ video.is-missing {
   letter-spacing: 0;
 }
 
+.section-origin-interlude {
+  justify-content: center;
+  background: #050505;
+  color: #f5f0e8;
+}
+
+.origin-interlude-lines {
+  width: min(1120px, 88vw);
+}
+
+.origin-interlude-lines .sparse-quote-line {
+  max-width: none;
+  color: #f5f0e8;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(52px, 9vw, 160px);
+  line-height: 0.9;
+}
+
+#origin-interlude-line-2 {
+  margin-top: clamp(12px, 2vw, 30px);
+  color: #cc0000;
+  text-align: right;
+}
+
+.section-kindergarten-archive {
+  z-index: 47;
+  display: grid;
+  grid-template-columns: minmax(0, 58%) minmax(360px, 42%);
+  gap: clamp(32px, 5vw, 84px);
+  padding: clamp(36px, 5vw, 82px);
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E"),
+    #ece5d8;
+  color: #181818;
+}
+
+.archive-media-frame {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 14px solid #171717;
+  background: #171717;
+  box-shadow: 18px 22px 0 rgba(0,0,0,0.14);
+  transform: rotate(-1deg);
+  will-change: opacity, transform;
+}
+
+#kindergarten-poster,
+#kindergarten-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.08);
+}
+
+#kindergarten-video {
+  z-index: 2;
+}
+
+.archive-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#kindergarten-headline {
+  max-width: 9.5ch;
+  font-size: clamp(50px, 5.9vw, 108px);
+  font-weight: 400;
+  line-height: 0.86;
+  will-change: opacity, transform;
+}
+
+#kindergarten-context {
+  max-width: 42ch;
+  margin-top: clamp(28px, 4vw, 60px);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(17px, 1.45vw, 24px);
+  line-height: 1.42;
+  will-change: opacity, transform;
+}
+
+.section-oral-surgery {
+  z-index: 48;
+  display: grid;
+  place-items: center;
+  padding: clamp(28px, 4vw, 68px);
+  background: #f1ece2;
+  color: #111;
+}
+
+.oral-surgery-composition {
+  width: min(1500px, 94vw);
+}
+
+#oral-surgery-title {
+  max-width: 12ch;
+  font-size: clamp(70px, 11.2vw, 198px);
+  font-weight: 400;
+  line-height: 0.76;
+  overflow-wrap: normal;
+  word-break: normal;
+  will-change: opacity, transform, clip-path;
+}
+
+#oral-surgery-main {
+  max-width: 30ch;
+  margin-top: clamp(30px, 4vw, 64px);
+  margin-left: 33%;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(24px, 2.8vw, 48px);
+  line-height: 1.08;
+  will-change: opacity, transform;
+}
+
+#oral-surgery-context {
+  max-width: 49ch;
+  margin-top: clamp(22px, 3vw, 48px);
+  margin-left: 55%;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(16px, 1.35vw, 22px);
+  line-height: 1.42;
+  will-change: opacity, transform;
+}
+
+.section-why-it-fits {
+  z-index: 48;
+  background: #cc0000;
+  color: #070707;
+}
+
+#why-it-fits-main {
+  position: absolute;
+  top: 31%;
+  left: 24%;
+  width: min(52vw, 840px);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(34px, 5.2vw, 88px);
+  line-height: 1.02;
+  will-change: opacity, transform;
+}
+
+.why-it-fits-phrases span,
+.practice-system-phrases span {
+  position: absolute;
+  font-size: clamp(16px, 2vw, 32px);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  will-change: opacity, transform;
+}
+
+.why-it-fits-phrases span:nth-child(1) { top: 9%; left: 6%; }
+.why-it-fits-phrases span:nth-child(2) { top: 11%; right: 8%; }
+.why-it-fits-phrases span:nth-child(3) { top: 47%; left: 3%; }
+.why-it-fits-phrases span:nth-child(4) { top: 43%; right: 4%; }
+.why-it-fits-phrases span:nth-child(5) { bottom: 10%; left: 11%; }
+.why-it-fits-phrases span:nth-child(6) { right: 8%; bottom: 9%; }
+
+.section-dental-model {
+  z-index: 49;
+  background: #050709;
+  color: #eef4f6;
+}
+
+#dental-model-canvas,
+#dental-model-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#dental-model-canvas {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.section-dental-model.is-model-ready #dental-model-canvas {
+  opacity: 1;
+}
+
+#dental-model-fallback {
+  z-index: 0;
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(255,255,255,0.08) 50%, transparent 50.1%),
+    linear-gradient(0deg, transparent 49.9%, rgba(255,255,255,0.08) 50%, transparent 50.1%);
+}
+
+.section-dental-model.is-model-ready #dental-model-fallback {
+  opacity: 0;
+}
+
+.dental-model-copy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.dental-model-copy p {
+  position: absolute;
+  max-width: 35ch;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(17px, 1.4vw, 23px);
+  line-height: 1.42;
+  will-change: opacity, transform;
+}
+
+#dental-model-paragraph-1 {
+  top: 9%;
+  left: 6%;
+}
+
+#dental-model-paragraph-2 {
+  right: 6%;
+  bottom: 10%;
+  text-align: right;
+}
+
+.dental-model-words {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.dental-model-words span {
+  position: absolute;
+  color: rgba(238,244,246,0.62);
+  font-size: clamp(12px, 1.3vw, 20px);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  will-change: opacity, transform;
+}
+
+.dental-model-words span:nth-child(1) { top: 30%; left: 4%; }
+.dental-model-words span:nth-child(2) { top: 17%; right: 5%; }
+.dental-model-words span:nth-child(3) { top: 48%; right: 3%; }
+.dental-model-words span:nth-child(4) { bottom: 20%; left: 5%; }
+.dental-model-words span:nth-child(5) { top: 7%; left: 48%; }
+.dental-model-words span:nth-child(6) { bottom: 7%; left: 31%; }
+.dental-model-words span:nth-child(7) { right: 26%; bottom: 4%; }
+
+.section-healthcare-ownership {
+  z-index: 48;
+  display: grid;
+  grid-template-columns: 58% 42%;
+  background: #050505;
+  color: #f4efe5;
+}
+
+#healthcare-ownership-main {
+  align-self: center;
+  max-width: 12ch;
+  padding: clamp(34px, 6vw, 100px);
+  font-size: clamp(54px, 7.5vw, 132px);
+  line-height: 0.9;
+  will-change: opacity, transform;
+}
+
+#healthcare-ownership-context {
+  display: flex;
+  align-items: flex-end;
+  max-width: none;
+  padding: clamp(34px, 6vw, 100px);
+  background: #f0e9dc;
+  color: #171717;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(22px, 2.4vw, 40px);
+  line-height: 1.18;
+  will-change: opacity, transform;
+}
+
+.section-practice-system {
+  z-index: 48;
+  background: #cc0000;
+  color: #090909;
+}
+
+#practice-system-main {
+  position: absolute;
+  top: 36%;
+  left: 18%;
+  max-width: 11ch;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(50px, 7vw, 122px);
+  line-height: 0.96;
+  will-change: opacity, transform;
+}
+
+.practice-system-phrases span:nth-child(1) { top: 8%; left: 6%; }
+.practice-system-phrases span:nth-child(2) { top: 8%; left: 38%; }
+.practice-system-phrases span:nth-child(3) { top: 9%; right: 6%; }
+.practice-system-phrases span:nth-child(4) { top: 38%; left: 4%; }
+.practice-system-phrases span:nth-child(5) { top: 44%; right: 5%; }
+.practice-system-phrases span:nth-child(6) { bottom: 18%; left: 5%; }
+.practice-system-phrases span:nth-child(7) { bottom: 7%; left: 26%; }
+.practice-system-phrases span:nth-child(8) { right: 29%; bottom: 9%; }
+.practice-system-phrases span:nth-child(9) { right: 5%; bottom: 18%; }
+
+.section-building-project {
+  z-index: 49;
+  background: #ede7db;
+  color: #141414;
+}
+
+.building-image-stack {
+  position: absolute;
+  top: 7%;
+  left: 5%;
+  width: 49%;
+  height: 84%;
+}
+
+.building-image {
+  position: absolute;
+  overflow: hidden;
+  border: 10px solid #151515;
+  background: #181818;
+  box-shadow: 18px 20px 0 rgba(0,0,0,0.13);
+  will-change: opacity, transform;
+}
+
+.building-image img {
+  filter: grayscale(30%) contrast(1.08);
+}
+
+.building-image-blueprint-1 { top: 1%; left: 0; width: 70%; height: 60%; }
+.building-image-blueprint-2 { top: 19%; right: 0; width: 68%; height: 58%; }
+.building-image-photo { right: 12%; bottom: 0; width: 48%; height: 48%; }
+
+.building-project-copy,
+.building-expansion-copy {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  width: 39%;
+  transform: translateY(-50%);
+  transition: opacity 0.25s linear;
+}
+
+#building-project-headline {
+  max-width: 9ch;
+  font-size: clamp(54px, 6.4vw, 116px);
+  font-weight: 400;
+  line-height: 0.86;
+  will-change: opacity, transform;
+}
+
+#building-project-context,
+#building-project-reflection,
+#building-expansion-context {
+  max-width: 46ch;
+  margin-top: clamp(24px, 3vw, 44px);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(16px, 1.3vw, 21px);
+  line-height: 1.4;
+  will-change: opacity, transform;
+}
+
+#building-expansion-main {
+  max-width: 11ch;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(42px, 5.6vw, 96px);
+  line-height: 1;
+  will-change: opacity, transform;
+}
+
 .transition-static {
   position: fixed;
   inset: 0;
@@ -1118,6 +1489,180 @@ video.is-missing {
     margin-top: 12px;
     font-size: clamp(12px, 3.4vw, 15px);
     line-height: 1.28;
+  }
+
+  .origin-interlude-lines .sparse-quote-line {
+    font-size: clamp(40px, 13vw, 64px);
+  }
+
+  .section-kindergarten-archive {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 54%) minmax(0, 46%);
+    gap: 0;
+    padding: 16px;
+  }
+
+  .archive-media-frame {
+    border-width: 7px;
+    box-shadow: 9px 10px 0 rgba(0,0,0,0.14);
+  }
+
+  .archive-copy {
+    justify-content: start;
+    padding-top: 22px;
+  }
+
+  #kindergarten-headline {
+    max-width: 12ch;
+    font-size: clamp(36px, 10.5vw, 54px);
+  }
+
+  #kindergarten-context {
+    margin-top: 14px;
+    font-size: clamp(12px, 3.5vw, 15px);
+    line-height: 1.28;
+  }
+
+  .section-oral-surgery {
+    align-items: start;
+    padding: 9vh 18px 24px;
+  }
+
+  #oral-surgery-title {
+    max-width: 100%;
+    font-size: clamp(47px, 14.7vw, 70px);
+    line-height: 0.8;
+  }
+
+  #oral-surgery-main,
+  #oral-surgery-context {
+    margin-left: 0;
+  }
+
+  #oral-surgery-main {
+    margin-top: 42px;
+    font-size: clamp(23px, 6.5vw, 33px);
+  }
+
+  #oral-surgery-context {
+    margin-top: 26px;
+    font-size: clamp(13px, 3.6vw, 16px);
+  }
+
+  #why-it-fits-main {
+    top: 29%;
+    left: 12%;
+    width: 76%;
+    font-size: clamp(31px, 9vw, 47px);
+  }
+
+  .why-it-fits-phrases span,
+  .practice-system-phrases span {
+    font-size: clamp(11px, 3.4vw, 15px);
+  }
+
+  .why-it-fits-phrases span:nth-child(1) { top: 8%; left: 5%; }
+  .why-it-fits-phrases span:nth-child(2) { top: 15%; right: 5%; }
+  .why-it-fits-phrases span:nth-child(3) { top: 56%; left: 4%; }
+  .why-it-fits-phrases span:nth-child(4) { top: 61%; right: 4%; }
+  .why-it-fits-phrases span:nth-child(5) { bottom: 15%; left: 7%; }
+  .why-it-fits-phrases span:nth-child(6) { right: 6%; bottom: 7%; }
+
+  .dental-model-copy p {
+    max-width: 82vw;
+    font-size: clamp(12px, 3.5vw, 15px);
+    line-height: 1.28;
+  }
+
+  #dental-model-paragraph-1 {
+    top: 7%;
+    left: 7%;
+  }
+
+  #dental-model-paragraph-2 {
+    right: 7%;
+    bottom: 7%;
+  }
+
+  .dental-model-words span {
+    font-size: clamp(8px, 2.5vw, 11px);
+  }
+
+  .dental-model-words span:nth-child(1) { top: 29%; }
+  .dental-model-words span:nth-child(2) { top: 23%; }
+  .dental-model-words span:nth-child(5) { top: 17%; }
+  .dental-model-words span:nth-child(6) { bottom: 23%; }
+  .dental-model-words span:nth-child(7) { bottom: 19%; }
+
+  .section-healthcare-ownership {
+    grid-template-columns: 1fr;
+    grid-template-rows: 58% 42%;
+  }
+
+  #healthcare-ownership-main {
+    max-width: 10ch;
+    padding: 24px;
+    font-size: clamp(43px, 12vw, 62px);
+  }
+
+  #healthcare-ownership-context {
+    padding: 24px;
+    font-size: clamp(20px, 5.5vw, 28px);
+  }
+
+  #practice-system-main {
+    top: 34%;
+    left: 12%;
+    max-width: 10ch;
+    font-size: clamp(43px, 12vw, 62px);
+  }
+
+  .practice-system-phrases span:nth-child(1) { top: 7%; left: 5%; }
+  .practice-system-phrases span:nth-child(2) { top: 8%; left: 40%; }
+  .practice-system-phrases span:nth-child(3) { top: 16%; right: 5%; }
+  .practice-system-phrases span:nth-child(4) { top: 25%; left: 5%; }
+  .practice-system-phrases span:nth-child(5) { top: 29%; right: 5%; }
+  .practice-system-phrases span:nth-child(6) { bottom: 28%; left: 5%; }
+  .practice-system-phrases span:nth-child(7) { bottom: 18%; left: 8%; }
+  .practice-system-phrases span:nth-child(8) { right: 7%; bottom: 22%; }
+  .practice-system-phrases span:nth-child(9) { right: 5%; bottom: 8%; }
+
+  .building-image-stack {
+    top: 3%;
+    left: 4%;
+    width: 92%;
+    height: 49%;
+  }
+
+  .building-image {
+    border-width: 5px;
+    box-shadow: 8px 9px 0 rgba(0,0,0,0.13);
+  }
+
+  .building-project-copy,
+  .building-expansion-copy {
+    top: auto;
+    right: 5%;
+    bottom: 4%;
+    width: 90%;
+    transform: none;
+  }
+
+  #building-project-headline {
+    max-width: 12ch;
+    font-size: clamp(38px, 10.8vw, 55px);
+  }
+
+  #building-project-context,
+  #building-project-reflection,
+  #building-expansion-context {
+    margin-top: 10px;
+    font-size: clamp(11px, 3.1vw, 14px);
+    line-height: 1.26;
+  }
+
+  #building-expansion-main {
+    font-size: clamp(38px, 10vw, 52px);
   }
 
   #s7-cards-wrapper {
