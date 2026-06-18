@@ -299,7 +299,7 @@ function createOpeningController() {
         setOpeningOpacity(1);
       }
     },
-    update({ localProgress }) {
+    update({ localProgress, revealProgress = localProgress }) {
       const exit = easeIn(rangeProgress(localProgress, 0.74, 0.96));
       if (exit > 0 && getGsap()) getGsap().killTweensOf([title, ...corners]);
       const visible = 1 - exit * 0.2;
@@ -346,13 +346,13 @@ function createOpeningInterludeController() {
         sentence.style.transform = "translate3d(0, 0, 0)";
       }
     },
-    update({ localProgress }) {
+    update({ localProgress, revealProgress = localProgress }) {
       if (reducedMotionMode) {
         setSplitProgress(sentence, 1);
         if (sentence) sentence.style.opacity = "1";
         return;
       }
-      setSplitProgress(sentence, rangeProgress(localProgress, 0, 0.2));
+      setSplitProgress(sentence, rangeProgress(revealProgress, 0, 0.2));
       setSplitExit(sentence, rangeProgress(localProgress, 0.72, 1));
     },
     exit() {
@@ -395,27 +395,27 @@ function createProjectLogController() {
       if (headline) headline.textContent = "";
       loadLazyImage(image);
     },
-    update({ localProgress }) {
-      const entrance = reducedMotionMode ? 1 : easeOut(rangeProgress(localProgress, 0, 0.15));
+    update({ localProgress, revealProgress = localProgress }) {
+      const entrance = reducedMotionMode ? 1 : easeOut(rangeProgress(revealProgress, 0, 0.15));
       if (inner) {
         inner.style.opacity = String(entrance);
         inner.style.transform = `scale(${0.2 + 0.8 * entrance}) rotate(${18 * (1 - entrance)}deg)`;
       }
       if (masthead) masthead.style.opacity = String(entrance);
 
-      const reveal = reducedMotionMode ? 1 : rangeProgress(localProgress, 0.1, 0.38);
+      const reveal = reducedMotionMode ? 1 : rangeProgress(revealProgress, 0.1, 0.38);
       if (headline) {
         const count = Math.ceil(headlineText.length * reveal);
         headline.textContent = headlineText.slice(0, count);
       }
 
-      setElementVisible(body, reducedMotionMode ? 1 : rangeProgress(localProgress, 0.25, 0.5), 24);
-      const imageProgress = reducedMotionMode ? 1 : rangeProgress(localProgress, 0.0, 0.62);
+      setElementVisible(body, reducedMotionMode ? 1 : rangeProgress(revealProgress, 0.25, 0.5), 24);
+      const imageProgress = reducedMotionMode ? 1 : rangeProgress(revealProgress, 0.0, 0.62);
       if (imageWrap) {
         imageWrap.style.opacity = String(easeOut(imageProgress));
         imageWrap.style.transform = `translate3d(${(1 - easeOut(imageProgress)) * 42}px, 0, 0) scale(${1.06 - 0.06 * easeOut(imageProgress)})`;
       }
-      setElementVisible(caption, reducedMotionMode ? 1 : rangeProgress(localProgress, 0.42, 0.62), 20);
+      setElementVisible(caption, reducedMotionMode ? 1 : rangeProgress(revealProgress, 0.42, 0.62), 20);
 
       const exit = reducedMotionMode ? 0 : easeIn(rangeProgress(localProgress, 0.88, 1));
       if (inner) {
@@ -457,14 +457,14 @@ function createProjectsInterludeController() {
         line.style.transform = "translate3d(0, 0, 0)";
       });
     },
-    update({ localProgress }) {
+    update({ localProgress, revealProgress = localProgress }) {
       if (reducedMotionMode) {
         setSplitProgress(line1, 1);
         setSplitProgress(line2, 1);
         return;
       }
-      setSplitProgress(line1, rangeProgress(localProgress, 0, 0.2));
-      setSplitProgress(line2, rangeProgress(localProgress, 0.44, 0.62));
+      setSplitProgress(line1, rangeProgress(revealProgress, 0, 0.2));
+      setSplitProgress(line2, rangeProgress(revealProgress, 0.44, 0.62));
     },
     exit() {
       setSplitProgress(line1, 1);
@@ -489,13 +489,13 @@ function createSparseQuoteController(sectionId, textId) {
         sentence.style.transform = "translate3d(0, 0, 0)";
       }
     },
-    update({ localProgress }) {
+    update({ localProgress, revealProgress = localProgress }) {
       if (reducedMotionMode) {
         setSplitProgress(sentence, 1);
         if (sentence) sentence.style.opacity = "1";
         return;
       }
-      setSplitProgress(sentence, rangeProgress(localProgress, 0.04, 0.28));
+      setSplitProgress(sentence, rangeProgress(revealProgress, 0.04, 0.28));
       setSplitExit(sentence, rangeProgress(localProgress, 0.78, 1), 0.7);
     },
     exit() {
@@ -526,8 +526,8 @@ function createMusicProductionController() {
         if (active && !reducedMotionMode) activateLazyVideo(video, poster);
       });
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(media, rangeProgress(progress, 0, 0.18), 26);
       setElementVisible(paragraphs[0], rangeProgress(progress, 0.12, 0.32), 34);
       setElementVisible(paragraphs[1], rangeProgress(progress, 0.36, 0.56), 34);
@@ -558,8 +558,8 @@ function createMusicOpportunityController() {
       showOnlySection("music-opportunity");
       loadLazyImages(section);
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(visual, rangeProgress(progress, 0, 0.22), 28);
       setElementVisible(paragraphs[0], rangeProgress(progress, 0.1, 0.3), 34);
       setElementVisible(paragraphs[1], rangeProgress(progress, 0.34, 0.54), 34);
@@ -624,9 +624,9 @@ function createPhotographySequenceController() {
     changePhase({ phase, localProgress }) {
       setPhase(phase, localProgress);
     },
-    update({ beat, localProgress }) {
+    update({ beat, localProgress, revealProgress = localProgress }) {
       if (beat.phase !== activePhase) setPhase(beat.phase, localProgress);
-      updatePhase(localProgress);
+      updatePhase(revealProgress);
     },
     pointerMove(event) {
       if (reducedMotionMode) return;
@@ -660,8 +660,8 @@ function createOriginInterludeController() {
         line.style.transform = "translate3d(0, 0, 0)";
       });
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setSplitProgress(line1, rangeProgress(progress, 0, 0.24));
       setSplitProgress(line2, rangeProgress(progress, 0.4, 0.68));
     }
@@ -689,8 +689,8 @@ function createKindergartenArchiveController() {
         if (active && !reducedMotionMode) activateLazyVideo(video, poster);
       });
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(frame, rangeProgress(progress, 0, 0.22), 26);
       setElementVisible(headline, rangeProgress(progress, 0.18, 0.46), 42);
       setElementVisible(context, rangeProgress(progress, 0.5, 0.72), 28);
@@ -715,8 +715,8 @@ function createOralSurgeryRevealController() {
       setHeroVisible(false);
       showOnlySection("oral-surgery-reveal");
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       const titleProgress = easeOut(rangeProgress(progress, 0.02, 0.32));
       if (title) {
         title.style.opacity = String(titleProgress);
@@ -742,8 +742,8 @@ function createWhyItFitsController() {
       setHeroVisible(false);
       showOnlySection("why-it-fits");
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(main, rangeProgress(progress, 0, 0.25), 42);
       phrases.forEach((phrase, index) => {
         const start = 0.2 + index * 0.085;
@@ -889,8 +889,8 @@ function createDentalModelController() {
       prepareDentalModel();
       renderDentalFrame();
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(paragraphs[0], rangeProgress(progress, 0.1, 0.32), 34);
       setElementVisible(paragraphs[1], rangeProgress(progress, 0.48, 0.7), 34);
       words.forEach((word, index) => {
@@ -925,8 +925,8 @@ function createHealthcareOwnershipController() {
       setHeroVisible(false);
       showOnlySection("healthcare-ownership");
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(main, rangeProgress(progress, 0, 0.34), 44);
       setElementVisible(context, rangeProgress(progress, 0.46, 0.72), 32);
     }
@@ -945,8 +945,8 @@ function createPracticeSystemController() {
       setHeroVisible(false);
       showOnlySection("practice-system");
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(main, rangeProgress(progress, 0, 0.24), 42);
       phrases.forEach((phrase, index) => {
         const start = 0.18 + index * 0.062;
@@ -978,21 +978,33 @@ function createBuildingProjectController() {
   function updateProject(progress) {
     setElementVisible(headline, rangeProgress(progress, 0, 0.16), 36);
     images.forEach((image, index) => {
+      if (index > 1) {
+        image.style.opacity = "0";
+        image.style.zIndex = "";
+        return;
+      }
       const start = 0.04 + index * 0.17;
       const reveal = easeOut(rangeProgress(progress, start, start + 0.17));
       image.style.opacity = String(reveal);
-      image.style.transform = `translate3d(${(1 - reveal) * (index % 2 ? 90 : -90)}px, ${(1 - reveal) * 60}px, 0) rotate(${(index - 1) * 3.5}deg)`;
+      image.style.zIndex = String(index + 1);
+      image.style.transform = `translate3d(${(1 - reveal) * (index ? 90 : -90)}px, ${(1 - reveal) * 60}px, 0) rotate(${index ? 2.4 : -2.4}deg)`;
     });
-    setElementVisible(context, rangeProgress(progress, 0.58, 0.72), 28);
-    setElementVisible(reflection, rangeProgress(progress, 0.76, 0.9), 28);
+    setElementVisible(context, rangeProgress(progress, 0.46, 0.64), 28);
+    setElementVisible(reflection, rangeProgress(progress, 0.68, 0.84), 28);
     if (projectCopy) projectCopy.style.opacity = "1";
     if (expansionCopy) expansionCopy.style.opacity = "0";
   }
 
   function updateExpansion(progress) {
+    const expansionTransforms = [
+      "translate3d(-54px, -46px, 0) rotate(-7deg) scale(0.52)",
+      "translate3d(82px, 126px, 0) rotate(6deg) scale(0.58)",
+      "translate3d(-8px, -10px, 0) rotate(-1deg) scale(0.92)"
+    ];
     images.forEach((image, index) => {
-      image.style.opacity = String(0.34 + index * 0.18);
-      image.style.transform = `translate3d(${index * 52 - 52}px, ${index * 26 - 28}px, 0) rotate(${index * 3 - 3}deg) scale(0.72)`;
+      image.style.opacity = String([0.2, 0.38, 1][index] || 0.3);
+      image.style.transform = expansionTransforms[index] || "";
+      image.style.zIndex = String(index === 2 ? 4 : index + 1);
     });
     if (projectCopy) projectCopy.style.opacity = "0";
     if (expansionCopy) expansionCopy.style.opacity = "1";
@@ -1019,9 +1031,9 @@ function createBuildingProjectController() {
       if (phase === "project") updateProject(reducedMotionMode ? 1 : localProgress);
       else updateExpansion(reducedMotionMode ? 1 : localProgress);
     },
-    update({ beat, localProgress }) {
+    update({ beat, localProgress, revealProgress = localProgress }) {
       if (phase !== beat.phase) applyPhase(beat.phase);
-      const progress = reducedMotionMode ? 1 : localProgress;
+      const progress = reducedMotionMode ? 1 : revealProgress;
       if (phase === "project") updateProject(progress);
       else updateExpansion(progress);
     }
@@ -1076,9 +1088,9 @@ function createAiToolsController() {
       applyPhase(nextPhase);
       updatePhase(localProgress);
     },
-    update({ beat, localProgress }) {
+    update({ beat, localProgress, revealProgress = localProgress }) {
       if (beat.phase !== phase) applyPhase(beat.phase);
-      updatePhase(localProgress);
+      updatePhase(revealProgress);
     }
   };
 }
@@ -1097,8 +1109,8 @@ function createConnectionsController() {
       showOnlySection("connections");
       loadLazyImages(section);
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       setElementVisible(visual, rangeProgress(progress, 0, 0.22), 30);
       setElementVisible(quoteLines[0], rangeProgress(progress, 0.14, 0.34), 38);
       setElementVisible(quoteLines[1], rangeProgress(progress, 0.36, 0.56), 38);
@@ -1130,8 +1142,8 @@ function createContinuationStackController() {
       showOnlySection("continuation-stack");
       loadLazyImages(section);
     },
-    update({ localProgress }) {
-      const progress = reducedMotionMode ? 1 : localProgress;
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
       images.forEach((image, index) => {
         const start = 0.02 + index * 0.12;
         const reveal = easeOut(rangeProgress(progress, start, start + 0.18));
@@ -1193,9 +1205,9 @@ function createNextVersionController() {
       applyPhase(nextPhase);
       updatePhase(localProgress);
     },
-    update({ beat, localProgress }) {
+    update({ beat, localProgress, revealProgress = localProgress }) {
       if (beat.phase !== phase) applyPhase(beat.phase);
-      updatePhase(localProgress);
+      updatePhase(revealProgress);
     }
   };
 }
@@ -1217,10 +1229,10 @@ function createEndingController() {
     if (phase === "sources") setCursorHidden(false);
   }
 
-  function updatePhase(localProgress) {
+  function updatePhase(localProgress, revealProgress = localProgress) {
     if (phase === "sources") {
-      const progress = reducedMotionMode ? 0.7 : localProgress;
-      const fade = reducedMotionMode ? 1 : 1 - rangeProgress(progress, 0.78, 0.98);
+      const progress = reducedMotionMode ? 0.7 : revealProgress;
+      const fade = reducedMotionMode ? 1 : 1 - rangeProgress(localProgress, 0.78, 0.98);
       if (sourcesWrap) sourcesWrap.style.opacity = "1";
       if (finalWrap) finalWrap.style.opacity = "0";
       sourceLines.forEach((line, index) => {
@@ -1230,7 +1242,7 @@ function createEndingController() {
       return;
     }
 
-    const progress = reducedMotionMode ? 1 : localProgress;
+    const progress = reducedMotionMode ? 1 : revealProgress;
     sourceLines.forEach((line) => { line.style.opacity = "0"; });
     if (sourcesWrap) sourcesWrap.style.opacity = "0";
     if (finalWrap) finalWrap.style.opacity = "1";
@@ -1255,9 +1267,9 @@ function createEndingController() {
       applyPhase(nextPhase);
       updatePhase(localProgress);
     },
-    update({ beat, localProgress }) {
+    update({ beat, localProgress, revealProgress = localProgress }) {
       if (beat.phase !== phase) applyPhase(beat.phase);
-      updatePhase(localProgress);
+      updatePhase(localProgress, revealProgress);
     },
     exit() {
       setCursorHidden(false);

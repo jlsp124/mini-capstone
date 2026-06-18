@@ -18,7 +18,9 @@ const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
 const motionParams = new URLSearchParams(window.location.search);
 const forceNoGsap = motionParams.get("forceNoGsap") === "1";
 const forceReducedMotion = motionParams.get("forceReducedMotion") === "1";
-const reducedMotion = forceReducedMotion || reducedMotionQuery.matches;
+const forceMotion = motionParams.get("forceMotion") === "1";
+const reducedMotion = !forceMotion && (forceReducedMotion || reducedMotionQuery.matches);
+document.documentElement.classList.toggle("force-motion", forceMotion);
 const gsapAvailable = !forceNoGsap && Boolean(window.gsap?.timeline);
 const splitTextAvailable = gsapAvailable && typeof window.SplitText === "function";
 
@@ -26,6 +28,25 @@ let isMobile = mobileQuery.matches;
 let progressModel = buildProgressTimeline(storyBeats, { isMobile, unitVh: scrollUnitVh });
 let lenis = null;
 let lastScrollY = 0;
+let beatLabelTimer = null;
+
+function setBeatLabel(entry) {
+  const label = document.getElementById("beat-label");
+  if (!label) return;
+  window.clearTimeout(beatLabelTimer);
+  label.classList.remove("is-visible");
+  if (!entry || entry.index === 0) {
+    label.textContent = "";
+    return;
+  }
+  const cue = (entry.phase && entry.phase !== "default" ? entry.phase : entry.sectionId)
+    .replace(/-/g, " ")
+    .toUpperCase();
+  label.textContent = `${entry.act} / ${cue}`;
+  void label.offsetWidth;
+  label.classList.add("is-visible");
+  beatLabelTimer = window.setTimeout(() => label.classList.remove("is-visible"), 2200);
+}
 
 function getTransitionMode() {
   if (reducedMotion) return "reduced-motion";
@@ -84,6 +105,7 @@ const timeline = createTimelineController({
   setCursorWord,
   showOnlySection,
   getSectionElement,
+  setBeatLabel,
   prefersReducedMotion: reducedMotion
 });
 

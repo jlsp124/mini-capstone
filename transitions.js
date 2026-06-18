@@ -209,6 +209,7 @@ export function glitchTransition(onMidpoint, outEl = null, inEl = null, directio
     return;
   }
 
+  const sign = direction < 0 ? -1 : 1;
   const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outgoing, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: -8, duration: 0.05, ease: "none" })
@@ -216,9 +217,10 @@ export function glitchTransition(onMidpoint, outEl = null, inEl = null, directio
     .to(outgoing, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outgoing, { opacity: 0, duration: 0.1, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
-    .to(canvas, { skewX: -5, duration: 0.05, ease: "none" })
-    .to(canvas, { skewX: 3, duration: 0.05, ease: "none" })
-    .to(canvas, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
+    .set(inEl, { opacity: 0, x: -18 * sign, skewX: -5 * sign })
+    .to(inEl, { opacity: 0.82, x: 7 * sign, skewX: 3 * sign, duration: 0.11, ease: "none" })
+    .to(inEl, { opacity: 0.44, x: -4 * sign, skewX: -2 * sign, duration: 0.06, ease: "none" })
+    .to(inEl, { opacity: 1, x: 0, skewX: 0, duration: 0.13, ease: "none", clearProps: "x,skewX" });
 }
 
 export function staticTransition(onMidpoint) {
@@ -290,11 +292,11 @@ export function curtainTransition(onMidpoint) {
   gsap.timeline({ onComplete: cleanup })
     .to(overlay, {
       opacity: 1,
-      duration: 2.5,
+      duration: 1.1,
       ease: "power1.inOut",
       onComplete: midpoint
     })
-    .to(overlay, { opacity: 0, duration: 3, ease: "power1.inOut" }, "+=0.5");
+    .to(overlay, { opacity: 0, duration: 1.2, ease: "power1.inOut" }, "+=0.2");
 }
 
 export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
@@ -305,7 +307,7 @@ export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
     return;
   }
 
-  gsap.set(inEl, { opacity: 0 });
+  const sign = direction < 0 ? -1 : 1;
   const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outEl, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outEl, { skewX: -8, duration: 0.05, ease: "none" })
@@ -313,9 +315,9 @@ export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
     .to(outEl, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outEl, { opacity: 0, duration: 0.1, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
-    .to(inEl, { skewX: -5, duration: 0.05, ease: "none" })
-    .to(inEl, { skewX: 3, duration: 0.05, ease: "none" })
-    .to(inEl, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });
+    .set(inEl, { opacity: 0, x: -24 * sign, skewX: -5 * sign, scale: 0.985 })
+    .to(inEl, { opacity: 0.78, x: 7 * sign, skewX: 3 * sign, scale: 1.008, duration: 0.15, ease: "none" })
+    .to(inEl, { opacity: 1, x: 0, skewX: 0, scale: 1, duration: 0.16, ease: "power2.out", clearProps: "x,skewX,scale" });
 }
 
 export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1) {
@@ -334,7 +336,6 @@ export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1
   }
 
   canvas.style.visibility = "visible";
-  gsap.set(incoming, { opacity: 0, skewX: 0 });
   const timeline = gsap.timeline({ onComplete: releaseLock });
   timeline.to(outgoing, { skewX: 10, duration: 0.05, ease: "none" })
     .to(outgoing, { skewX: -8, duration: 0.05, ease: "none" })
@@ -342,6 +343,7 @@ export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1
     .to(outgoing, { skewX: 0, duration: 0.05, ease: "none" })
     .to(outgoing, { opacity: 0, duration: 0.1, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
+    .set(incoming, { opacity: 0, skewX: 0 })
     .to(incoming, { skewX: -5, duration: 0.05, ease: "none" })
     .to(incoming, { skewX: 3, duration: 0.05, ease: "none" })
     .to(incoming, { skewX: 0, opacity: 1, duration: 0.1, ease: "none" });

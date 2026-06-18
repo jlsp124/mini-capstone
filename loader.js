@@ -11,7 +11,8 @@
   var isMob = window.innerWidth <= 768;
   var motionParams = new URLSearchParams(window.location.search);
   var forceNoGsap = motionParams.get("forceNoGsap") === "1";
-  var reducedMotion = motionParams.get("forceReducedMotion") === "1" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var forceMotion = motionParams.get("forceMotion") === "1";
+  var reducedMotion = !forceMotion && (motionParams.get("forceReducedMotion") === "1" || window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var titleText = "JOVAN PAHAL";
   var titleIndex = 0;
 

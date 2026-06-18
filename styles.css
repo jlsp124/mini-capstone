@@ -151,6 +151,30 @@ body {
   bottom: 6%;
 }
 
+#beat-label {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  z-index: 70;
+  color: rgba(255, 255, 255, 0.84);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(12px, 1.05vw, 16px);
+  letter-spacing: 0.16em;
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.28);
+}
+
+#beat-label.is-visible {
+  animation: beat-label-cue 2.2s ease both;
+}
+
+@keyframes beat-label-cue {
+  0% { opacity: 0; transform: translate3d(-10px, 0, 0); }
+  14%, 72% { opacity: 0.84; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: translate3d(8px, 0, 0); }
+}
+
 #story-stage {
   position: fixed;
   inset: 0;
@@ -232,6 +256,7 @@ body {
   font-size: clamp(32px, 5vw, 86px);
   line-height: 1.05;
   letter-spacing: 1px;
+  padding-bottom: 0.16em;
 }
 
 .section-two-line-quote {
@@ -256,11 +281,14 @@ body {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  line-height: 1.15;
+  margin-bottom: -0.16em;
+  padding-bottom: 0.16em;
+  line-height: 1.18;
 }
 
 .sparse-word {
   display: inline-block;
+  padding-bottom: 0.02em;
   opacity: 0;
   transform: translate3d(0, 110%, 0);
   will-change: opacity, transform;
@@ -518,6 +546,7 @@ video.is-missing {
   line-height: 1.38;
   letter-spacing: 0;
   will-change: opacity, transform;
+  padding-bottom: 0.12em;
 }
 
 .section-editorial-split {
@@ -572,6 +601,10 @@ video.is-missing {
   inset: 0;
 }
 
+.photography-phase[data-orientation="portrait"] {
+  grid-template-columns: minmax(340px, 48%) minmax(320px, 52%);
+}
+
 .photography-phase {
   display: grid;
   grid-template-columns: minmax(0, 67%) minmax(320px, 33%);
@@ -596,7 +629,7 @@ video.is-missing {
 }
 
 .photography-image-frame img {
-  object-fit: cover;
+  object-fit: contain;
   filter: grayscale(12%) contrast(1.05);
   will-change: transform;
 }
@@ -630,6 +663,7 @@ video.is-missing {
   font-size: clamp(16px, 1.35vw, 22px);
   line-height: 1.4;
   letter-spacing: 0;
+  padding-bottom: 0.12em;
 }
 
 .section-origin-interlude {
@@ -659,8 +693,8 @@ video.is-missing {
 .section-kindergarten-archive {
   z-index: 47;
   display: grid;
-  grid-template-columns: minmax(0, 58%) minmax(360px, 42%);
-  gap: clamp(32px, 5vw, 84px);
+  grid-template-columns: minmax(0, 54%) minmax(390px, 46%);
+  gap: clamp(28px, 4vw, 64px);
   padding: clamp(36px, 5vw, 82px);
   background:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E"),
@@ -701,20 +735,21 @@ video.is-missing {
 }
 
 #kindergarten-headline {
-  max-width: 9.5ch;
-  font-size: clamp(50px, 5.9vw, 108px);
+  max-width: 10.5ch;
+  font-size: clamp(50px, 5.4vw, 98px);
   font-weight: 400;
-  line-height: 0.86;
+  line-height: 0.9;
   will-change: opacity, transform;
 }
 
 #kindergarten-context {
   max-width: 42ch;
-  margin-top: clamp(28px, 4vw, 60px);
+  margin-top: clamp(22px, 3vw, 44px);
   font-family: "EB Garamond", Georgia, serif;
   font-size: clamp(17px, 1.45vw, 24px);
   line-height: 1.42;
   will-change: opacity, transform;
+  padding-bottom: 0.14em;
 }
 
 .section-oral-surgery {
@@ -748,6 +783,7 @@ video.is-missing {
   font-size: clamp(24px, 2.8vw, 48px);
   line-height: 1.08;
   will-change: opacity, transform;
+  padding-bottom: 0.1em;
 }
 
 #oral-surgery-context {
@@ -758,6 +794,7 @@ video.is-missing {
   font-size: clamp(16px, 1.35vw, 22px);
   line-height: 1.42;
   will-change: opacity, transform;
+  padding-bottom: 0.12em;
 }
 
 .section-why-it-fits {
@@ -842,6 +879,7 @@ video.is-missing {
   font-size: clamp(17px, 1.4vw, 23px);
   line-height: 1.42;
   will-change: opacity, transform;
+  padding-bottom: 0.12em;
 }
 
 #dental-model-paragraph-1 {
@@ -881,17 +919,18 @@ video.is-missing {
 .section-healthcare-ownership {
   z-index: 48;
   display: grid;
-  grid-template-columns: 58% 42%;
+  grid-template-columns: minmax(0, 62%) minmax(0, 38%);
   background: #050505;
   color: #f4efe5;
 }
 
 #healthcare-ownership-main {
   align-self: center;
-  max-width: 12ch;
-  padding: clamp(34px, 6vw, 100px);
-  font-size: clamp(54px, 7.5vw, 132px);
-  line-height: 0.9;
+  max-width: 13ch;
+  padding: clamp(34px, 5vw, 76px);
+  padding-bottom: calc(clamp(34px, 5vw, 76px) + 0.12em);
+  font-size: clamp(54px, 7vw, 122px);
+  line-height: 0.94;
   will-change: opacity, transform;
 }
 
@@ -906,6 +945,7 @@ video.is-missing {
   font-size: clamp(22px, 2.4vw, 40px);
   line-height: 1.18;
   will-change: opacity, transform;
+  padding-bottom: calc(clamp(34px, 6vw, 100px) + 0.12em);
 }
 
 .section-practice-system {
@@ -916,12 +956,12 @@ video.is-missing {
 
 #practice-system-main {
   position: absolute;
-  top: 36%;
-  left: 18%;
-  max-width: 11ch;
+  top: 25%;
+  left: 20%;
+  max-width: 10.5ch;
   font-family: "EB Garamond", Georgia, serif;
-  font-size: clamp(50px, 7vw, 122px);
-  line-height: 0.96;
+  font-size: clamp(50px, 6.6vw, 116px);
+  line-height: 1;
   will-change: opacity, transform;
 }
 
@@ -966,6 +1006,18 @@ video.is-missing {
 .building-image-blueprint-2 { top: 19%; right: 0; width: 68%; height: 58%; }
 .building-image-photo { right: 12%; bottom: 0; width: 48%; height: 48%; }
 
+.section-building-project[data-phase="project"] .building-image-photo {
+  visibility: hidden;
+}
+
+.section-building-project[data-phase="expansion"] .building-image-photo {
+  right: 1%;
+  bottom: 7%;
+  width: 74%;
+  height: 70%;
+  visibility: visible;
+}
+
 .building-project-copy,
 .building-expansion-copy {
   position: absolute;
@@ -993,6 +1045,7 @@ video.is-missing {
   font-size: clamp(16px, 1.3vw, 21px);
   line-height: 1.4;
   will-change: opacity, transform;
+  padding-bottom: 0.12em;
 }
 
 #building-expansion-main {
@@ -1111,6 +1164,7 @@ video.is-missing {
   font-size: clamp(16px, 1.35vw, 22px);
   line-height: 1.42;
   will-change: opacity, transform;
+  padding-bottom: 0.14em;
 }
 
 .section-continuation-stack {
@@ -1123,7 +1177,7 @@ video.is-missing {
   position: absolute;
   top: 8%;
   left: 5%;
-  width: 52%;
+  width: 45%;
   height: 84%;
 }
 
@@ -1131,7 +1185,7 @@ video.is-missing {
   position: absolute;
   top: 8%;
   left: 10%;
-  width: 58%;
+  width: 55%;
   height: 70%;
   overflow: hidden;
   border: 9px solid #111;
@@ -1141,9 +1195,9 @@ video.is-missing {
   will-change: opacity, transform;
 }
 
-.continuation-images figure:nth-child(2) { top: 14%; left: 22%; }
-.continuation-images figure:nth-child(3) { top: 20%; left: 34%; }
-.continuation-images figure:nth-child(4) { top: 26%; left: 46%; }
+.continuation-images figure:nth-child(2) { top: 14%; left: 20%; }
+.continuation-images figure:nth-child(3) { top: 20%; left: 30%; }
+.continuation-images figure:nth-child(4) { top: 26%; left: 40%; }
 
 .continuation-images img {
   filter: grayscale(40%) contrast(1.1);
@@ -1152,13 +1206,13 @@ video.is-missing {
 .continuation-copy {
   position: absolute;
   top: 50%;
-  right: 6%;
-  width: 39%;
+  right: 5%;
+  width: 43%;
   transform: translateY(-50%);
 }
 
 #continuation-main {
-  max-width: 12ch;
+  max-width: 13ch;
   font-family: "EB Garamond", Georgia, serif;
   font-size: clamp(42px, 5.5vw, 96px);
   line-height: 1;
@@ -1172,6 +1226,7 @@ video.is-missing {
   font-size: clamp(17px, 1.45vw, 24px);
   line-height: 1.4;
   will-change: opacity, transform;
+  padding-bottom: 0.12em;
 }
 
 .section-next-version {
@@ -1616,6 +1671,13 @@ video.is-missing {
     bottom: 20px;
   }
 
+  #beat-label {
+    top: 18px;
+    left: 16px;
+    max-width: calc(100vw - 32px);
+    font-size: 11px;
+  }
+
   #opening-title {
     top: 48%;
     left: 53%;
@@ -1755,8 +1817,31 @@ video.is-missing {
     grid-template-rows: minmax(0, 60%) minmax(0, 40%);
   }
 
+  .photography-phase[data-orientation="portrait"],
+  .photography-phase[data-orientation="landscape"],
+  .photography-phase[data-orientation="square"] {
+    grid-template-columns: 1fr;
+  }
+
+  .photography-phase[data-orientation="portrait"] {
+    grid-template-rows: minmax(0, 64%) minmax(0, 36%);
+  }
+
+  .photography-phase[data-orientation="landscape"] {
+    grid-template-rows: minmax(0, 52%) minmax(0, 48%);
+  }
+
+  .photography-phase[data-orientation="landscape"] .photography-copy {
+    align-self: center;
+  }
+
   .photography-image-frame {
+    align-self: center;
+    justify-self: center;
+    width: calc(100% - 28px);
+    max-height: 100%;
     height: auto;
+    aspect-ratio: var(--photo-aspect, 4 / 3);
     margin: 14px 14px 0;
   }
 
@@ -2126,9 +2211,9 @@ video.is-missing {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  html:not(.force-motion) *,
+  html:not(.force-motion) *::before,
+  html:not(.force-motion) *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;

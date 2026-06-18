@@ -6,6 +6,18 @@ function recordMissing(path) {
   window.__missingAssets = [...missingAssets];
 }
 
+function recordImageOrientation(image, width, height) {
+  if (!image || !width || !height) return;
+  const orientation = width > height ? "landscape" : height > width ? "portrait" : "square";
+  image.dataset.orientation = orientation;
+  image.style.setProperty("--media-aspect", `${width} / ${height}`);
+  const photoPhase = image.closest(".photography-phase");
+  if (photoPhase) {
+    photoPhase.dataset.orientation = orientation;
+    photoPhase.style.setProperty("--photo-aspect", `${width} / ${height}`);
+  }
+}
+
 export function loadLazyImage(image) {
   if (!image || image.dataset.loadState === "loading" || image.dataset.loadState === "loaded") {
     return Promise.resolve(image?.dataset.loadState === "loaded");
@@ -27,6 +39,7 @@ export function loadLazyImage(image) {
       const probe = new Image();
       probe.onload = () => {
         image.src = path;
+        recordImageOrientation(image, probe.naturalWidth, probe.naturalHeight);
         image.dataset.loadedSrc = path;
         image.dataset.loadState = "loaded";
         image.classList.remove("is-missing");

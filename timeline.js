@@ -9,6 +9,7 @@ export function createTimelineController({
   setCursorWord,
   showOnlySection,
   getSectionElement,
+  setBeatLabel,
   prefersReducedMotion = false
 }) {
   let beatEntries = entries;
@@ -20,6 +21,31 @@ export function createTimelineController({
   let pendingIndex = null;
   let activeAct = null;
   let initialRevealed = false;
+  let revealStartedAt = null;
+
+  function startReveal(entry) {
+    revealStartedAt = prefersReducedMotion ? null : performance.now();
+    setBeatLabel?.(entry);
+  }
+
+  function getRevealProgress(entry, localProgress) {
+    if (prefersReducedMotion) return 1;
+    if (revealStartedAt === null) return localProgress;
+    const duration = Math.max(300, Number(entry?.autoplayMs) || 1450);
+    const autoplayProgress = Math.min(1, (performance.now() - revealStartedAt) / duration);
+    return Math.max(localProgress, autoplayProgress);
+  }
+
+  function getProgressContext(entry, progress, updateDirection = direction) {
+    const localProgress = getLocalProgress(progress, entry);
+    return {
+      beat: entry,
+      localProgress,
+      revealProgress: getRevealProgress(entry, localProgress),
+      pageProgress: progress,
+      direction: updateDirection
+    };
+  }
 
   function getController(entry) {
     return entry ? controllers[entry.controller] : null;
@@ -39,23 +65,13 @@ export function createTimelineController({
     setAct(entry);
     showOnlySection(entry.sectionId);
     controller?.enter?.({ beat: entry, direction: 1, initial: true, localProgress: getLocalProgress(progress, entry) });
-    controller?.update?.({
-      beat: entry,
-      localProgress: getLocalProgress(progress, entry),
-      pageProgress: progress,
-      direction: 1
-    });
+    controller?.update?.(getProgressContext(entry, progress, 1));
   }
 
   function runUpdate(progress) {
     if (currentIndex < 0) return;
     const entry = beatEntries[currentIndex];
-    getController(entry)?.update?.({
-      beat: entry,
-      localProgress: getLocalProgress(progress, entry),
-      pageProgress: progress,
-      direction
-    });
+    getController(entry)?.update?.(getProgressContext(entry, progress));
   }
 
   function changeWithinSection(targetIndex, progress) {
@@ -65,6 +81,7 @@ export function createTimelineController({
     previousIndex = currentIndex;
     currentIndex = targetIndex;
     setAct(toEntry);
+    startReveal(toEntry);
     controller?.changePhase?.({
       fromBeat: fromEntry,
       beat: toEntry,
@@ -107,6 +124,7 @@ export function createTimelineController({
         previousIndex = currentIndex;
         currentIndex = targetIndex;
         setAct(toEntry);
+        startReveal(toEntry);
         showOnlySection(toEntry.sectionId);
         toController?.enter?.({
           beat: toEntry,
@@ -114,12 +132,7 @@ export function createTimelineController({
           direction: transitionDirection,
           localProgress: getLocalProgress(progress, toEntry)
         });
-        toController?.update?.({
-          beat: toEntry,
-          localProgress: getLocalProgress(progress, toEntry),
-          pageProgress: progress,
-          direction: transitionDirection
-        });
+        toController?.update?.(getProgressContext(toEntry, progress, transitionDirection));
       }
     });
 
@@ -184,6 +197,7 @@ export function createTimelineController({
       if (initialRevealed || currentIndex < 0) return;
       initialRevealed = true;
       const entry = beatEntries[currentIndex];
+      startReveal(entry);
       getController(entry)?.reveal?.({ beat: entry, direction: 1 });
     },
     pointerMove(event) {
