@@ -29,8 +29,12 @@ let progressModel = buildProgressTimeline(storyBeats, { isMobile, unitVh: scroll
 let lenis = null;
 let lastScrollY = 0;
 let beatLabelTimer = null;
+let navigationTargetIndex = null;
+let navigationOriginIndex = null;
 
 function setBeatLabel(entry) {
+  document.documentElement.dataset.currentBeat = entry?.key || "";
+  document.documentElement.dataset.currentBeatIndex = Number.isInteger(entry?.index) ? String(entry.index) : "";
   const label = document.getElementById("beat-label");
   if (!label) return;
   window.clearTimeout(beatLabelTimer);
@@ -122,6 +126,111 @@ const timeline = createTimelineController({
   getIsMobile: () => isMobile
 });
 
+const storyStage = document.getElementById("story-stage");
+const previousButton = document.getElementById("story-previous");
+const nextButton = document.getElementById("story-next");
+
+function getNavigationState() {
+  const state = timeline.getState();
+  return {
+    ...state,
+    busy: state.transitioning || !state.revealComplete
+  };
+}
+
+function scrollToBeat(index) {
+  const targetIndex = Math.max(0, Math.min(progressModel.entries.length - 1, index));
+  const entry = progressModel.entries[targetIndex];
+  if (!entry) return;
+  const progress = targetIndex === 0 ? 0 : entry.start + (entry.end - entry.start) * 0.08;
+  const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
+  const targetY = progress * maxScroll;
+  if (lenis) lenis.scrollTo(targetY, { immediate: true, force: true });
+  else window.scrollTo({ top: targetY, behavior: "auto" });
+  updateTimeline();
+}
+
+function requestStoryBeat(index) {
+  const targetIndex = Math.max(0, Math.min(progressModel.entries.length - 1, index));
+  const state = getNavigationState();
+  if (navigationOriginIndex === null || !state.busy) navigationOriginIndex = state.currentIndex;
+  navigationTargetIndex = targetIndex;
+  scrollToBeat(targetIndex);
+}
+
+function requestRelativeBeat(delta) {
+  const state = getNavigationState();
+  const baseIndex = state.busy && navigationOriginIndex !== null
+    ? navigationOriginIndex
+    : state.currentIndex;
+  requestStoryBeat(baseIndex + delta);
+}
+
+function syncNavigationControls() {
+  const state = getNavigationState();
+  if (!state.busy && navigationTargetIndex === state.currentIndex) {
+    navigationTargetIndex = null;
+    navigationOriginIndex = null;
+  }
+  const effectiveIndex = navigationTargetIndex ?? state.currentIndex;
+  const atStart = effectiveIndex <= 0;
+  const atEnd = effectiveIndex >= progressModel.entries.length - 1;
+  if (previousButton) {
+    previousButton.disabled = atStart;
+    previousButton.setAttribute("aria-hidden", atStart ? "true" : "false");
+  }
+  if (nextButton) {
+    nextButton.disabled = atEnd;
+    nextButton.setAttribute("aria-hidden", atEnd ? "true" : "false");
+  }
+}
+
+function isInteractiveTarget(target) {
+  return Boolean(target?.closest?.("input, textarea, select, button, a, [contenteditable='true']"));
+}
+
+function storyHasKeyboardFocus() {
+  const active = document.activeElement;
+  if (isInteractiveTarget(active)) return false;
+  return active === document.body
+    || active === document.documentElement
+    || active === storyStage
+    || Boolean(storyStage?.contains(active));
+}
+
+function handleStoryKeydown(event) {
+  if (event.repeat || !storyHasKeyboardFocus()) return;
+  let handled = true;
+  switch (event.key) {
+    case "ArrowRight":
+    case "ArrowDown":
+    case "PageDown":
+      requestRelativeBeat(1);
+      break;
+    case "ArrowLeft":
+    case "ArrowUp":
+    case "PageUp":
+      requestRelativeBeat(-1);
+      break;
+    case " ":
+      requestRelativeBeat(event.shiftKey ? -1 : 1);
+      break;
+    case "Home":
+      requestStoryBeat(0);
+      break;
+    case "End":
+      requestStoryBeat(progressModel.entries.length - 1);
+      break;
+    default:
+      handled = false;
+  }
+  if (handled) event.preventDefault();
+}
+
+previousButton?.addEventListener("click", () => requestRelativeBeat(-1));
+nextButton?.addEventListener("click", () => requestRelativeBeat(1));
+window.addEventListener("keydown", handleStoryKeydown);
+
 getTimelineDiagnostics = () => {
   const state = timeline.getState();
   return {
@@ -145,6 +254,7 @@ function updateTimeline() {
 function raf(time) {
   if (lenis) lenis.raf(time);
   updateTimeline();
+  syncNavigationControls();
   requestAnimationFrame(raf);
 }
 requestAnimationFrame(raf);

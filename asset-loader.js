@@ -11,6 +11,7 @@ function recordImageOrientation(image, width, height) {
   const orientation = width > height ? "landscape" : height > width ? "portrait" : "square";
   image.dataset.orientation = orientation;
   image.style.setProperty("--media-aspect", `${width} / ${height}`);
+  image.parentElement?.style.setProperty("--media-aspect", `${width} / ${height}`);
   const photoPhase = image.closest(".photography-phase");
   if (photoPhase) {
     photoPhase.dataset.orientation = orientation;
@@ -69,20 +70,30 @@ export function activateLazyVideo(video, posterImage = null) {
   if (video.dataset.loadState !== "loaded" && video.dataset.src) {
     video.dataset.loadState = "loaded";
     video.src = video.dataset.src;
-    if (posterImage?.dataset.loadedSrc) video.poster = posterImage.dataset.loadedSrc;
+    const posterSrc = posterImage?.dataset.loadedSrc
+      || posterImage?.currentSrc
+      || posterImage?.getAttribute("src");
+    if (posterSrc) video.poster = posterSrc;
+    if (video.dataset.playbackEventsBound !== "true") {
+      video.dataset.playbackEventsBound = "true";
+      video.addEventListener("playing", () => video.classList.add("is-playing"));
+      video.addEventListener("pause", () => video.classList.remove("is-playing"));
+    }
     video.addEventListener("error", () => {
       recordMissing(video.dataset.src);
       video.classList.add("is-missing");
+      video.classList.remove("is-playing");
     }, { once: true });
     video.load();
   }
   const playback = video.play();
-  if (playback?.catch) playback.catch(() => undefined);
+  if (playback?.catch) playback.catch(() => video.classList.remove("is-playing"));
 }
 
 export function pauseLazyVideo(video) {
   if (!video) return;
   video.pause();
+  video.classList.remove("is-playing");
 }
 
 export function getMissingAssetPaths() {

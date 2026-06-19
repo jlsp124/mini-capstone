@@ -20,7 +20,7 @@ Short presentation paragraph: This project is about the future I’m building: a
 
 Reader text: This project is about the future I can actually see myself building toward. It is not just one career idea. It connects oral surgery, business, creativity, technology, and the kind of freedom I want later in life. I want a future where the things I care about do not compete with each other, but support each other.
 
-Evidence cards: Kindergarten Still, Japan Photo, Ableton Screenshot, GitHub / Project Screenshot, Little Me + Dad.
+Evidence cards: Kindergarten Still, Japan Photo, Ableton Screenshot, GitHub / Project Screenshot, Building Renderings.
 
 ## 2. Who I Am
 

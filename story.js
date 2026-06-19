@@ -6,7 +6,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.2,
     mobileUnits: 1.8,
-    autoplayMs: 1900,
+    autoplayMs: 2500,
     transitionIn: null,
     controller: "opening"
   },
@@ -17,7 +17,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 1.6,
     mobileUnits: 1.4,
-    autoplayMs: 1400,
+    autoplayMs: 2300,
     transitionIn: "opening",
     controller: "openingInterlude"
   },
@@ -28,7 +28,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.5,
     mobileUnits: 3.1,
-    autoplayMs: 2600,
+    autoplayMs: 4000,
     transitionIn: "element",
     controller: "projectLog"
   },
@@ -39,7 +39,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.0,
     mobileUnits: 1.7,
-    autoplayMs: 1800,
+    autoplayMs: 3000,
     transitionIn: "signal",
     controller: "projectsInterlude"
   },
@@ -50,7 +50,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.0,
     mobileUnits: 1.7,
-    autoplayMs: 1450,
+    autoplayMs: 2300,
     transitionIn: "signal",
     controller: "musicIntroduction"
   },
@@ -61,7 +61,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 4.0,
     mobileUnits: 3.5,
-    autoplayMs: 2800,
+    autoplayMs: 4300,
     transitionIn: "element",
     controller: "musicProduction"
   },
@@ -72,7 +72,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 1.8,
     mobileUnits: 1.6,
-    autoplayMs: 1350,
+    autoplayMs: 2200,
     transitionIn: "signal",
     controller: "musicProgress"
   },
@@ -83,7 +83,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.4,
     mobileUnits: 3.0,
-    autoplayMs: 2800,
+    autoplayMs: 4000,
     transitionIn: "element",
     controller: "musicOpportunity"
   },
@@ -94,7 +94,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.1,
     mobileUnits: 1.8,
-    autoplayMs: 1450,
+    autoplayMs: 2300,
     transitionIn: "signal",
     controller: "photographyIntroduction"
   },
@@ -105,7 +105,7 @@ export const storyBeats = [
     phase: "sunglasses",
     desktopUnits: 2.5,
     mobileUnits: 2.2,
-    autoplayMs: 1950,
+    autoplayMs: 3100,
     transitionIn: "element",
     controller: "photographySequence"
   },
@@ -116,7 +116,7 @@ export const storyBeats = [
     phase: "plane",
     desktopUnits: 2.5,
     mobileUnits: 2.2,
-    autoplayMs: 2050,
+    autoplayMs: 3200,
     transitionIn: "none",
     controller: "photographySequence"
   },
@@ -127,7 +127,7 @@ export const storyBeats = [
     phase: "temple-skytree",
     desktopUnits: 2.5,
     mobileUnits: 2.2,
-    autoplayMs: 2150,
+    autoplayMs: 3300,
     transitionIn: "none",
     controller: "photographySequence"
   },
@@ -138,7 +138,7 @@ export const storyBeats = [
     phase: "osaka-river",
     desktopUnits: 2.5,
     mobileUnits: 2.2,
-    autoplayMs: 2050,
+    autoplayMs: 3200,
     transitionIn: "none",
     controller: "photographySequence"
   },
@@ -149,7 +149,7 @@ export const storyBeats = [
     phase: "cherry-blossoms",
     desktopUnits: 2.5,
     mobileUnits: 2.2,
-    autoplayMs: 2200,
+    autoplayMs: 3400,
     transitionIn: "none",
     controller: "photographySequence"
   },
@@ -160,7 +160,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 1.9,
     mobileUnits: 1.6,
-    autoplayMs: 1350,
+    autoplayMs: 2200,
     transitionIn: "signal",
     controller: "photographyEnding"
   },
@@ -171,7 +171,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.2,
     mobileUnits: 1.8,
-    autoplayMs: 1850,
+    autoplayMs: 2900,
     transitionIn: "signal",
     controller: "originInterlude"
   },
@@ -182,7 +182,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.6,
     mobileUnits: 3.2,
-    autoplayMs: 2600,
+    autoplayMs: 4000,
     transitionIn: "element",
     controller: "kindergartenArchive"
   },
@@ -193,7 +193,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.0,
     mobileUnits: 2.5,
-    autoplayMs: 2700,
+    autoplayMs: 4200,
     transitionIn: "signal",
     controller: "oralSurgeryReveal"
   },
@@ -204,7 +204,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.2,
     mobileUnits: 2.8,
-    autoplayMs: 2500,
+    autoplayMs: 4100,
     transitionIn: "element",
     controller: "whyItFits"
   },
@@ -215,7 +215,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 1.9,
     mobileUnits: 1.6,
-    autoplayMs: 1450,
+    autoplayMs: 2300,
     transitionIn: "signal",
     controller: "dentalScanIntroduction"
   },
@@ -226,7 +226,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 4.2,
     mobileUnits: 3.7,
-    autoplayMs: 3000,
+    autoplayMs: 4600,
     transitionIn: "element",
     controller: "dentalModel"
   },
@@ -237,7 +237,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.2,
     mobileUnits: 2.8,
-    autoplayMs: 2400,
+    autoplayMs: 4100,
     transitionIn: "element",
     controller: "healthcareOwnership"
   },
@@ -248,7 +248,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.3,
     mobileUnits: 2.9,
-    autoplayMs: 2500,
+    autoplayMs: 4200,
     transitionIn: "signal",
     controller: "practiceSystem"
   },
@@ -259,7 +259,7 @@ export const storyBeats = [
     phase: "project",
     desktopUnits: 4.0,
     mobileUnits: 3.5,
-    autoplayMs: 3000,
+    autoplayMs: 4700,
     transitionIn: "element",
     controller: "buildingProject"
   },
@@ -270,7 +270,7 @@ export const storyBeats = [
     phase: "expansion",
     desktopUnits: 3.0,
     mobileUnits: 2.6,
-    autoplayMs: 2600,
+    autoplayMs: 4400,
     transitionIn: "none",
     controller: "buildingProject"
   },
@@ -281,7 +281,7 @@ export const storyBeats = [
     phase: "statement",
     desktopUnits: 2.0,
     mobileUnits: 1.7,
-    autoplayMs: 1500,
+    autoplayMs: 2300,
     transitionIn: "signal",
     controller: "aiTools"
   },
@@ -292,7 +292,7 @@ export const storyBeats = [
     phase: "process",
     desktopUnits: 3.3,
     mobileUnits: 2.9,
-    autoplayMs: 2800,
+    autoplayMs: 4100,
     transitionIn: "none",
     controller: "aiTools"
   },
@@ -303,7 +303,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.4,
     mobileUnits: 3.0,
-    autoplayMs: 2700,
+    autoplayMs: 4100,
     transitionIn: "element",
     controller: "connections"
   },
@@ -314,7 +314,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 3.7,
     mobileUnits: 3.2,
-    autoplayMs: 2800,
+    autoplayMs: 4300,
     transitionIn: "signal",
     controller: "continuationStack"
   },
@@ -325,7 +325,7 @@ export const storyBeats = [
     phase: "default",
     desktopUnits: 2.3,
     mobileUnits: 1.9,
-    autoplayMs: 1450,
+    autoplayMs: 2300,
     transitionIn: "signal",
     controller: "integration"
   },
@@ -336,7 +336,7 @@ export const storyBeats = [
     phase: "path",
     desktopUnits: 2.3,
     mobileUnits: 2.0,
-    autoplayMs: 1900,
+    autoplayMs: 4600,
     transitionIn: "element",
     controller: "nextVersion"
   },
@@ -347,7 +347,7 @@ export const storyBeats = [
     phase: "keep-going",
     desktopUnits: 4.0,
     mobileUnits: 3.5,
-    autoplayMs: 3000,
+    autoplayMs: 5200,
     transitionIn: "none",
     controller: "nextVersion"
   },
@@ -358,7 +358,7 @@ export const storyBeats = [
     phase: "sources",
     desktopUnits: 3.2,
     mobileUnits: 2.8,
-    autoplayMs: 2600,
+    autoplayMs: 4800,
     transitionIn: "curtain",
     controller: "ending"
   },
@@ -369,7 +369,7 @@ export const storyBeats = [
     phase: "final",
     desktopUnits: 3.0,
     mobileUnits: 2.6,
-    autoplayMs: 2600,
+    autoplayMs: 4800,
     transitionIn: "none",
     controller: "ending"
   }

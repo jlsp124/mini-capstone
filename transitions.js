@@ -126,7 +126,7 @@ async function runWaapiGlitch({ outgoing, incoming, onMidpoint, direction = 1 })
       { offset: 0.8, opacity: Math.max(0.86, startOpacity * 0.9), transform: `translateX(${-4 * sign}px) skewX(${-3 * sign}deg)` },
       { opacity: 0, transform: `translateX(${18 * sign}px) skewX(0deg)` }
     ];
-  }, { duration: 450, easing: "linear" });
+  }, { duration: 600, easing: "linear" });
 
   callMidpoint(onMidpoint);
   const incomingElements = uniqueElements(incoming);
@@ -141,7 +141,7 @@ async function runWaapiGlitch({ outgoing, incoming, onMidpoint, direction = 1 })
     { offset: 0.48, opacity: 0.42, transform: `translateX(${-5 * sign}px) skewX(${-3 * sign}deg)` },
     { offset: 0.7, opacity: 0.9, transform: `translateX(${3 * sign}px) skewX(${2 * sign}deg)` },
     { opacity: 1, transform: "translateX(0) skewX(0deg)" }
-  ], { duration: 430, easing: "linear" });
+  ], { duration: 600, easing: "linear" });
 }
 
 async function runWaapiElement({ outEl, inEl, onMidpoint, direction = 1 }) {
@@ -153,7 +153,7 @@ async function runWaapiElement({ outEl, inEl, onMidpoint, direction = 1 }) {
       { offset: 0.45, opacity: Math.max(0.78, startOpacity * 0.9), transform: `translateX(${12 * sign}px) skewX(${7 * sign}deg) scale(1.01)` },
       { offset: 0.72, opacity: Math.max(0.48, startOpacity * 0.62), transform: `translateX(${-8 * sign}px) skewX(${-5 * sign}deg) scale(0.995)` },
       { opacity: 0, transform: `translateX(${24 * sign}px) skewX(${3 * sign}deg) scale(0.985)` }
-    ], { duration: 430, easing: "cubic-bezier(0.55, 0, 1, 0.45)" });
+    ], { duration: 540, easing: "cubic-bezier(0.55, 0, 1, 0.45)" });
   }
 
   callMidpoint(onMidpoint);
@@ -164,7 +164,7 @@ async function runWaapiElement({ outEl, inEl, onMidpoint, direction = 1 }) {
       { opacity: 0.12, transform: `translateX(${-24 * sign}px) skewX(${-4 * sign}deg) scale(0.985)` },
       { offset: 0.48, opacity: 0.76, transform: `translateX(${7 * sign}px) skewX(${3 * sign}deg) scale(1.008)` },
       { opacity: 1, transform: "translateX(0) skewX(0deg) scale(1)" }
-    ], { duration: 400, easing: "cubic-bezier(0, 0.55, 0.45, 1)" });
+    ], { duration: 500, easing: "cubic-bezier(0, 0.55, 0.45, 1)" });
   }
 }
 
@@ -211,16 +211,16 @@ export function glitchTransition(onMidpoint, outEl = null, inEl = null, directio
 
   const sign = direction < 0 ? -1 : 1;
   const timeline = gsap.timeline({ onComplete: releaseLock });
-  timeline.to(outgoing, { skewX: 10, duration: 0.075, ease: "none" })
-    .to(outgoing, { skewX: -8, duration: 0.075, ease: "none" })
-    .to(outgoing, { skewX: 5, duration: 0.075, ease: "none" })
-    .to(outgoing, { skewX: 0, duration: 0.075, ease: "none" })
-    .to(outgoing, { opacity: 0, duration: 0.15, ease: "none" })
+  timeline.to(outgoing, { skewX: 10, duration: 0.09, ease: "none" })
+    .to(outgoing, { skewX: -8, duration: 0.09, ease: "none" })
+    .to(outgoing, { skewX: 5, duration: 0.09, ease: "none" })
+    .to(outgoing, { skewX: 0, duration: 0.09, ease: "none" })
+    .to(outgoing, { opacity: 0, duration: 0.2, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
     .set(inEl, { opacity: 0, x: -18 * sign, skewX: -5 * sign })
-    .to(inEl, { opacity: 0.82, x: 7 * sign, skewX: 3 * sign, duration: 0.17, ease: "none" })
-    .to(inEl, { opacity: 0.44, x: -4 * sign, skewX: -2 * sign, duration: 0.09, ease: "none" })
-    .to(inEl, { opacity: 1, x: 0, skewX: 0, duration: 0.19, ease: "none", clearProps: "x,skewX" });
+    .to(inEl, { opacity: 0.82, x: 7 * sign, skewX: 3 * sign, duration: 0.25, ease: "none" })
+    .to(inEl, { opacity: 0.44, x: -4 * sign, skewX: -2 * sign, duration: 0.15, ease: "none" })
+    .to(inEl, { opacity: 1, x: 0, skewX: 0, duration: 0.25, ease: "none", clearProps: "x,skewX" });
 }
 
 export function staticTransition(onMidpoint) {
@@ -245,11 +245,11 @@ export function staticTransition(onMidpoint) {
     }
     ctx.putImageData(imageData, 0, 0);
     frame++;
-    if (frame === 18 && !midpointCalled) {
+    if (frame === 24 && !midpointCalled) {
       midpointCalled = true;
       callMidpoint(onMidpoint);
     }
-    if (frame < 36) {
+    if (frame < 48) {
       requestAnimationFrame(drawStatic);
     } else {
       if (!midpointCalled) callMidpoint(onMidpoint);
@@ -282,9 +282,9 @@ export function curtainTransition(onMidpoint) {
 
   if (!gsap) {
     settle((async () => {
-      await animateElement(overlay, [{ opacity: 0 }, { opacity: 1 }], { duration: 850, easing: "ease-in-out" });
+      await animateElement(overlay, [{ opacity: 0 }, { opacity: 1 }], { duration: 1050, easing: "ease-in-out" });
       midpoint();
-      await animateElement(overlay, [{ opacity: 1 }, { opacity: 0 }], { duration: 950, easing: "ease-in-out" });
+      await animateElement(overlay, [{ opacity: 1 }, { opacity: 0 }], { duration: 1150, easing: "ease-in-out" });
     })(), cleanup);
     return;
   }
@@ -292,11 +292,11 @@ export function curtainTransition(onMidpoint) {
   gsap.timeline({ onComplete: cleanup })
     .to(overlay, {
       opacity: 1,
-      duration: 0.9,
+      duration: 1.05,
       ease: "power1.inOut",
       onComplete: midpoint
     })
-    .to(overlay, { opacity: 0, duration: 1, ease: "power1.inOut" }, "+=0.1");
+    .to(overlay, { opacity: 0, duration: 1.1, ease: "power1.inOut" }, "+=0.15");
 }
 
 export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
@@ -309,15 +309,15 @@ export function glitchTransitionEl(outEl, inEl, onMidpoint, direction = 1) {
 
   const sign = direction < 0 ? -1 : 1;
   const timeline = gsap.timeline({ onComplete: releaseLock });
-  timeline.to(outEl, { skewX: 10, duration: 0.075, ease: "none" })
-    .to(outEl, { skewX: -8, duration: 0.075, ease: "none" })
-    .to(outEl, { skewX: 5, duration: 0.075, ease: "none" })
-    .to(outEl, { skewX: 0, duration: 0.075, ease: "none" })
-    .to(outEl, { opacity: 0, duration: 0.15, ease: "none" })
+  timeline.to(outEl, { skewX: 10, duration: 0.09, ease: "none" })
+    .to(outEl, { skewX: -8, duration: 0.09, ease: "none" })
+    .to(outEl, { skewX: 5, duration: 0.09, ease: "none" })
+    .to(outEl, { skewX: 0, duration: 0.09, ease: "none" })
+    .to(outEl, { opacity: 0, duration: 0.2, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
     .set(inEl, { opacity: 0, x: -24 * sign, skewX: -5 * sign, scale: 0.985 })
-    .to(inEl, { opacity: 0.78, x: 7 * sign, skewX: 3 * sign, scale: 1.008, duration: 0.2, ease: "none" })
-    .to(inEl, { opacity: 1, x: 0, skewX: 0, scale: 1, duration: 0.2, ease: "power2.out", clearProps: "x,skewX,scale" });
+    .to(inEl, { opacity: 0.78, x: 7 * sign, skewX: 3 * sign, scale: 1.008, duration: 0.25, ease: "none" })
+    .to(inEl, { opacity: 1, x: 0, skewX: 0, scale: 1, duration: 0.25, ease: "power2.out", clearProps: "x,skewX,scale" });
 }
 
 export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1) {
@@ -337,16 +337,16 @@ export function glitchTransitionReverse(onMidpoint, outEl = null, direction = -1
 
   canvas.style.visibility = "visible";
   const timeline = gsap.timeline({ onComplete: releaseLock });
-  timeline.to(outgoing, { skewX: 10, duration: 0.08, ease: "none" })
-    .to(outgoing, { skewX: -8, duration: 0.08, ease: "none" })
-    .to(outgoing, { skewX: 5, duration: 0.08, ease: "none" })
-    .to(outgoing, { skewX: 0, duration: 0.08, ease: "none" })
-    .to(outgoing, { opacity: 0, duration: 0.16, ease: "none" })
+  timeline.to(outgoing, { skewX: 10, duration: 0.1, ease: "none" })
+    .to(outgoing, { skewX: -8, duration: 0.1, ease: "none" })
+    .to(outgoing, { skewX: 5, duration: 0.1, ease: "none" })
+    .to(outgoing, { skewX: 0, duration: 0.1, ease: "none" })
+    .to(outgoing, { opacity: 0, duration: 0.2, ease: "none" })
     .add(() => callMidpoint(onMidpoint))
     .set(incoming, { opacity: 0, skewX: 0 })
-    .to(incoming, { skewX: -5, duration: 0.1, ease: "none" })
-    .to(incoming, { skewX: 3, duration: 0.1, ease: "none" })
-    .to(incoming, { skewX: 0, opacity: 1, duration: 0.2, ease: "none" });
+    .to(incoming, { skewX: -5, duration: 0.16, ease: "none" })
+    .to(incoming, { skewX: 3, duration: 0.16, ease: "none" })
+    .to(incoming, { skewX: 0, opacity: 1, duration: 0.28, ease: "none" });
 }
 
 export function mobileTransition(onMidpoint) {

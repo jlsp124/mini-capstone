@@ -121,8 +121,6 @@ Sometimes I can spend a week developing one idea and a quick cookup still turns 
 Assets:
 
 * assets/personal/music/ableton-screenshot.png
-* assets/personal/music/production-footage-poster.png
-* assets/personal/music/production-footage.mp4
 
 Beat 7 — Progress interlude
 
@@ -238,7 +236,7 @@ The original idea was simple. As I learned more about healthcare, technology, bu
 
 Assets:
 
-* assets/personal/origin/kindergarten-video-poster.png
+* assets/personal/origin/kindergarten-still.png
 * assets/personal/origin/kindergarten-video.mp4
 
 Beat 18 — Oral-surgery reveal
@@ -346,7 +344,6 @@ Assets:
 
 * assets/personal/projects/building-blueprints-01.png
 * assets/personal/projects/building-blueprints-02.png
-* assets/personal/projects/photo-with-dad.png
 
 Beat 25 — Practice expansion
 

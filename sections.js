@@ -40,8 +40,11 @@ let dentalLoaded = false;
 let dentalFailed = false;
 let dentalAnimationStarted = false;
 let dentalVelocity = 0;
-let dentalTiltX = 0;
+let dentalTiltX = -0.34;
 let dentalTiltZ = 0;
+let dentalDragging = false;
+let dentalAutoRotationEnabled = true;
+let dentalAutoRotationBlend = 1;
 
 const stackCount = 9;
 const stackRotations = [-6, 5, -8, 4, -3, 7, -5, 3, 0];
@@ -513,22 +516,16 @@ function createSparseQuoteController(sectionId, textId) {
 function createMusicProductionController() {
   const section = document.getElementById("music-production");
   const media = document.getElementById("music-production-media");
-  const poster = document.getElementById("music-production-poster");
-  const video = document.getElementById("music-production-video");
   const paragraphs = [1, 2, 3].map((index) => document.getElementById(`music-production-paragraph-${index}`));
-  let active = false;
 
   return {
     init() {
       [media, ...paragraphs].forEach((element) => setElementVisible(element, 0, 34));
     },
     enter() {
-      active = true;
       setHeroVisible(false);
       showOnlySection("music-production");
-      loadLazyImages(section).then(() => {
-        if (active && !reducedMotionMode) activateLazyVideo(video, poster);
-      });
+      loadLazyImages(section);
     },
     update({ localProgress, revealProgress = localProgress }) {
       const progress = reducedMotionMode ? 1 : revealProgress;
@@ -540,10 +537,6 @@ function createMusicProductionController() {
         const drift = reducedMotionMode ? 0 : (progress - 0.5) * -16;
         media.style.setProperty("--media-drift", `${drift}px`);
       }
-    },
-    exit() {
-      active = false;
-      pauseLazyVideo(video);
     }
   };
 }
@@ -677,7 +670,7 @@ function createKindergartenArchiveController() {
   const frame = section?.querySelector(".archive-media-frame");
   const headline = document.getElementById("kindergarten-headline");
   const context = document.getElementById("kindergarten-context");
-  const poster = document.getElementById("kindergarten-poster");
+  const still = document.getElementById("kindergarten-still");
   const video = document.getElementById("kindergarten-video");
   let active = false;
 
@@ -690,7 +683,7 @@ function createKindergartenArchiveController() {
       setHeroVisible(false);
       showOnlySection("kindergarten-archive");
       loadLazyImages(section).then(() => {
-        if (active && !reducedMotionMode) activateLazyVideo(video, poster);
+        if (active && !reducedMotionMode) activateLazyVideo(video, still);
       });
     },
     update({ localProgress, revealProgress = localProgress }) {
@@ -767,9 +760,13 @@ function animateDentalModel() {
   if (!dentalActive || reducedMotionMode) return;
   dentalVelocity *= 0.9;
   if (dentalModel) {
-    dentalModel.rotation.y += 0.004 + dentalVelocity * 0.055;
-    dentalModel.rotation.x += (dentalTiltX - dentalModel.rotation.x) * 0.045;
-    dentalModel.rotation.z += (dentalTiltZ - dentalModel.rotation.z) * 0.045;
+    const targetAutoBlend = dentalAutoRotationEnabled && !dentalDragging ? 1 : 0;
+    dentalAutoRotationBlend += (targetAutoBlend - dentalAutoRotationBlend) * 0.045;
+    if (!dentalDragging) {
+      dentalModel.rotation.y += 0.004 * dentalAutoRotationBlend + dentalVelocity * 0.055;
+      dentalModel.rotation.x += (dentalTiltX - dentalModel.rotation.x) * 0.045;
+      dentalModel.rotation.z += (dentalTiltZ - dentalModel.rotation.z) * 0.045;
+    }
   }
   renderDentalFrame();
 }
@@ -830,6 +827,8 @@ async function prepareDentalModel() {
         const maxDimension = Math.max(size.x, size.y, size.z) || 1;
         dentalModel.scale.setScalar((isMobileMode ? 2.55 : 3.15) / maxDimension);
         dentalModel.rotation.set(-0.34, -0.4, 0.03);
+        dentalTiltX = dentalModel.rotation.x;
+        dentalTiltZ = dentalModel.rotation.z;
         dentalScene.add(dentalModel);
         dentalLoaded = true;
         dentalLoading = false;
@@ -878,13 +877,85 @@ function createDentalScanIntroductionController() {
 }
 
 function createDentalModelController() {
+  const canvas = document.getElementById("dental-model-canvas");
   const paragraphs = [1, 2].map((index) => document.getElementById(`dental-model-paragraph-${index}`));
   const words = [...document.querySelectorAll("#dental-model .dental-model-words span")];
+  const verticalMinimum = -1.05;
+  const verticalMaximum = 0.38;
+  const dragThreshold = 7;
+  let activePointerId = null;
+  let lastPointerX = 0;
+  let lastPointerY = 0;
+  let dragDistance = 0;
+
+  function updateInteractionState() {
+    if (!canvas) return;
+    canvas.classList.toggle("is-dragging", dentalDragging);
+    canvas.classList.toggle("is-auto-paused", !dentalAutoRotationEnabled);
+    canvas.dataset.autoRotation = dentalAutoRotationEnabled ? "running" : "paused";
+    canvas.setAttribute(
+      "aria-label",
+      dentalAutoRotationEnabled
+        ? "Interactive dental scan. Drag to rotate the model; tap to pause automatic rotation."
+        : "Interactive dental scan. Automatic rotation paused. Drag to rotate the model; tap to resume automatic rotation."
+    );
+  }
+
+  function handleDentalPointerDown(event) {
+    if (!dentalActive || !dentalLoaded || activePointerId !== null) return;
+    activePointerId = event.pointerId;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
+    dragDistance = 0;
+    dentalDragging = true;
+    dentalAutoRotationBlend = 0;
+    canvas?.setPointerCapture?.(event.pointerId);
+    updateInteractionState();
+    event.preventDefault();
+  }
+
+  function handleDentalPointerMove(event) {
+    if (!dentalDragging || event.pointerId !== activePointerId || !dentalModel) return;
+    const deltaX = event.clientX - lastPointerX;
+    const deltaY = event.clientY - lastPointerY;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
+    dragDistance += Math.hypot(deltaX, deltaY);
+    dentalModel.rotation.y += deltaX * 0.008;
+    dentalModel.rotation.x = Math.max(
+      verticalMinimum,
+      Math.min(verticalMaximum, dentalModel.rotation.x + deltaY * 0.008)
+    );
+    dentalTiltX = dentalModel.rotation.x;
+    renderDentalFrame();
+    event.preventDefault();
+  }
+
+  function finishDentalPointer(event, cancelled = false) {
+    if (event.pointerId !== activePointerId) return;
+    if (!cancelled && dragDistance < dragThreshold) {
+      dentalAutoRotationEnabled = !dentalAutoRotationEnabled;
+    }
+    if (canvas?.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    activePointerId = null;
+    dentalDragging = false;
+    dentalAutoRotationBlend = 0;
+    updateInteractionState();
+    event.preventDefault();
+  }
 
   return {
     init() {
       paragraphs.forEach((paragraph) => setElementVisible(paragraph, 0, 34));
       words.forEach((word) => setElementVisible(word, 0, 22));
+      canvas?.addEventListener("pointerdown", handleDentalPointerDown);
+      canvas?.addEventListener("pointermove", handleDentalPointerMove);
+      canvas?.addEventListener("pointerup", (event) => finishDentalPointer(event));
+      canvas?.addEventListener("pointercancel", (event) => finishDentalPointer(event, true));
+      canvas?.addEventListener("lostpointercapture", (event) => {
+        if (event.pointerId === activePointerId) finishDentalPointer(event, true);
+      });
+      updateInteractionState();
     },
     enter() {
       dentalActive = true;
@@ -906,12 +977,15 @@ function createDentalModelController() {
     exit() {
       dentalActive = false;
       dentalVelocity = 0;
+      activePointerId = null;
+      dentalDragging = false;
+      updateInteractionState();
     },
     pointerMove(event) {
-      if (reducedMotionMode) return;
+      if (reducedMotionMode || dentalDragging) return;
       const nx = (event.clientX / window.innerWidth) * 2 - 1;
       const ny = (event.clientY / window.innerHeight) * 2 - 1;
-      dentalTiltX = -0.34 + ny * 0.22;
+      dentalTiltX = Math.max(verticalMinimum, Math.min(verticalMaximum, -0.34 + ny * 0.22));
       dentalTiltZ = -nx * 0.14;
     },
     resize: resizeDentalRenderer
@@ -1000,15 +1074,15 @@ function createBuildingProjectController() {
   }
 
   function updateExpansion(progress) {
-    const expansionTransforms = [
-      "translate3d(-54px, -46px, 0) rotate(-7deg) scale(0.52)",
-      "translate3d(82px, 126px, 0) rotate(6deg) scale(0.58)",
-      "translate3d(-8px, -10px, 0) rotate(-1deg) scale(0.92)"
-    ];
+    const detailReveal = easeOut(rangeProgress(progress, 0, 0.28));
+    const supportReveal = easeOut(rangeProgress(progress, 0.18, 0.46));
     images.forEach((image, index) => {
-      image.style.opacity = String([0.2, 0.38, 1][index] || 0.3);
-      image.style.transform = expansionTransforms[index] || "";
-      image.style.zIndex = String(index === 2 ? 4 : index + 1);
+      const reveal = index === 0 ? detailReveal : supportReveal;
+      image.style.opacity = String(reveal);
+      image.style.transform = index === 0
+        ? `translate3d(${(1 - reveal) * -70}px, ${(1 - reveal) * -36}px, 0) scale(${1.04 - reveal * 0.02})`
+        : `translate3d(${(1 - reveal) * 86}px, ${(1 - reveal) * 58}px, 0) rotate(${(1 - reveal) * 5}deg)`;
+      image.style.zIndex = String(index === 0 ? 1 : 3);
     });
     if (projectCopy) projectCopy.style.opacity = "0";
     if (expansionCopy) expansionCopy.style.opacity = "1";
