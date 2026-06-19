@@ -31,6 +31,7 @@ let lastScrollY = 0;
 let beatLabelTimer = null;
 let navigationTargetIndex = null;
 let navigationOriginIndex = null;
+let readerActive = false;
 
 function setBeatLabel(entry) {
   document.documentElement.dataset.currentBeat = entry?.key || "";
@@ -129,6 +130,37 @@ const timeline = createTimelineController({
 const storyStage = document.getElementById("story-stage");
 const previousButton = document.getElementById("story-previous");
 const nextButton = document.getElementById("story-next");
+const readerToggle = document.getElementById("reader-toggle");
+const readerModeElement = document.getElementById("reader-mode");
+const readerClose = document.getElementById("reader-close");
+
+function setReaderMode(active, { updateUrl = true } = {}) {
+  if (!readerModeElement || readerActive === active) return;
+  readerActive = active;
+
+  if (active) {
+    if (lenis) lenis.stop();
+    document.body.classList.add("is-reader-mode");
+    readerModeElement.hidden = false;
+    readerModeElement.scrollTop = 0;
+    storyStage?.setAttribute("inert", "");
+    readerClose?.focus({ preventScroll: true });
+  } else {
+    document.body.classList.remove("is-reader-mode");
+    readerModeElement.hidden = true;
+    storyStage?.removeAttribute("inert");
+    if (lenis) lenis.start();
+    updateTimeline();
+    readerToggle?.focus({ preventScroll: true });
+  }
+
+  if (updateUrl) {
+    const url = new URL(window.location.href);
+    if (active) url.searchParams.set("mode", "reader");
+    else url.searchParams.delete("mode");
+    window.history.pushState({ reader: active }, "", url);
+  }
+}
 
 function getNavigationState() {
   const state = timeline.getState();
@@ -190,6 +222,7 @@ function isInteractiveTarget(target) {
 }
 
 function storyHasKeyboardFocus() {
+  if (readerActive) return false;
   const active = document.activeElement;
   if (isInteractiveTarget(active)) return false;
   return active === document.body
@@ -229,6 +262,11 @@ function handleStoryKeydown(event) {
 
 previousButton?.addEventListener("click", () => requestRelativeBeat(-1));
 nextButton?.addEventListener("click", () => requestRelativeBeat(1));
+readerToggle?.addEventListener("click", () => setReaderMode(true));
+readerClose?.addEventListener("click", () => setReaderMode(false));
+window.addEventListener("popstate", () => {
+  setReaderMode(new URLSearchParams(window.location.search).get("mode") === "reader", { updateUrl: false });
+});
 window.addEventListener("keydown", handleStoryKeydown);
 
 getTimelineDiagnostics = () => {
@@ -245,6 +283,7 @@ getTimelineDiagnostics = () => {
 timeline.update(getPageProgress());
 
 function updateTimeline() {
+  if (readerActive) return;
   const currentY = window.scrollY;
   updateObjectVelocity(currentY - lastScrollY);
   lastScrollY = currentY;
@@ -263,7 +302,7 @@ function rebuildProgressTimeline() {
   const nextIsMobile = mobileQuery.matches;
   isMobile = nextIsMobile;
   progressModel = buildProgressTimeline(storyBeats, { isMobile, unitVh: scrollUnitVh });
-  document.body.style.height = progressModel.bodyHeight;
+  if (!readerActive) document.body.style.height = progressModel.bodyHeight;
   setTransitionContext({ lenis, isMobile, gsapAvailable, reducedMotion });
   timeline.setEntries(progressModel.entries);
 }
@@ -320,6 +359,10 @@ window.__foundationState = {
 
 if (window._loaderSetReadyPromise) {
   window._loaderSetReadyPromise(createFoundationReadyPromise());
+}
+
+if (new URLSearchParams(window.location.search).get("mode") === "reader") {
+  setReaderMode(true, { updateUrl: false });
 }
 
 window._onLoaderHidden = () => {

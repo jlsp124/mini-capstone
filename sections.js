@@ -334,37 +334,51 @@ function createOpeningController() {
 }
 
 function createOpeningInterludeController() {
-  const sentence = document.getElementById("opening-interlude-text");
+  const section = document.getElementById("opening-interlude");
+  const elements = [
+    document.getElementById("opening-overview-title"),
+    document.getElementById("opening-overview-main"),
+    document.getElementById("opening-overview-support"),
+    document.getElementById("opening-overview-question"),
+    section?.querySelector(".opening-overview-meta")
+  ];
 
   return {
     init() {
-      splitLine(sentence);
-      setSplitProgress(sentence, 0);
+      elements.forEach((element) => setElementVisible(element, 0, 34));
     },
     enter() {
       setHeroVisible(false);
       showOnlySection("opening-interlude");
-      if (sentence) {
-        sentence.style.opacity = "1";
-        sentence.style.transform = "translate3d(0, 0, 0)";
-      }
     },
     update({ localProgress, revealProgress = localProgress }) {
-      if (reducedMotionMode) {
-        setSplitProgress(sentence, 1);
-        if (sentence) sentence.style.opacity = "1";
-        return;
-      }
-      setSplitProgress(sentence, responsiveRangeProgress(revealProgress, 0.05, 0.9, 0, 0.2));
-      if (sentence) {
-        sentence.style.opacity = "1";
-        sentence.style.transform = "translate3d(0, 0, 0)";
-      }
+      const progress = reducedMotionMode ? 1 : revealProgress;
+      elements.forEach((element, index) => {
+        const start = index * 0.14;
+        setElementVisible(element, rangeProgress(progress, start, start + 0.24), 34);
+      });
+    }
+  };
+}
+
+function createChapterDividerController(sectionId) {
+  const section = document.getElementById(sectionId);
+  const elements = section ? [...section.querySelectorAll(".chapter-number, .chapter-title, .chapter-summary")] : [];
+
+  return {
+    init() {
+      elements.forEach((element) => setElementVisible(element, 0, 46));
     },
-    exit() {
-      if (!sentence) return;
-      sentence.style.opacity = "0";
-      sentence.style.transform = "translate3d(0, -18px, 0)";
+    enter() {
+      setHeroVisible(false);
+      showOnlySection(sectionId);
+    },
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
+      elements.forEach((element, index) => {
+        const start = 0.05 + index * 0.22;
+        setElementVisible(element, rangeProgress(progress, start, start + 0.28), 46);
+      });
     }
   };
 }
@@ -746,6 +760,39 @@ function createWhyItFitsController() {
         const start = 0.2 + index * 0.085;
         setElementVisible(phrase, rangeProgress(progress, start, start + 0.16), index % 2 ? -24 : 24);
       });
+    }
+  };
+}
+
+function createPathwaySchoolsController() {
+  const section = document.getElementById("pathway-schools");
+  const headerItems = section ? [...section.querySelectorAll(".pathway-header > *")] : [];
+  const pathwayItems = section ? [...section.querySelectorAll(".pathway-sequence > *")] : [];
+  const schools = section ? [...section.querySelectorAll(".school-comparison article")] : [];
+  const conclusion = section?.querySelector(".pathway-conclusion");
+
+  return {
+    init() {
+      [...headerItems, ...pathwayItems, ...schools, conclusion].forEach((element) => setElementVisible(element, 0, 28));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("pathway-schools");
+    },
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
+      headerItems.forEach((element, index) => {
+        setElementVisible(element, rangeProgress(progress, 0.02 + index * 0.055, 0.18 + index * 0.055), 24);
+      });
+      pathwayItems.forEach((element, index) => {
+        const start = 0.18 + index * 0.025;
+        setElementVisible(element, rangeProgress(progress, start, start + 0.12), 20);
+      });
+      schools.forEach((element, index) => {
+        const start = 0.48 + index * 0.085;
+        setElementVisible(element, rangeProgress(progress, start, start + 0.16), 24);
+      });
+      setElementVisible(conclusion, rangeProgress(progress, 0.82, 0.97), 22);
     }
   };
 }
@@ -1234,10 +1281,38 @@ function createContinuationStackController() {
   };
 }
 
+function createIntegrationController() {
+  const section = document.getElementById("integration");
+  const elements = section ? [
+    ...section.querySelectorAll(".integration-heading > *"),
+    ...section.querySelectorAll(".reflection-points article")
+  ] : [];
+
+  return {
+    init() {
+      elements.forEach((element) => setElementVisible(element, 0, 38));
+    },
+    enter() {
+      setHeroVisible(false);
+      showOnlySection("integration");
+    },
+    update({ localProgress, revealProgress = localProgress }) {
+      const progress = reducedMotionMode ? 1 : revealProgress;
+      elements.forEach((element, index) => {
+        const start = 0.03 + index * 0.16;
+        setElementVisible(element, rangeProgress(progress, start, start + 0.24), 34);
+      });
+    }
+  };
+}
+
 function createNextVersionController() {
   const section = document.getElementById("next-version");
   const visual = section?.querySelector(".next-version-visual");
+  const priority = section?.querySelector(".next-step-priority");
+  const kicker = document.getElementById("next-version-kicker");
   const path = document.getElementById("next-version-path");
+  const reason = document.getElementById("next-version-reason");
   const copy = section?.querySelector(".next-version-copy");
   const lines = copy ? [...copy.querySelectorAll("p")] : [];
   let phase = "path";
@@ -1246,22 +1321,26 @@ function createNextVersionController() {
     phase = nextPhase;
     if (section) section.dataset.phase = phase;
     if (copy) copy.setAttribute("aria-hidden", phase === "keep-going" ? "false" : "true");
+    if (priority) priority.setAttribute("aria-hidden", phase === "path" ? "false" : "true");
   }
 
   function updatePhase(localProgress) {
     const progress = reducedMotionMode ? 1 : localProgress;
     setElementVisible(visual, responsiveRangeProgress(progress, 0, 0.42, 0, 0.2), 22);
     if (phase === "path") {
-      setElementVisible(path, responsiveRangeProgress(progress, 0.28, 0.86, 0.08, 0.32), 46);
+      if (priority) priority.style.opacity = "1";
+      setElementVisible(kicker, responsiveRangeProgress(progress, 0.12, 0.34, 0.05, 0.2), 28);
+      setElementVisible(path, responsiveRangeProgress(progress, 0.28, 0.62, 0.16, 0.42), 46);
+      setElementVisible(reason, responsiveRangeProgress(progress, 0.62, 0.9, 0.48, 0.72), 28);
       if (copy) copy.style.opacity = "0";
       return;
     }
 
-    if (path) path.style.opacity = "0";
+    if (priority) priority.style.opacity = "0";
     if (copy) copy.style.opacity = "1";
     lines.forEach((line, index) => {
-      const start = index === 0 ? 0.02 : 0.16 + (index - 1) * 0.125;
-      const end = index === lines.length - 1 ? start + 0.11 : start + 0.16;
+      const start = index === 0 ? 0.02 : 0.14 + (index - 1) * 0.105;
+      const end = start + 0.14;
       setElementVisible(line, rangeProgress(progress, start, end), 30);
     });
   }
@@ -1269,7 +1348,7 @@ function createNextVersionController() {
   return {
     init() {
       applyPhase("path");
-      [visual, path, ...lines].forEach((element) => setElementVisible(element, 0, 40));
+      [visual, kicker, path, reason, ...lines].forEach((element) => setElementVisible(element, 0, 40));
     },
     enter({ beat, localProgress }) {
       setCursorHidden(false);
@@ -1313,12 +1392,14 @@ function createEndingController() {
       if (sourcesWrap) sourcesWrap.style.opacity = "1";
       if (finalWrap) finalWrap.style.opacity = "0";
       sourceLines.forEach((line, index) => {
+        const step = 0.68 / Math.max(1, sourceLines.length - 1);
+        const start = 0.04 + index * step;
         const reveal = responsiveRangeProgress(
           progress,
-          0.06 + index * 0.19,
-          0.3 + index * 0.19,
-          0.05 + index * 0.15,
-          0.2 + index * 0.15
+          start,
+          start + 0.16,
+          start,
+          start + 0.12
         );
         setElementVisible(line, reveal, 30);
       });
@@ -1717,7 +1798,7 @@ export function createSectionControllers(options = {}) {
     opening: createOpeningController(),
     openingInterlude: createOpeningInterludeController(),
     projectLog: createProjectLogController(),
-    projectsInterlude: createProjectsInterludeController(),
+    projectsInterlude: createChapterDividerController("projects-interlude"),
     musicIntroduction: createSparseQuoteController("music-introduction", "music-introduction-text"),
     musicProduction: createMusicProductionController(),
     musicProgress: createSparseQuoteController("music-progress", "music-progress-text"),
@@ -1725,11 +1806,12 @@ export function createSectionControllers(options = {}) {
     photographyIntroduction: createSparseQuoteController("photography-introduction", "photography-introduction-text"),
     photographySequence: createPhotographySequenceController(),
     photographyEnding: createSparseQuoteController("photography-ending", "photography-ending-text"),
-    originInterlude: createOriginInterludeController(),
+    originInterlude: createChapterDividerController("origin-interlude"),
     kindergartenArchive: createKindergartenArchiveController(),
     oralSurgeryReveal: createOralSurgeryRevealController(),
     whyItFits: createWhyItFitsController(),
-    dentalScanIntroduction: createDentalScanIntroductionController(),
+    dentalScanIntroduction: createChapterDividerController("dental-scan-introduction"),
+    pathwaySchools: createPathwaySchoolsController(),
     dentalModel: createDentalModelController(),
     healthcareOwnership: createHealthcareOwnershipController(),
     practiceSystem: createPracticeSystemController(),
@@ -1737,7 +1819,7 @@ export function createSectionControllers(options = {}) {
     aiTools: createAiToolsController(),
     connections: createConnectionsController(),
     continuationStack: createContinuationStackController(),
-    integration: createSparseQuoteController("integration", "integration-text"),
+    integration: createIntegrationController(),
     nextVersion: createNextVersionController(),
     ending: createEndingController(),
     object: createReserveObjectController(),
@@ -1762,6 +1844,7 @@ export function createSectionControllers(options = {}) {
     "oralSurgeryReveal",
     "whyItFits",
     "dentalScanIntroduction",
+    "pathwaySchools",
     "dentalModel",
     "healthcareOwnership",
     "practiceSystem",

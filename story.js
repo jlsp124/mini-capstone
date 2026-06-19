@@ -22,18 +22,7 @@ export const storyBeats = [
     controller: "openingInterlude"
   },
   {
-    key: "beat-3-project-log",
-    act: "PROJECTS",
-    sectionId: "project-log",
-    phase: "default",
-    desktopUnits: 3.5,
-    mobileUnits: 3.1,
-    autoplayMs: 4000,
-    transitionIn: "element",
-    controller: "projectLog"
-  },
-  {
-    key: "beat-4-projects-interlude",
+    key: "beat-3-part-1",
     act: "PROJECTS",
     sectionId: "projects-interlude",
     phase: "default",
@@ -42,6 +31,17 @@ export const storyBeats = [
     autoplayMs: 3000,
     transitionIn: "signal",
     controller: "projectsInterlude"
+  },
+  {
+    key: "beat-4-project-log",
+    act: "PROJECTS",
+    sectionId: "project-log",
+    phase: "default",
+    desktopUnits: 3.5,
+    mobileUnits: 3.1,
+    autoplayMs: 4000,
+    transitionIn: "element",
+    controller: "projectLog"
   },
   {
     key: "beat-5-music-introduction",
@@ -220,7 +220,18 @@ export const storyBeats = [
     controller: "dentalScanIntroduction"
   },
   {
-    key: "beat-21-dental-model",
+    key: "beat-21-pathway-schools",
+    act: "PRECISION",
+    sectionId: "pathway-schools",
+    phase: "default",
+    desktopUnits: 4.4,
+    mobileUnits: 4.0,
+    autoplayMs: 5200,
+    transitionIn: "element",
+    controller: "pathwaySchools"
+  },
+  {
+    key: "beat-22-dental-model",
     act: "PRECISION",
     sectionId: "dental-model",
     phase: "default",
@@ -231,7 +242,7 @@ export const storyBeats = [
     controller: "dentalModel"
   },
   {
-    key: "beat-22-healthcare-and-ownership",
+    key: "beat-23-healthcare-and-ownership",
     act: "PRECISION",
     sectionId: "healthcare-ownership",
     phase: "default",
@@ -242,7 +253,7 @@ export const storyBeats = [
     controller: "healthcareOwnership"
   },
   {
-    key: "beat-23-practice-system",
+    key: "beat-24-practice-system",
     act: "BUILD",
     sectionId: "practice-system",
     phase: "default",
@@ -253,7 +264,18 @@ export const storyBeats = [
     controller: "practiceSystem"
   },
   {
-    key: "beat-24-building-project",
+    key: "beat-25-part-4",
+    act: "BUILD",
+    sectionId: "ai-tools",
+    phase: "statement",
+    desktopUnits: 2.0,
+    mobileUnits: 1.7,
+    autoplayMs: 3000,
+    transitionIn: "signal",
+    controller: "aiTools"
+  },
+  {
+    key: "beat-26-building-project",
     act: "BUILD",
     sectionId: "building-project",
     phase: "project",
@@ -264,7 +286,7 @@ export const storyBeats = [
     controller: "buildingProject"
   },
   {
-    key: "beat-25-practice-expansion",
+    key: "beat-27-practice-expansion",
     act: "BUILD",
     sectionId: "building-project",
     phase: "expansion",
@@ -275,29 +297,18 @@ export const storyBeats = [
     controller: "buildingProject"
   },
   {
-    key: "beat-26-tools",
-    act: "OPPORTUNITY",
-    sectionId: "ai-tools",
-    phase: "statement",
-    desktopUnits: 2.0,
-    mobileUnits: 1.7,
-    autoplayMs: 2300,
-    transitionIn: "signal",
-    controller: "aiTools"
-  },
-  {
-    key: "beat-27-how-i-use-ai",
+    key: "beat-28-how-i-use-ai",
     act: "OPPORTUNITY",
     sectionId: "ai-tools",
     phase: "process",
     desktopUnits: 3.3,
     mobileUnits: 2.9,
     autoplayMs: 4100,
-    transitionIn: "none",
+    transitionIn: "element",
     controller: "aiTools"
   },
   {
-    key: "beat-28-connections",
+    key: "beat-29-connections",
     act: "OPPORTUNITY",
     sectionId: "connections",
     phase: "default",
@@ -308,7 +319,7 @@ export const storyBeats = [
     controller: "connections"
   },
   {
-    key: "beat-29-parts-continue",
+    key: "beat-30-parts-continue",
     act: "OPPORTUNITY",
     sectionId: "continuation-stack",
     phase: "default",
@@ -319,18 +330,18 @@ export const storyBeats = [
     controller: "continuationStack"
   },
   {
-    key: "beat-30-integration",
-    act: "OPPORTUNITY",
+    key: "beat-31-integration",
+    act: "DIRECTION",
     sectionId: "integration",
     phase: "default",
-    desktopUnits: 2.3,
-    mobileUnits: 1.9,
-    autoplayMs: 2300,
+    desktopUnits: 3.4,
+    mobileUnits: 3.0,
+    autoplayMs: 4600,
     transitionIn: "signal",
     controller: "integration"
   },
   {
-    key: "beat-31-path",
+    key: "beat-32-path",
     act: "DIRECTION",
     sectionId: "next-version",
     phase: "path",
@@ -341,7 +352,7 @@ export const storyBeats = [
     controller: "nextVersion"
   },
   {
-    key: "beat-32-next-version",
+    key: "beat-33-next-version",
     act: "DIRECTION",
     sectionId: "next-version",
     phase: "keep-going",
@@ -352,18 +363,18 @@ export const storyBeats = [
     controller: "nextVersion"
   },
   {
-    key: "beat-33-sources",
+    key: "beat-34-sources",
     act: "DIRECTION",
     sectionId: "ending",
     phase: "sources",
     desktopUnits: 3.2,
     mobileUnits: 2.8,
-    autoplayMs: 4800,
+    autoplayMs: 5600,
     transitionIn: "curtain",
     controller: "ending"
   },
   {
-    key: "beat-34-ending",
+    key: "beat-35-ending",
     act: "DIRECTION",
     sectionId: "ending",
     phase: "final",
